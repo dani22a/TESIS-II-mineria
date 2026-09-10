@@ -1,0 +1,6 @@
+{
+  "name": "MineTwin AI",
+  "description": "Gemelo digital 3D operacional del ciclo Drill-Blast-Load-Haul y optimización multiobjetivo Mine-to-Mill con simulación basada en agentes y Deep Reinforcement Learning.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
