@@ -1,0 +1,6 @@
+.env
+docker.env
+*.log
+__pycache__/
+*.pyc
+.langflow-data/

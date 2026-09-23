@@ -1,0 +1,1994 @@
+[
+  {
+    "provider_id": "google-generative-ai",
+    "icon": "GoogleGenerativeAI",
+    "max_tokens_field_name": "max_output_tokens",
+    "variables": [
+      {
+        "variable_name": "Google API Key",
+        "variable_key": "GOOGLE_API_KEY",
+        "required": true,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "google_api_key",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to GOOGLE_API_KEY environment variable"
+        }
+      }
+    ],
+    "api_docs_url": "https://aistudio.google.com/app/apikey",
+    "mapping": {
+      "model_class": "ChatGoogleGenerativeAIFixed",
+      "model_param": "model"
+    },
+    "provider": "Google Generative AI",
+    "models": [
+      {
+        "model_name": "gemini-2.5-flash",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-2.5-pro",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-2.5-flash-lite",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-2.5-flash-preview-09-2025",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-2.5-flash-lite-preview-09-2025",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-2.5-flash-image",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-3.1-pro-preview",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-3-flash-preview",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-3.1-flash-lite-preview",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-3-pro-image-preview",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gemini-3.1-flash-image-preview",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "models/gemini-embedding-001",
+        "metadata": {
+          "icon": "GoogleGenerativeAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 12,
+    "is_configured": true,
+    "live_discovery": false,
+    "is_enabled": true
+  },
+  {
+    "provider_id": "anthropic",
+    "icon": "Anthropic",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "Anthropic API Key",
+        "variable_key": "ANTHROPIC_API_KEY",
+        "required": true,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "api_key",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to ANTHROPIC_API_KEY environment variable"
+        }
+      }
+    ],
+    "api_docs_url": "https://console.anthropic.com/docs",
+    "mapping": {
+      "model_class": "ChatAnthropic",
+      "model_param": "model"
+    },
+    "provider": "Anthropic",
+    "models": [
+      {
+        "model_name": "claude-opus-4-6",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-sonnet-4-6",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-haiku-4-5-20251001",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-opus-4-5-20251101",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-sonnet-4-5-20250929",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-opus-4-1-20250805",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-opus-4-20250514",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "claude-sonnet-4-20250514",
+        "metadata": {
+          "icon": "Anthropic",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 8,
+    "is_configured": false,
+    "live_discovery": false,
+    "is_enabled": false
+  },
+  {
+    "provider_id": "azure-ai-foundry",
+    "icon": "Azure",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "Azure AI Foundry API Key",
+        "variable_key": "AZURE_AI_FOUNDRY_API_KEY",
+        "required": true,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "credential",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to AZURE_AI_FOUNDRY_API_KEY environment variable"
+        }
+      },
+      {
+        "variable_name": "Azure AI Foundry Endpoint",
+        "variable_key": "AZURE_AI_FOUNDRY_ENDPOINT",
+        "description": "OpenAI-compatible endpoint from the Foundry portal (Get endpoint). Example: https://<resource>.services.ai.azure.com/openai/v1. Enable models using your portal deployment names (not catalog model IDs).",
+        "required": true,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "endpoint"
+      },
+      {
+        "variable_name": "Azure AI Foundry API Version",
+        "variable_key": "AZURE_AI_FOUNDRY_API_VERSION",
+        "description": "Optional. api-version used for the deployments listing that powers live model discovery. Leave empty for the default (2023-03-15-preview).",
+        "required": false,
+        "is_secret": false,
+        "is_list": false,
+        "options": []
+      }
+    ],
+    "api_docs_url": "https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/langchain-models",
+    "mapping": {
+      "model_class": "AzureAIOpenAIApiChatModel",
+      "model_param": "model"
+    },
+    "provider": "Azure AI Foundry",
+    "models": [
+      {
+        "model_name": "gpt-4o",
+        "metadata": {
+          "icon": "Azure",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4o-mini",
+        "metadata": {
+          "icon": "Azure",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4.1",
+        "metadata": {
+          "icon": "Azure",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "o3-mini",
+        "metadata": {
+          "icon": "Azure",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "Mistral-Large-3",
+        "metadata": {
+          "icon": "Azure",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 5,
+    "is_configured": false,
+    "live_discovery": false,
+    "is_enabled": false
+  },
+  {
+    "provider_id": "ibm-watsonx",
+    "aliases": [
+      "IBM watsonx.ai"
+    ],
+    "icon": "WatsonxAI",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "API Key",
+        "variable_key": "WATSONX_APIKEY",
+        "required": true,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "apikey",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to WATSONX_APIKEY environment variable"
+        }
+      },
+      {
+        "variable_name": "Project ID",
+        "variable_key": "WATSONX_PROJECT_ID",
+        "required": true,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "project_id",
+        "component_metadata": {
+          "mapping_field": "project_id",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to WATSONX_PROJECT_ID environment variable"
+        }
+      },
+      {
+        "variable_name": "Endpoint URL",
+        "variable_key": "WATSONX_URL",
+        "required": true,
+        "is_secret": false,
+        "is_list": false,
+        "combobox": true,
+        "options": [
+          "https://us-south.ml.cloud.ibm.com",
+          "https://eu-de.ml.cloud.ibm.com",
+          "https://eu-gb.ml.cloud.ibm.com",
+          "https://au-syd.ml.cloud.ibm.com",
+          "https://jp-tok.ml.cloud.ibm.com",
+          "https://ca-tor.ml.cloud.ibm.com"
+        ],
+        "langchain_param": "url",
+        "component_metadata": {
+          "mapping_field": "base_url_ibm_watsonx",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to WATSONX_URL environment variable"
+        }
+      }
+    ],
+    "api_docs_url": "https://www.ibm.com/products/watsonx",
+    "mapping": {
+      "model_class": "ChatWatsonx",
+      "model_param": "model_id"
+    },
+    "provider": "IBM WatsonX",
+    "models": [
+      {
+        "model_name": "ibm/granite-4-h-small",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "meta-llama/llama-3-3-70b-instruct",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistral-large-2512",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "meta-llama/llama-4-maverick-17b-128e-instruct-fp8",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistralai/mistral-medium-2505",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistralai/mistral-small-3-1-24b-instruct-2503",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "openai/gpt-oss-120b",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "ibm/granite-guardian-3-8b",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "ibm/granite-embedding-278m-multilingual",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "ibm/slate-125m-english-rtrvr-v2",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "ibm/slate-30m-english-rtrvr-v2",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "intfloat/multilingual-e5-large",
+        "metadata": {
+          "icon": "IBM",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 12,
+    "is_configured": false,
+    "live_discovery": true,
+    "is_enabled": false
+  },
+  {
+    "provider_id": "ollama",
+    "icon": "Ollama",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "Ollama Base URL",
+        "variable_key": "OLLAMA_BASE_URL",
+        "required": true,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "base_url",
+        "component_metadata": {
+          "mapping_field": "ollama_base_url",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to OLLAMA_BASE_URL environment variable"
+        }
+      }
+    ],
+    "api_docs_url": "https://ollama.com/",
+    "mapping": {
+      "model_class": "ChatOllama",
+      "model_param": "model"
+    },
+    "provider": "Ollama",
+    "models": [
+      {
+        "model_name": "llama3.3",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "qwq",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "llama3.2",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "llama3.1",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistral",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "qwen2",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "qwen2.5",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "qwen2.5-coder",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistral-nemo",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mixtral",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "command-r",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "command-r-plus",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistral-large",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "smollm2",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "hermes3",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "athene-v2",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mistral-small",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "nemotron-mini",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "nemotron",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "llama3-groq-tool-use",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "granite3-dense",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "granite3.1-dense",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "aya-expanse",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "granite3-moe",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "firefunction-v2",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "cogito",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-oss:20b",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "qwen3-vl:4b",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "nomic-embed-text",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "mxbai-embed-large",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "snowflake-arctic-embed",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "all-minilm",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "bge-m3",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "bge-large",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "paraphrase-multilingual",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "granite-embedding",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "jina-embeddings-v2-base-en",
+        "metadata": {
+          "icon": "Ollama",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 37,
+    "is_configured": false,
+    "live_discovery": true,
+    "is_enabled": false
+  },
+  {
+    "provider_id": "openai",
+    "icon": "OpenAI",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "OpenAI API Key",
+        "variable_key": "OPENAI_API_KEY",
+        "required": true,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "api_key",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to OPENAI_API_KEY environment variable"
+        }
+      },
+      {
+        "variable_name": "OpenAI Base URL",
+        "variable_key": "OPENAI_BASE_URL",
+        "description": "Optional. Point to an OpenAI-compatible server (e.g. vLLM, LM Studio, LiteLLM). Leave empty for api.openai.com.",
+        "required": false,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "base_url"
+      }
+    ],
+    "api_docs_url": "https://platform.openai.com/docs/overview",
+    "mapping": {
+      "model_class": "ChatOpenAI",
+      "model_param": "model"
+    },
+    "provider": "OpenAI",
+    "models": [
+      {
+        "model_name": "gpt-5.4",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5.4-mini",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5.4-pro",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5.3-codex",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5.2",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5.1",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5-mini",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5-nano",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-5-chat-latest",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": false,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4o-mini",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4o",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4.1",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4.1-mini",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4.1-nano",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4-turbo",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "o1",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": false,
+          "reasoning": true,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4o-mini-search-preview",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": true,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "gpt-4o-search-preview",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": true,
+          "preview": true,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "text-embedding-3-small",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "text-embedding-3-large",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "text-embedding-ada-002",
+        "metadata": {
+          "icon": "OpenAI",
+          "tool_calling": false,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "embeddings",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 23,
+    "is_configured": false,
+    "live_discovery": false,
+    "is_enabled": false
+  },
+  {
+    "icon": "Plug",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "Base URL",
+        "variable_key": "OPENAI_COMPATIBLE_BASE_URL",
+        "description": "Base URL of any OpenAI-compatible endpoint, e.g. https://openrouter.ai/api/v1 or http://localhost:8000/v1.",
+        "required": true,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "base_url",
+        "base_url_suffix": "/v1",
+        "component_metadata": {
+          "mapping_field": "openai_compatible_base_url",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to the OPENAI_COMPATIBLE_BASE_URL environment variable"
+        }
+      },
+      {
+        "variable_name": "API Key",
+        "variable_key": "OPENAI_COMPATIBLE_API_KEY",
+        "description": "Bearer token for the endpoint. Optional for local servers without authentication.",
+        "required": false,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "api_key",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to the OPENAI_COMPATIBLE_API_KEY environment variable (optional for local servers)"
+        }
+      }
+    ],
+    "api_docs_url": "https://platform.openai.com/docs/api-reference",
+    "mapping": {
+      "model_class": "ChatOpenAI",
+      "model_param": "model"
+    },
+    "provider_id": "openai-compatible",
+    "display_name": "OpenAI Compatible",
+    "provider": "OpenAI Compatible",
+    "models": [],
+    "num_models": 0,
+    "is_configured": false,
+    "live_discovery": true,
+    "is_enabled": false
+  },
+  {
+    "provider_id": "openrouter",
+    "icon": "OpenRouter",
+    "max_tokens_field_name": "max_tokens",
+    "base_url": "https://openrouter.ai/api/v1",
+    "variables": [
+      {
+        "variable_name": "OpenRouter API Key",
+        "variable_key": "OPENROUTER_API_KEY",
+        "required": true,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "api_key",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to OPENROUTER_API_KEY environment variable"
+        }
+      },
+      {
+        "variable_name": "Site URL",
+        "variable_key": "OPENROUTER_SITE_URL",
+        "required": false,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "is_header": true,
+        "header_name": "HTTP-Referer",
+        "description": "Optional. Sent as the HTTP-Referer header for OpenRouter attribution."
+      },
+      {
+        "variable_name": "App Name",
+        "variable_key": "OPENROUTER_APP_NAME",
+        "required": false,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "is_header": true,
+        "header_name": "X-Title",
+        "description": "Optional. Sent as the X-Title header for OpenRouter attribution."
+      }
+    ],
+    "api_docs_url": "https://openrouter.ai/docs",
+    "mapping": {
+      "model_class": "ChatOpenAI",
+      "model_param": "model"
+    },
+    "provider": "OpenRouter",
+    "models": [
+      {
+        "model_name": "anthropic/claude-opus-4.7",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "anthropic/claude-sonnet-4.5",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "anthropic/claude-haiku-4.5",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "openai/gpt-4o",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "openai/gpt-4o-mini",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": true,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "google/gemini-2.5-pro",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      },
+      {
+        "model_name": "meta-llama/llama-3.3-70b-instruct",
+        "metadata": {
+          "icon": "OpenRouter",
+          "tool_calling": true,
+          "reasoning": false,
+          "search": false,
+          "preview": false,
+          "not_supported": false,
+          "deprecated": false,
+          "default": false,
+          "model_type": "llm",
+          "created": 0
+        }
+      }
+    ],
+    "num_models": 7,
+    "is_configured": false,
+    "live_discovery": true,
+    "is_enabled": false
+  },
+  {
+    "icon": "vLLM",
+    "max_tokens_field_name": "max_tokens",
+    "variables": [
+      {
+        "variable_name": "vLLM API Base URL",
+        "variable_key": "VLLM_API_BASE",
+        "required": true,
+        "is_secret": false,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "base_url",
+        "component_metadata": {
+          "mapping_field": "vllm_base_url",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to the VLLM_API_BASE environment variable"
+        }
+      },
+      {
+        "variable_name": "vLLM API Key",
+        "variable_key": "VLLM_API_KEY",
+        "required": false,
+        "is_secret": true,
+        "is_list": false,
+        "options": [],
+        "langchain_param": "api_key",
+        "component_metadata": {
+          "mapping_field": "api_key",
+          "required": false,
+          "advanced": true,
+          "info": "Falls back to the VLLM_API_KEY environment variable (optional for local servers)"
+        }
+      }
+    ],
+    "api_docs_url": "https://docs.vllm.ai/",
+    "mapping": {
+      "model_class": "ChatOpenAI",
+      "model_param": "model"
+    },
+    "provider_id": "vllm",
+    "display_name": "vLLM",
+    "provider": "vLLM",
+    "models": [],
+    "num_models": 0,
+    "is_configured": false,
+    "live_discovery": true,
+    "is_enabled": false
+  }
+]

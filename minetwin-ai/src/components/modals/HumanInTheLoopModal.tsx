@@ -19,6 +19,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { DigitalTwinState, DRLRecommendation } from '../../types/mining';
+import { recommendationStatusLabel } from '../../i18n/labels';
 
 interface HumanInTheLoopModalProps {
   isOpen: boolean;
@@ -48,10 +49,10 @@ export const HumanInTheLoopModal: React.FC<HumanInTheLoopModalProps> = ({
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">
-                Centro de Recomendaciones Human-in-the-Loop (XAI)
+                Centro de recomendaciones con aprobación humana
               </h2>
               <p className="text-xs text-slate-400">
-                Supervisión humana de decisiones autónomas del agente MAPPO con explicabilidad causal completa
+                Supervisión humana de las decisiones del agente MAPPO, con explicación causal completa
               </p>
             </div>
           </div>
@@ -83,7 +84,7 @@ export const HumanInTheLoopModal: React.FC<HumanInTheLoopModalProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">
-                    {Math.round(rec.confidence * 100)}% Confianza AI
+                    {Math.round(rec.confidence * 100)}% confianza
                   </span>
                   <span
                     className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded ${
@@ -94,7 +95,7 @@ export const HumanInTheLoopModal: React.FC<HumanInTheLoopModalProps> = ({
                         : 'bg-amber-500/20 text-amber-300'
                     }`}
                   >
-                    {rec.status}
+                    {recommendationStatusLabel(rec.status)}
                   </span>
                 </div>
               </div>
@@ -144,7 +145,7 @@ export const HumanInTheLoopModal: React.FC<HumanInTheLoopModalProps> = ({
                     className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition flex items-center gap-1.5 text-xs shadow-lg shadow-amber-500/20"
                   >
                     <CheckCircle className="w-4 h-4" />
-                    <span>Aprobar & Despachar a Flota</span>
+                    <span>Aprobar y despachar a flota</span>
                   </button>
                 </div>
               )}

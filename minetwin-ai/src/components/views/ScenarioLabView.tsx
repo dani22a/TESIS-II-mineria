@@ -67,10 +67,10 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
           </div>
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight">
-              Scenario Lab: Simulación What-If Monte Carlo Acelerada
+              Laboratorio de escenarios: simulación de qué pasaría
             </h2>
             <p className="text-xs text-slate-400">
-              Clonación del estado gemelo para experimentar escenarios operacionales sin riesgo
+              Clona el estado del gemelo para probar escenarios operacionales sin riesgo
             </p>
           </div>
         </div>
@@ -88,7 +88,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
           ) : (
             <>
               <Play className="w-4 h-4 fill-current" />
-              <span>Ejecutar Simulación What-If</span>
+              <span>Ejecutar simulación</span>
             </>
           )}
         </button>
@@ -100,9 +100,9 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
         <div className="xl:col-span-5 bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-4 shadow-xl text-xs">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 className="font-bold text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Copy className="w-4 h-4 text-amber-400" /> Parámetros del Escenario What-If
+              <Copy className="w-4 h-4 text-amber-400" /> Parámetros del escenario
             </h3>
-            <span className="text-[10px] text-slate-400 font-mono">Snapshot Digital Twin</span>
+            <span className="text-[10px] text-slate-400 font-mono">Copia del gemelo digital</span>
           </div>
 
           {/* Truck Fleet Variation */}
@@ -135,8 +135,8 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
             <div className="grid grid-cols-3 gap-2">
               {[
                 { id: 'NONE', label: 'Ambas Operativas' },
-                { id: 'EX-01', label: 'Pala EX-01 DOWN' },
-                { id: 'EX-02', label: 'Pala EX-02 DOWN' },
+                { id: 'EX-01', label: 'Pala EX-01 fuera de servicio' },
+                { id: 'EX-02', label: 'Pala EX-02 fuera de servicio' },
               ].map((opt) => (
                 <button
                   key={opt.id}
@@ -179,7 +179,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
           {/* Powder Factor Adjustment */}
           <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-1.5">
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-slate-300">Ajuste de Energía Tronadura (Powder Factor)</span>
+              <span className="font-semibold text-slate-300">Ajuste de energía de tronadura (factor de carga)</span>
               <span className="font-mono font-bold text-sky-400 text-sm">
                 {powderFactorDelta >= 0 ? `+${powderFactorDelta}%` : `${powderFactorDelta}%`}
               </span>
@@ -237,9 +237,9 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
             <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-slate-950/60 rounded-xl border border-slate-800 text-slate-400 space-y-3">
               <Sliders className="w-12 h-12 text-slate-600 animate-pulse" />
               <div>
-                <h4 className="font-bold text-slate-300 text-sm">Listo para Ejecutar Simulación What-If</h4>
+                <h4 className="font-bold text-slate-300 text-sm">Listo para ejecutar la simulación</h4>
                 <p className="text-xs text-slate-500 max-w-sm mt-1">
-                  Ajuste los parámetros a la izquierda y haga clic en "Ejecutar Simulación What-If" para calcular la respuesta del sistema.
+                  Ajuste los parámetros a la izquierda y pulse "Ejecutar simulación" para calcular la respuesta del sistema.
                 </p>
               </div>
             </div>
@@ -263,7 +263,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
                     ) : (
                       <ArrowDownRight className="w-3.5 h-3.5" />
                     )}
-                    <span>{simulationResult.productionDeltaPercent}% vs Base</span>
+                    <span>{simulationResult.productionDeltaPercent}% vs caso base</span>
                   </div>
                 </div>
 
@@ -285,7 +285,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ state }) => {
 
                 {/* SAG Mill Throughput */}
                 <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                  <div className="text-[10px] text-slate-400">Throughput Molino SAG</div>
+                  <div className="text-[10px] text-slate-400">Rendimiento molino SAG</div>
                   <div className="text-lg font-bold font-mono text-emerald-400 mt-0.5">
                     {simulationResult.millThroughputTph.toLocaleString()} <span className="text-xs text-slate-500">t/h</span>
                   </div>

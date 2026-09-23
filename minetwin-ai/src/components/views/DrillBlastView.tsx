@@ -24,6 +24,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { BlastPatternModel, DigitalTwinState } from '../../types/mining';
+import { chokeRiskLabel } from '../../i18n/labels';
 import {
   calculateKuzRamFragmentation,
   evaluateMineToMillImpact,
@@ -76,10 +77,10 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
             </div>
             <div>
               <h2 className="text-lg font-bold text-white tracking-tight">
-                Módulo Drill & Blast & Modelo de Fragmentación Kuz-Ram
+                Perforación, tronadura y fragmentación Kuz-Ram
               </h2>
               <p className="text-xs text-slate-400">
-                Diseño de mallas de perforación, simulación granulométrica P80 e impacto causal Mine-to-Mill
+                Diseño de mallas de perforación, simulación granulométrica P80 e impacto causal de mina a planta
               </p>
             </div>
           </div>
@@ -130,14 +131,14 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
               }}
               className="text-[10px] text-slate-400 hover:text-amber-400 transition flex items-center gap-1"
             >
-              <RotateCcw className="w-3 h-3" /> Reset
+              <RotateCcw className="w-3 h-3" /> Restablecer
             </button>
           </div>
 
           {/* Powder Factor Slider */}
           <div className="space-y-1.5 bg-slate-950/70 p-3 rounded-xl border border-slate-800">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-slate-300">Factor de Carga (Powder Factor)</span>
+              <span className="font-semibold text-slate-300">Factor de carga</span>
               <span className="font-mono font-bold text-amber-400 text-sm">{powderFactor.toFixed(2)} kg/m³</span>
             </div>
             <input
@@ -195,7 +196,7 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-1">
               <div className="flex items-center justify-between text-slate-400">
-                <span>Taco (Stemming)</span>
+                <span>Taco</span>
                 <span className="font-mono text-sky-400 font-bold">{stemming.toFixed(1)} m</span>
               </div>
               <input
@@ -228,7 +229,7 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
 
           {/* Explosive Type Selector */}
           <div className="space-y-1.5">
-            <label className="text-slate-400 font-medium text-[11px]">Tipo de Explosivo & Potencia Relativa (RWS)</label>
+            <label className="text-slate-400 font-medium text-[11px]">Tipo de explosivo y potencia relativa (RWS)</label>
             <div className="grid grid-cols-3 gap-1.5">
               {(['ANFO', 'HEAVY_ANFO', 'EMULSION_70_30'] as const).map((exp) => (
                 <button
@@ -339,7 +340,7 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
               {/* Shovel Digability */}
               <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center">
                 <div>
-                  <div className="text-slate-400 text-[10px]">Tiempo Pase Carguío</div>
+                  <div className="text-slate-400 text-[10px]">Tiempo Pase carga</div>
                   <div className="font-bold text-amber-400 text-sm font-mono mt-0.5">
                     {mineToMillImpact.shovelDigTimePassSeconds} s/pase
                   </div>
@@ -371,7 +372,7 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
                         : 'bg-emerald-500/20 text-emerald-300'
                     }`}
                   >
-                    {mineToMillImpact.crusherChokeRisk}
+                    {chokeRiskLabel(mineToMillImpact.crusherChokeRisk)}
                   </span>
                 </div>
               </div>
@@ -385,7 +386,7 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-slate-400 text-[10px]">Throughput SAG</div>
+                  <div className="text-slate-400 text-[10px]">Rendimiento SAG</div>
                   <div className="font-bold text-emerald-400 text-sm font-mono mt-0.5">
                     {mineToMillImpact.sagMillThroughputTph.toLocaleString()} t/h
                   </div>

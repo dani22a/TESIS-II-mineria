@@ -1,0 +1,290 @@
+Langflow: Una guía con proyecto de demostración
+Aprende qué es Langflow, cómo instalarlo y cómo construir flujos de trabajo de agentes de IA sencillos y personalizados utilizando Python.
+Actualizado 20 may 2025  · 12 min leer
+Explorar con IA
+Contenido
+¿Qué es Langflow?
+¿Cómo instalar Langflow?
+Explorando el Agente Simple con Langflow
+Crear un componente personalizado en Langflow con Python
+Construir un tutor de idiomas con Langflow
+Conclusión
+Langflow es una herramienta de bajo código que nos permite crear flujos de trabajo de agentes de IA y automatizar tareas utilizando varias API.
+En este artículo, explicaré paso a paso cómo utilizar Langflow para crear flujos de trabajo personalizados de Agente de IA utilizando Python. Te mostraré cómo construir un agente de IA que ayude al usuario a practicar sus habilidades de lectura cuando aprende un nuevo idioma.
+¿Qué es Langflow?
+Langflow nos permite automatizar flujos de trabajo conectando varios componentes, sin tener que escribir ningún código. Cada componente recibe salidas de otros componentes, realiza una acción específica y, a continuación, proporciona nuevos datos como salida. 
+Por ejemplo, al construir un chatbot de IA, podemos conectar un componente de entrada de chat a un modelo lingüístico (LLM). La salida del componente LLM puede vincularse a otro componente de salida del chat.
+Además de la gran colección de componentes predefinidos, podemos construir componentes personalizados utilizando Python. A alto nivel, un componente personalizado es una función de Python que recibe unas entradas y emite unos datos.
+Vamos a aprender a utilizar componentes personalizados para construir un tutor lingüístico de inteligencia artificial utilizando Python. Si estás interesado en crear este tipo de flujos de trabajo sin código, te recomiendo que eches un vistazo a este tutorial de n8n (n8n es una herramienta similar, y en ese tutorial explico cómo adoptar un enfoque sin código para construir un agente de IA que procese automáticamente las facturas de tu bandeja de entrada de correo electrónico).
+Desarrollar aplicaciones de IA
+Aprende a crear aplicaciones de IA utilizando la API OpenAI.
+¿Cómo instalar Langflow?
+Podemos utilizar Langflow gratuitamente, en su web oficial a través de su interfaz web o instalándolo localmente.
+En este tutorial, utilizaremos una configuración local con Docker. No necesitas conocer Docker para seguir este tutorial. Pero si quieres saber más, consulta esta guía Docker para principiantes y este curso Docker.
+Docker es una herramienta que nos permite ejecutar aplicaciones en entornos aislados llamados contenedores, lo que facilita el desarrollo, la prueba y el despliegue de software de forma coherente. En nuestro caso, utilizamos Docker porque ofrece más flexibilidad para construir componentes personalizados con Python, ya que podremos utilizar una base de datos local y no necesitaremos conectarnos a un servicio externo.
+Langflow proporciona un ejemplo preconstruido listo para ejecutar, por lo que no tendremos que configurarlo nosotros.
+Ejecutar Langflow localmente con Docker
+Para ejecutar Langflow localmente con Docker, sigue estos pasos:
+Instala Docker siguiendo los pasos aquí.
+Clona o descarga el repositorio oficial de Langflow.
+Abre un terminal en la carpeta docker_example.
+Ejecuta el comando docker compose up.
+Ahora, Langflow debería estar ejecutándose en nuestra máquina local. Deberíamos ver este mensaje en el terminal:
+Podemos abrir la aplicación visitando la URL que aparece en el terminal, http://0.0.0.0:7860 en el ejemplo anterior.
+Explorando el Agente Simple con Langflow
+En esta sección, exploramos cómo funciona Langflow examinando la sencilla plantilla de agente de IA de Langflow. Para ello, seleccionamos "Agente Simple" en la primera pantalla.
+Esto creará un flujo de trabajo de agente como éste:
+El componente principal de este flujo de trabajo es el componente "Agente" del centro:
+Este componente agente utiliza el modelo gpt-4.1 de OpenAI. Para utilizarla, necesitamos pegar una clave de API de OpenAI. Si aún no tienes una, puedes crearla aquí.
+A la izquierda del componente agente, vemos las entradas y herramientas de que dispone (ver imagen inferior). En este caso, tiene dos herramientas y una entrada:
+Una Entrada de Chat que utiliza como entrada un mensaje del usuario en la interfaz de chat.
+Una herramienta Calculadora utilizada para realizar cálculos.
+Herramienta que se utiliza para obtener información de una URL concreta.
+La entrada de chat significa que cuando ejecutamos el flujo de trabajo, podemos utilizar la interfaz de chat incorporada de Langflow para enviar mensajes al modelo. En la parte superior de cada herramienta, vemos una descripción. El modelo utiliza esta información para decidir si llama o no a cada herramienta.
+A la derecha, vemos las salidas. En este caso, hay un único componente de salida, que es un componente de Salida del Chat, que indica que la respuesta del Agente debe enviarse al chat.
+Comprender los componentes
+Antes de ejecutar el Agente simple, vamos a utilizar el componente URL para entender cómo funcionan los componentes en general. Vamos a crear una copia para experimentar.
+Selecciona el componente URL.
+Cópialo y pégalo.
+No lo conectes a nada.
+En la parte superior del nuevo componente hay un interruptor de "Modo Herramienta"; desactívalo.
+En el campo URLs, pon, por ejemplo, https://en.wikipedia.org/wiki/Data_science, la página de Wikipedia sobre Ciencia de Datos. Ejecuta el componente haciendo clic en la flecha de ejecución de la esquina superior derecha.
+El componente se ejecutará y cargará el contenido de la URL que le hayamos proporcionado. Podemos verlo haciendo clic en el inspector situado junto a los enlaces de salida. Cada uno representa un formato de salida diferente.
+Entre bastidores, cada nodo es un script de Python. Aprenderemos más sobre esto cuando construyamos nodos personalizados más adelante. Podemos inspeccionar el código haciendo clic en el botón "Código" de la parte superior:
+En el flujo de trabajo original del Agente Simple, el nodo URL está configurado para ser una herramienta. Esto significa que está pensada para ser utilizada por un Agente. En este caso, las URL no se indican explícitamente. En su lugar, el propio agente proporcionará las URL.
+Ejecutar el Agente Simple
+Volviendo al Agente Simple, podemos ejecutarlo haciendo clic en el botón "Playground" de la esquina superior derecha. Esto abre la interfaz del chat, permitiéndonos chatear con el Agente.
+Pidámosle que resuma la página de Wikipedia sobre Ciencia de Datos:
+Si expandimos el cuadro de la parte superior de la respuesta, veremos los pasos que se ejecutaron en el flujo de trabajo.
+Aquí vemos, por ejemplo, que utiliza la función fetch_content_text(), que está definida en la herramienta URL que proporcionamos al agente.
+Podemos probar su uso de la herramienta Cálculo pidiéndole que realice un cálculo. La expresión será analizada y enviada a la herramienta para su evaluación. Esto proporciona una respuesta más fiable que basarse estrictamente en el LLM.
+Crear un componente personalizado en Langflow con Python
+En esta sección aprenderemos a crear componentes personalizados. Para empezar, haz clic en el botón "Nuevo componente personalizado" de la parte inferior izquierda:
+Por defecto, esto crea un componente que toma un valor de texto como entrada y emite ese mismo texto. La entrada por defecto es "¡Hola, mundo!" y si la ejecutamos e inspeccionamos la salida, vemos que eso es exactamente lo que obtenemos.
+Inspeccionando el código, vemos lo siguiente:
+Estos campos son valores de configuración del componente. La descripción es importante, ya que la utilizan los agentes de IA para saber cuándo utilizar este componente cuando se les proporciona como herramienta. El campo documentación es una URL opcional a la documentación del componente, por lo que no tenemos que preocuparnos de él aquí.
+La lista inputs especifica los tipos de entradas disponibles para el componente. En este caso, incluye una única entrada de clase MessageTextInput llamada input_value, que corresponde al campo de texto. El nombre debe ser un nombre válido de variable Python, ya que se convierte en un atributo de la clase. Cuando un componente se establece como herramienta, el agente de IA rellena automáticamente estas entradas. Utiliza el campo info para determinar cuál debe ser la entrada. Langflow admite varios tipos de entradas. Aquí tienes la lista completa de entradas admitidas.
+Esta parte define las salidas. El campo method especifica la función que se ejecuta para generar la salida. La función tiene acceso a la entrada a través de self. Por ejemplo, la entrada de esta instancia se llama input_value, por lo que podemos acceder a ella utilizando self.input_value. El valor de retorno debe ser una clase de las clases de salida admitidas.
+Para más información sobre la creación de un componente personalizado, consulta la documentación oficial del componente de Langflow.
+Aquí tienes un ejemplo de cómo podemos hacer un componente que sume dos números:
+from langflow.custom import Component
+from langflow.io import MessageTextInput, Output
+from langflow.schema import Data
+class AddNumbers(Component):
+    display_name = "Add Numbers"
+    description = "This component adds two numbers together"
+    icon = "code"
+    name = "AddNumbers"
+    inputs = [
+        IntInput(
+            name="number1",
+            display_name="First Number",
+            info="The first number to add",
+        ),
+        IntInput(
+            name="number2",
+            display_name="Second Number",
+            info="The second number to add",
+        ),
+    ]
+    outputs = [
+        Output(display_name="Output", name="output", method="add_numbers"),
+    ]
+    def add_numbers(self) -> Data:
+        result = self.number1 + self.number2
+        data = Data(value=result)
+        return data
+Powered By 
+Construir un tutor de idiomas con Langflow
+Construyamos un agente de IA que nos ayude a practicar nuestras habilidades de lectura cuando aprendemos una nueva lengua.
+Según mi experiencia, cuando se aprende una nueva lengua, una de las formas de mejorar tus habilidades es leer. Por supuesto, al principio sólo conoces unas pocas palabras, por lo que leer un libro es imposible. Por tanto, queremos disponer de materiales de lectura que se centren en el vocabulario que conocemos actualmente.
+Utilizaremos un LLM para generar pequeñas historias que leeremos. Sin embargo, para tener una experiencia de aprendizaje personalizada, queremos que las historias que genere se centren en el vocabulario que ya conocemos.
+Aquí tienes un desglose de lo que necesitamos:
+Una base de datos de vocabulario conocido.
+El agente de IA necesita acceder a la base de datos para recuperar el vocabulario conocido y generar una historia.
+El agente de IA necesita acceder a la base de datos para añadir nuevas palabras.
+Componente de configuración de la base de datos
+Cuando utilizamos Docker para ejecutar Langflow, pone en marcha una base de datos Postgres. Podemos acceder a él utilizando el paquete psycopg2. Para saber más sobre Postgres, consulta este tutorial sobre PostgreSQL.
+Vamos a crear un nodo donde podamos cargar un archivo CSV con palabras conocidas para inicializar la base de datos. Mi archivo CSV tiene este aspecto:
+He creado un componente con dos entradas.
+Un nombre de columna para especificar la columna que contiene las palabras que queremos incluir.
+Una entrada de archivo para proporcionar el archivo CSV con las palabras.
+Aquí tienes el código del componente:
+from langflow.custom import Component
+from langflow.io import MessageTextInput, Output
+from langflow.schema import Message
+import psycopg2
+import csv
+def connect_to_database():
+    # Connect to the Postgres database provided by the Docker setup
+    conn = psycopg2.connect(
+        dbname="langflow",
+        user="langflow",
+        password="langflow",
+        host="postgres",
+        port="5432"
+    )
+    conn.autocommit = True    
+    return conn.cursor()
+def add_word(cursor, word):
+    # Add a word to the database
+    cursor.execute(
+        "INSERT INTO words (word) VALUES (%s) ON CONFLICT (word) DO NOTHING;",
+        (word,)
+    )
+def initialize_database(cursor):
+    # Initialize the database by creating the word table if it doesn't yet exist
+    create_table_query = """
+        CREATE TABLE IF NOT EXISTS words (
+            word TEXT PRIMARY KEY
+        );
+    """
+    cursor.execute(create_table_query)    
+class UploadWordFile(Component):
+    display_name = "Upload Word File"
+    description = "Upload a CSV file of words to the database."
+    icon = "code"
+    name = "UploadWordFile"
+    inputs = [
+        StrInput(
+            name="column_name",
+            display_name="Column Name",
+            info="The name of the column containing the words",
+        ),
+        FileInput(
+            name="csv_file",
+            display_name="CSV file",
+            info="CSV input file",
+            file_types=["csv"]
+        ),
+    ]
+    outputs = [
+        Output(display_name="Output", name="output", method="load_words_into_database"),
+    ]
+    def load_words_into_database(self) -> Message:
+        try:
+            cursor = connect_to_database()
+            initialize_database(cursor)
+            with open(self.csv_file, "rt") as f:
+                rows = list(csv.reader(f))
+            headers = list(map(lambda header: header.lower(), rows[0]))
+            column_index = headers.index(self.column_name)
+            for row in rows[1:]:
+                add_word(cursor, row[column_index])
+            return "Success"
+        except Exception as e:
+            return f"Error: {str(e)}"
+Powered By 
+El componente tiene este aspecto:
+Está diseñado para ser utilizado solo y no conectado a ningún otro componente. Podemos utilizarlo para cargar manualmente palabras en la base de datos.
+Herramienta para añadir palabras
+Aquí creamos una herramienta que el agente de IA puede utilizar para añadir nuevas palabras a la base de datos. De este modo, el usuario puede añadir fácilmente nuevas palabras enviando un mensaje al agente.
+Este código reutiliza las funciones connect_to_database() y add_word() del nodo anterior. Con una mejor configuración de Docker, podemos evitar repetir el código, pero para este tutorial, lo mantendremos simple.
+Aquí tienes el código de esta herramienta:
+# from langflow.field_typing import Data
+from langflow.custom import Component
+from langflow.io import MessageTextInput, Output
+from langflow.schema import Message
+def connect_to_database():
+    # Connect to the Postgres database provided by the Docker setup
+    conn = psycopg2.connect(
+        dbname="langflow",
+        user="langflow",
+        password="langflow",
+        host="postgres",
+        port="5432"
+    )
+    conn.autocommit = True    
+    return conn.cursor()
+def add_word(cursor, word):
+    # Add a word to the database
+    cursor.execute(
+        "INSERT INTO words (word) VALUES (%s) ON CONFLICT (word) DO NOTHING;",
+        (word,)
+    )
+class AddWordTool(Component):
+    display_name = "Add word tool"
+    description = "Use this tool to add a new word"
+    icon = "code"
+    name = "AddWordTool"
+    inputs = [
+        MessageTextInput(
+            name="word",
+            display_name="Word",
+            info="The word to add",
+            tool_mode=True,
+        ),
+    ]
+    outputs = [
+        Output(display_name="Output", name="output", method="add_new_word"),
+    ]
+    def add_new_word(self) -> Message:
+        cursor = connect_to_database()
+        add_word(cursor, self.word)
+        return f"Added word: {self.word}"
+Powered By 
+Ten en cuenta que esta herramienta supone que la base de datos se ha creado previamente. No funcionará sin haber ejecutado antes el componente anterior al menos una vez.
+Recuerda ponerlo en modo herramienta:
+Herramienta para crear historias
+Para crear una historia, utilizamos un componente agente de IA. Ésta es la estructura:
+En las instrucciones del agente, en lugar de añadir la consulta directamente en el componente, utilizamos un componenteConsulta porque nos permite añadir parámetros a la consulta. Este es el mensaje que utilizamos:
+Create a story in {language} using only words from the following list:
+{words}
+Create a story in {language} using only words from the following list: 
+La consulta tiene dos parámetros, {language} y {words}. Al añadir parámetros de este modo, añade al componente un campo para cada uno de ellos
+.
+Para el valor del idioma, simplemente lo introducimos en el cuadro de texto. Las palabras deben cargarse de la base de datos, así que creamos un componente personalizado que carga todas las palabras de la base de datos, y conectamos la salida de ese nodo al campo palabras.
+Aquí tienes el código del componente cargador de palabras:
+from langflow.custom import Component
+from langflow.io import MessageTextInput, Output
+from langflow.schema import Message
+import psycopg2
+def load_words():
+    conn = psycopg2.connect(
+        dbname="langflow",
+        user="langflow",
+        password="langflow",
+        host="postgres",
+        port="5432"
+    )    
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM words;
+    """)
+    rows = cursor.fetchall()
+    return map(lambda row: row[0], rows)
+class WordLoader(Component):
+    display_name = "Word Loader"
+    description = "Load words from the database"
+    icon = "code"
+    name = "WordLoader"
+    outputs = [
+        Output(display_name="Output", name="output", method="build_output"),
+    ]
+    def build_output(self) -> Message:
+        return str(", ".join(load_words()))
+Powered By 
+A continuación, establecemos que el agente sea una herramienta. De este modo, el agente principal (que creamos a continuación) podrá utilizar éste para generar una historia cuando sea necesario.
+Por último, cambiamos el nombre del agente y modificamos la descripción de la herramienta para que la IA sepa cuándo debe utilizarla:
+Agente lingüístico
+Para el agente principal, utilizamos un componente de nodo de agente de IA normal vinculado a las dos herramientas que hemos creado. Este agente utiliza un componente de entrada de chat y un componente de salida de chat para que podamos interactuar con él utilizando la interfaz de chat.
+Aquí tienes la arquitectura final:
+La indicación que utilizamos fue
+You will help the user practice their language skills. You will either be asked to create a story or to add a new word to the vocabulary.
+- If the user asks you to create a story, use the story generation tool.  
+- If the user asks you to add a word, use the word add tool.  
+When using a tool, your answer should just be the result from the tool and nothing else.
+Podemos ejecutar el flujo de trabajo completo pulsando el botón "Playground". Aquí tienes un ejemplo de interacción:
+Conclusión
+Exploramos los aspectos fundamentales de Langflow y cómo puede utilizarse para construir un flujo de trabajo de agente de IA que ayude a los usuarios a practicar sus habilidades lectoras. Al utilizar Python para crear componentes personalizados, desbloqueamos más posibilidades. 
+Este enfoque híbrido fusiona lo mejor de ambos mundos: la flexibilidad de los scripts de Python, que permiten ejecutar cualquier tarea deseada, y la intuitiva interfaz gráfica de Langflow, que simplifica la construcción del flujo de trabajo sin necesidad de sumergirse en código complejo.
+Para saber más sobre los agentes de IA, te recomiendo que leas estos blogs:
+Códice de OpenAI: Una guía con 3 ejemplos prácticos
+n8n: Una guía con ejemplos prácticos
+Tutorial de IA de Haystack: Construir flujos de trabajo agenéticos
+Kit de Desarrollo de Agentes de Google (ADK): Una guía con proyecto de demostración
+Agente2Agente (A2A): Definición, Ejemplos, Comparación MCP
+Author
+François Aubry
+Ingeniero full-stack y fundador de CheapGPT. Enseñar siempre ha sido mi pasión. Desde mis primeros días como estudiante, busqué con entusiasmo oportunidades para dar clases particulares y ayudar a otros estudiantes. Esta pasión me llevó a realizar un doctorado, en el que también trabajé como ayudante de profesor para apoyar mis esfuerzos académicos. Durante esos años, encontré una inmensa satisfacción en el entorno tradicional del aula, fomentando las conexiones y facilitando el aprendizaje. Sin embargo, con la llegada de las plataformas de aprendizaje en línea, reconocí el potencial transformador de la educación digital. De hecho, participé activamente en el desarrollo de una plataforma de este tipo en nuestra universidad. Estoy profundamente comprometida con la integración de los principios de la enseñanza tradicional con metodologías digitales innovadoras. Mi pasión es crear cursos que no sólo sean atractivos e informativos, sino también accesibles para los alumnos en esta era digital.
+Temas

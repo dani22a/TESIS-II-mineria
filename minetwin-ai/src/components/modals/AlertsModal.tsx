@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { DigitalTwinAlert, DigitalTwinState } from '../../types/mining';
+import { alertSeverityLabel } from '../../i18n/labels';
 
 interface AlertsModalProps {
   isOpen: boolean;
@@ -41,7 +42,7 @@ export const AlertsModal: React.FC<AlertsModalProps> = ({
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">
-                Gestión de Alarmas & Eventos Críticos de Mina
+                Gestión de alarmas y eventos críticos de mina
               </h2>
               <p className="text-xs text-slate-400">
                 Notificaciones automáticas de seguridad, cuellos de botella y desviaciones operacionales
@@ -95,7 +96,7 @@ export const AlertsModal: React.FC<AlertsModalProps> = ({
                         : 'bg-sky-500/20 text-sky-300'
                     }`}
                   >
-                    {alert.severity}
+                    {alertSeverityLabel(alert.severity)}
                   </span>
                 </div>
               </div>

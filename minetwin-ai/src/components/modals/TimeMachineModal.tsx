@@ -39,12 +39,12 @@ export const TimeMachineModal: React.FC<TimeMachineModalProps> = ({
   const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
 
   const forecastEvents = [
-    { offset: -4, time: '10:00', title: 'Inicio de Turno A', type: 'HISTORICAL' },
-    { offset: -2, time: '12:00', title: 'Disparo Malla #103 (Bench 3840)', type: 'HISTORICAL' },
-    { offset: 0, time: '14:24', title: 'Tiempo Real Actual (Live)', type: 'NOW' },
-    { offset: 3, time: '17:30', title: 'Tronadura Malla #104 (P80=178mm)', type: 'FORECAST' },
-    { offset: 8, time: '22:30', title: 'Mantenimiento Preventivo Pala EX-01', type: 'FORECAST' },
-    { offset: 16, time: '06:30 (+1d)', title: 'Cambio de Fase & Cambio de Turno B', type: 'FORECAST' },
+    { offset: -4, time: '10:00', title: 'Inicio de turno A', type: 'HISTORICAL' },
+    { offset: -2, time: '12:00', title: 'Disparo malla #103 (banco 3840)', type: 'HISTORICAL' },
+    { offset: 0, time: '14:24', title: 'Tiempo real actual', type: 'NOW' },
+    { offset: 3, time: '17:30', title: 'Tronadura malla #104 (P80 = 178 mm)', type: 'FORECAST' },
+    { offset: 8, time: '22:30', title: 'Mantenimiento preventivo pala EX-01', type: 'FORECAST' },
+    { offset: 16, time: '06:30 (+1d)', title: 'Cambio de fase y cambio de turno B', type: 'FORECAST' },
   ];
 
   return (
@@ -58,10 +58,10 @@ export const TimeMachineModal: React.FC<TimeMachineModalProps> = ({
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">
-                Time Machine: Replay Histórico & Proyección Predictiva (+24h)
+                Línea de tiempo: historial y proyección (+24 h)
               </h2>
               <p className="text-xs text-slate-400">
-                Navegación temporal multidimensional para auditoría retrospectiva y predicción de cuellos de botella
+                Navegación temporal para auditoría retrospectiva y predicción de cuellos de botella
               </p>
             </div>
           </div>
@@ -182,7 +182,7 @@ export const TimeMachineModal: React.FC<TimeMachineModalProps> = ({
                       : 'bg-sky-500/20 text-sky-300'
                   }`}
                 >
-                  {evt.type}
+                  {evt.type === 'NOW' ? 'Ahora' : evt.type === 'FORECAST' ? 'Pronóstico' : 'Histórico'}
                 </span>
               </div>
             ))}
@@ -194,7 +194,7 @@ export const TimeMachineModal: React.FC<TimeMachineModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-medium transition text-xs"
           >
-            Cerrar Time Machine
+            Cerrar
           </button>
         </div>
       </div>

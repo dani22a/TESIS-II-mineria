@@ -49,15 +49,15 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
   onToggleLayer,
 }) => {
   const navItems: { id: ActiveModule; label: string; icon: React.ReactNode; badge?: string }[] = [
-    { id: 'TWIN_3D', label: 'Gemelo 3D', icon: <Globe className="w-5 h-5" />, badge: 'LIVE' },
-    { id: 'DRILL_BLAST', label: 'Drill & Blast', icon: <Flame className="w-5 h-5" /> },
-    { id: 'LOAD_HAUL', label: 'Load & Haul', icon: <Truck className="w-5 h-5" /> },
-    { id: 'MINE_TO_MILL', label: 'Mine-to-Mill', icon: <Cpu className="w-5 h-5" /> },
-    { id: 'SCENARIO_LAB', label: 'Scenario Lab', icon: <Sliders className="w-5 h-5" />, badge: 'What-If' },
-    { id: 'COPILOT', label: 'Copiloto IA', icon: <MessageSquare className="w-5 h-5" />, badge: 'LangGraph' },
-    { id: 'AI_OPTIMIZER', label: 'Optimizador DRL', icon: <Award className="w-5 h-5" />, badge: 'MAPPO' },
+    { id: 'TWIN_3D', label: 'Gemelo 3D', icon: <Globe className="w-5 h-5" />, badge: 'En vivo' },
+    { id: 'DRILL_BLAST', label: 'Perforación y tronadura', icon: <Flame className="w-5 h-5" /> },
+    { id: 'LOAD_HAUL', label: 'Carguío y acarreo', icon: <Truck className="w-5 h-5" /> },
+    { id: 'MINE_TO_MILL', label: 'Mina a planta', icon: <Cpu className="w-5 h-5" /> },
+    { id: 'SCENARIO_LAB', label: 'Escenarios', icon: <Sliders className="w-5 h-5" />, badge: 'Qué pasaría' },
+    { id: 'COPILOT', label: 'Copiloto IA', icon: <MessageSquare className="w-5 h-5" />, badge: 'Grafo IA' },
+    { id: 'AI_OPTIMIZER', label: 'Optimizador IA', icon: <Award className="w-5 h-5" />, badge: 'MAPPO' },
     { id: 'ANALYTICS', label: 'Analítica', icon: <TrendingUp className="w-5 h-5" /> },
-    { id: 'SYSTEM_DATA', label: 'Datos & OT', icon: <Database className="w-5 h-5" /> },
+    { id: 'SYSTEM_DATA', label: 'Datos y sistemas', icon: <Database className="w-5 h-5" /> },
   ];
 
   return (
@@ -109,7 +109,7 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
 
         <div className="space-y-1 text-xs">
           <label className="flex items-center justify-between cursor-pointer py-0.5 text-slate-300 hover:text-white">
-            <span className="text-[11px]">Equipos Móviles</span>
+            <span className="text-[11px]">Equipos móviles</span>
             <input
               type="checkbox"
               checked={visibleLayers.equipment}
@@ -119,7 +119,7 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
           </label>
 
           <label className="flex items-center justify-between cursor-pointer py-0.5 text-slate-300 hover:text-white">
-            <span className="text-[11px]">Rutas & Rampas</span>
+            <span className="text-[11px]">Rutas y rampas</span>
             <input
               type="checkbox"
               checked={visibleLayers.haulRoads}
@@ -129,7 +129,7 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
           </label>
 
           <label className="flex items-center justify-between cursor-pointer py-0.5 text-slate-300 hover:text-white">
-            <span className="text-[11px]">Mapa Calor Tráfico</span>
+            <span className="text-[11px]">Mapa de calor de tráfico</span>
             <input
               type="checkbox"
               checked={visibleLayers.trafficHeatmap}
@@ -139,7 +139,7 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
           </label>
 
           <label className="flex items-center justify-between cursor-pointer py-0.5 text-slate-300 hover:text-white">
-            <span className="text-[11px]">Patrón Tronadura</span>
+            <span className="text-[11px]">Malla de tronadura</span>
             <input
               type="checkbox"
               checked={visibleLayers.blastPatterns}
@@ -149,7 +149,7 @@ export const NavigationSidebar: React.FC<NavigationSidebarProps> = ({
           </label>
 
           <label className="flex items-center justify-between cursor-pointer py-0.5 text-slate-300 hover:text-white">
-            <span className="text-[11px]">Modelo Bloques 3D</span>
+            <span className="text-[11px]">Modelo de bloques 3D</span>
             <input
               type="checkbox"
               checked={visibleLayers.blockModelGeology}

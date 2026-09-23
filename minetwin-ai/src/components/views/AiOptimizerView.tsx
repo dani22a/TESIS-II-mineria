@@ -65,10 +65,10 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight">
-              Optimizador DRL Multi-Agente (MAPPO) & Función de Recompensa
+              Optimizador DRL multiagente (MAPPO) y función de recompensa
             </h2>
             <p className="text-xs text-slate-400">
-              Entrenamiento por refuerzo profundo contra simulación, evaluación Shadow-mode y control Human-in-the-loop
+              Entrenamiento por refuerzo contra la simulación, evaluación en paralelo y control con aprobación humana
             </p>
           </div>
         </div>
@@ -84,7 +84,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
         <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-400" /> Comparativa de Políticas Operacionales (Benchmark)
+            <Activity className="w-4 h-4 text-emerald-400" /> Comparativa de políticas operacionales
           </span>
           <span className="text-[10px] text-slate-400 font-mono font-normal">Escala normalizada 0-100</span>
         </h3>
@@ -100,7 +100,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
                 <th className="py-2.5 px-3 text-right">Molino SAG (t/h)</th>
                 <th className="py-2.5 px-3 text-right">Energía (kWh/t)</th>
                 <th className="py-2.5 px-3 text-right">Costo ($/t)</th>
-                <th className="py-2.5 px-3 text-center">Score Pareto</th>
+                <th className="py-2.5 px-3 text-center">Puntaje Pareto</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 font-mono">
@@ -151,7 +151,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
         <div className="xl:col-span-5 bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl text-xs space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 className="font-bold text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Sliders className="w-4 h-4 text-amber-400" /> Ponderación Función de Recompensa (DRL Reward)
+              <Sliders className="w-4 h-4 text-amber-400" /> Ponderación de la función de recompensa
             </h3>
           </div>
 
@@ -247,7 +247,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
         <div className="xl:col-span-7 bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl text-xs space-y-3">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 className="font-bold text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-sky-400" /> Fases de Curriculum Learning (Entrenamiento por Etapas)
+              <Layers className="w-4 h-4 text-sky-400" /> Fases de aprendizaje por etapas
             </h3>
             <span className="text-[10px] text-slate-400 font-mono">Simulador Gym / PPO</span>
           </div>
@@ -306,7 +306,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
       {/* Human-in-the-Loop Active Recommendations Cards */}
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
         <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-400" /> Cola de Recomendaciones de IA Pendientes (Human-in-the-Loop)
+          <Sparkles className="w-4 h-4 text-amber-400" /> Recomendaciones de IA pendientes (aprobación humana)
         </h3>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -374,7 +374,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
                     className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition flex items-center gap-1 text-[11px] shadow-md shadow-amber-500/20"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
-                    <span>Aprobar & Despachar</span>
+                    <span>Aprobar y despachar</span>
                   </button>
                 </div>
               )}

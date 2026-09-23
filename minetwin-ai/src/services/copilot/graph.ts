@@ -13,7 +13,7 @@ import {
   StateGraph,
 } from '@langchain/langgraph/web';
 import { DRLRecommendation, DigitalTwinState, UserRole } from '../../types/mining';
-import { generateGeminiText } from './gemini';
+import { generateGeminiText, narrateCopilotReply } from './gemini';
 import {
   CopilotAgentId,
   explainDrlRecommendation,
@@ -206,26 +206,21 @@ function hitlNode(state: CopilotGraphState) {
 
 async function synthesizeNode(state: CopilotGraphState) {
   const twin = requireTwin();
-  const decisionNote =
+  const hitlNote =
     state.hitlDecision === 'approve'
       ? 'El operador APROBÓ la acción. Confirma ejecución en el gemelo.'
       : state.hitlDecision === 'reject'
         ? 'El operador RECHAZÓ la acción. No mutar el gemelo.'
         : '';
-  const llm = await generateGeminiText(
-    `Eres el Copiloto Operacional Mine-to-Mill de MineTwin AI.\n` +
-      `Regla: no inventes cifras; usa solo el JSON de tools.\n` +
-      `Rol del usuario: ${twin.currentUserRole}\n` +
-      `Consulta: ${state.userMessage}\n` +
-      `Agente: ${state.route}\n` +
-      `${decisionNote}\n` +
-      `Tools JSON:\n${JSON.stringify(state.toolTraces)}\n` +
-      `Pendiente HITL: ${state.pendingAction ? state.pendingAction.what : 'ninguna'}\n` +
-      `Responde en español latino neutro, breve, con viñetas y cita la tool de cada número.`
-  );
-  return {
-    assistantReply: llm || state.assistantReply,
-  };
+  const assistantReply = await narrateCopilotReply({
+    userMessage: state.userMessage,
+    userRole: twin.currentUserRole,
+    route: state.route,
+    traces: state.toolTraces,
+    pending: state.pendingAction,
+    hitlNote,
+  });
+  return { assistantReply };
 }
 
 function routeAfterSupervisor(state: CopilotGraphState): CopilotAgentId {

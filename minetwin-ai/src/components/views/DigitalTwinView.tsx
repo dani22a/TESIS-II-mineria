@@ -20,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { DigitalTwinState } from '../../types/mining';
+import { cycleStateLabel } from '../../i18n/labels';
 import { ThreeMineScene } from '../ThreeMineScene';
 
 interface DigitalTwinViewProps {
@@ -134,7 +135,7 @@ export const DigitalTwinView: React.FC<DigitalTwinViewProps> = ({
                 onClick={() => onOpenAssetDetail(state.selectedAssetId!)}
                 className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition text-[11px] flex items-center gap-1 shadow-md shadow-amber-500/20"
               >
-                <span>Inspeccionar Twin</span>
+                <span>Inspeccionar gemelo</span>
                 <ArrowRight className="w-3 h-3" />
               </button>
             </div>
@@ -143,7 +144,9 @@ export const DigitalTwinView: React.FC<DigitalTwinViewProps> = ({
               <div className="grid grid-cols-4 gap-2 text-center pt-1 font-mono">
                 <div className="bg-slate-950/70 p-1.5 rounded-lg border border-slate-800">
                   <div className="text-[9px] text-slate-400 font-sans">Estado</div>
-                  <div className="font-bold text-emerald-400 text-[11px] truncate">{selectedTruck.cycleState}</div>
+                  <div className="font-bold text-emerald-400 text-[11px] truncate">
+                    {cycleStateLabel(selectedTruck.cycleState)}
+                  </div>
                 </div>
                 <div className="bg-slate-950/70 p-1.5 rounded-lg border border-slate-800">
                   <div className="text-[9px] text-slate-400 font-sans">Carga</div>
@@ -154,7 +157,7 @@ export const DigitalTwinView: React.FC<DigitalTwinViewProps> = ({
                   <div className="font-bold text-sky-400 text-[11px]">{Math.round(selectedTruck.speed)} km/h</div>
                 </div>
                 <div className="bg-slate-950/70 p-1.5 rounded-lg border border-slate-800">
-                  <div className="text-[9px] text-slate-400 font-sans">Salud Twin</div>
+                  <div className="text-[9px] text-slate-400 font-sans">Salud del gemelo</div>
                   <div className="font-bold text-emerald-300 text-[11px]">{selectedTruck.healthScore}%</div>
                 </div>
               </div>

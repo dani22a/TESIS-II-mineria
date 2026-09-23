@@ -20,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { DigitalTwinState, DispatchStrategy } from '../types/mining';
+import { timeModeLabel } from '../i18n/labels';
 
 interface CommandCenterHeaderProps {
   state: DigitalTwinState;
@@ -65,15 +66,15 @@ export const CommandCenterHeader: React.FC<CommandCenterHeaderProps> = ({
               MineTwin <span className="text-amber-400">AI</span>
             </h1>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-amber-500/10 text-amber-300 border border-amber-500/30">
-              DIGITAL TWIN 3D
+              GEMELO DIGITAL 3D
             </span>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              {state.timeMode === 'LIVE' ? 'TIEMPO REAL OT/SCADA' : state.timeMode}
+              {timeModeLabel(state.timeMode)}
             </span>
           </div>
           <p className="text-[11px] text-slate-400 hidden sm:block">
-            Gemelo Operacional Drill-Blast-Load-Haul & Optimización Causal Mine-to-Mill
+            Gemelo operacional de perforación, tronadura, carguío y acarreo, con optimización de mina a planta
           </p>
         </div>
       </div>
@@ -161,7 +162,7 @@ export const CommandCenterHeader: React.FC<CommandCenterHeaderProps> = ({
             className="bg-transparent text-xs text-slate-200 font-medium py-1 px-1.5 rounded focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
           >
             <option value="DRL_MULTI_OBJECTIVE" className="bg-slate-900 text-amber-400">
-              🤖 DRL MAPPO Agent (Óptimo)
+              🤖 Agente DRL MAPPO (óptimo)
             </option>
             <option value="SHORTEST_QUEUE" className="bg-slate-900 text-slate-200">
               ⏱️ Cola Mínima (Heurística)
@@ -222,7 +223,7 @@ export const CommandCenterHeader: React.FC<CommandCenterHeaderProps> = ({
           className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg text-xs font-medium transition"
         >
           <Clock className="w-3.5 h-3.5 text-sky-400" />
-          <span className="hidden md:inline">Time Machine</span>
+          <span className="hidden md:inline">Línea de tiempo</span>
         </button>
 
         {/* AI Recommendations Action Button */}
@@ -235,7 +236,7 @@ export const CommandCenterHeader: React.FC<CommandCenterHeaderProps> = ({
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>IA Recs</span>
+          <span>Recomendaciones</span>
           {pendingRecsCount > 0 && (
             <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-bold text-[10px]">
               {pendingRecsCount}

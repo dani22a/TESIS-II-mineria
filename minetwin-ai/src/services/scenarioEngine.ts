@@ -140,19 +140,22 @@ export function parseScenarioFromText(
   message: string,
   state: DigitalTwinState
 ): ScenarioLabInputs {
-  const t = message.toLowerCase();
+  const t = message
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '');
   const trucksMatch = t.match(/([+-]?\d+)\s*camiones/);
   let trucksDelta = 0;
   if (trucksMatch) {
     trucksDelta = parseInt(trucksMatch[1], 10);
-  } else if (/\+\s*3|tres camiones más|sumar camiones/.test(t)) {
+  } else if (/\+\s*3|tres camiones mas|sumar camiones/.test(t)) {
     trucksDelta = 3;
   } else if (/menos camiones|quitar camiones/.test(t)) {
     trucksDelta = -2;
   }
 
   let shovelOutage = 'NONE';
-  if (/ex-01|pala 1|pala ex-01/.test(t) && /(cae|cae|falla|down|fuera|indisponib)/.test(t)) {
+  if (/ex-01|pala 1|pala ex-01/.test(t) && /(cae|falla|down|fuera|indisponib)/.test(t)) {
     shovelOutage = 'EX-01';
   } else if (/ex-02|pala 2|pala ex-02/.test(t) && /(cae|falla|down|fuera|indisponib)/.test(t)) {
     shovelOutage = 'EX-02';
@@ -170,13 +173,13 @@ export function parseScenarioFromText(
   const pfMatch = t.match(/powder[^\d%]*([+-]?\d+)\s*%/) || t.match(/factor[^\d%]*([+-]?\d+)\s*%/);
   if (pfMatch) {
     powderFactorDelta = parseInt(pfMatch[1], 10);
-  } else if (/subo.*powder|aument.*factor|más energía/.test(t)) {
+  } else if (/subo.*powder|aument.*factor|mas energia/.test(t)) {
     powderFactorDelta = 8;
   }
 
   let weather: ScenarioLabInputs['weather'] = 'CLEAR';
   if (/barro|lodo|mud/.test(t)) weather = 'MUD';
-  else if (/lluv/.test(t)) weather = 'RAIN';
+  else if (/lluv|llueve|lluvia|rain/.test(t)) weather = 'RAIN';
 
   return {
     trucksDelta,

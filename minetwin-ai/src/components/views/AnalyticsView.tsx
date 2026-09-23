@@ -37,11 +37,11 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
   const cycleBreakdownData = [
     { name: 'Retorno Vacío', minutes: 7.2, color: '#38bdf8' },
     { name: 'Cola en Pala', minutes: 2.8, color: '#f59e0b' },
-    { name: 'Aculatamiento (Spotting)', minutes: 0.9, color: '#94a3b8' },
-    { name: 'Carguío Efectivo (Loading)', minutes: 3.2, color: '#a855f7' },
-    { name: 'Acarreo Cargado (Hauling)', minutes: 10.4, color: '#10b981' },
-    { name: 'Cola en Destino/Chancador', minutes: 1.2, color: '#f97316' },
-    { name: 'Descarga en Tolva (Dumping)', minutes: 1.1, color: '#ef4444' },
+    { name: 'Aculatamiento', minutes: 0.9, color: '#94a3b8' },
+    { name: 'Carguío efectivo', minutes: 3.2, color: '#a855f7' },
+    { name: 'Acarreo cargado', minutes: 10.4, color: '#10b981' },
+    { name: 'Cola en destino / chancador', minutes: 1.2, color: '#f97316' },
+    { name: 'Descarga en tolva', minutes: 1.1, color: '#ef4444' },
   ];
 
   // Fuel consumption rate vs road gradient
@@ -64,7 +64,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
           </div>
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight">
-              Módulo de Analítica & Telemetría Operacional
+              Analítica y telemetría operacional
             </h2>
             <p className="text-xs text-slate-400">
               Tendencias históricas de producción horaria, descomposición de tiempos de ciclo y consumo energético

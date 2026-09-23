@@ -45,3 +45,79 @@
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
+
+/* Etiquetas del gemelo 3D (CSS2D) */
+.twin-label {
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  text-align: center;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --twin-accent: #f59e0b;
+}
+
+.twin-label--asset {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(2, 6, 23, 0.9));
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  border-radius: 10px;
+  padding: 7px 12px 6px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.twin-label--asset::after {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 10px;
+  margin: 4px auto -10px;
+  background: var(--twin-accent);
+  opacity: 0.75;
+}
+
+.twin-label--selected {
+  border-color: rgba(245, 158, 11, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(245, 158, 11, 0.4),
+    0 12px 28px rgba(245, 158, 11, 0.28);
+}
+
+.twin-label__title {
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.twin-label__meta {
+  color: #94a3b8;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.twin-label--zone {
+  color: #f8fafc;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(245, 158, 11, 0.65);
+  padding: 8px 16px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.twin-label--bench {
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: rgba(15, 23, 42, 0.82);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+}

@@ -53,7 +53,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
     {
       id: 'geology',
       step: 1,
-      title: 'Geología & Roca',
+      title: 'Geología y roca',
       icon: '🪨',
       kpi: `UCS ${rockUCS} MPa`,
       status: rockUCS > 160 ? 'Duro / Abrasivo' : 'Competente Estándar',
@@ -71,7 +71,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
     {
       id: 'blast',
       step: 3,
-      title: 'Tronadura & Energía',
+      title: 'Tronadura y energía',
       icon: '💥',
       kpi: `${powderFactor.toFixed(2)} kg/m³`,
       status: 'Factor de Carga',
@@ -89,7 +89,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
     {
       id: 'loading',
       step: 5,
-      title: 'Carguío (Palas)',
+      title: 'Carguío (palas)',
       icon: '⛏️',
       kpi: `${impact.shovelDigTimePassSeconds} s / pase`,
       status: `Llenado: ${impact.bucketFillFactorPercent}%`,
@@ -110,7 +110,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
       title: 'Chancado Primario',
       icon: '🏭',
       kpi: `${impact.crusherFeedRateTph.toLocaleString()} t/h`,
-      status: `Riesgo: ${impact.crusherChokeRisk}`,
+      status: `Riesgo: ${impact.crusherChokeRisk === 'HIGH' ? 'Alto' : impact.crusherChokeRisk === 'MEDIUM' ? 'Medio' : 'Bajo'}`,
       desc: 'Alimentación directa de tolva en Chancador Giratorio 60x89.',
     },
     {
@@ -119,7 +119,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
       title: 'Molienda Molino SAG',
       icon: '⚙️',
       kpi: `${impact.sagMillSpecificEnergyKwhT} kWh/t`,
-      status: `Throughput: ${impact.sagMillThroughputTph.toLocaleString()} t/h`,
+      status: `Rendimiento: ${impact.sagMillThroughputTph.toLocaleString()} t/h`,
       desc: 'Consumo de potencia eléctrica en circuito de molienda SAG de 40 pies.',
     },
     {
@@ -143,10 +143,10 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
           </div>
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight">
-              Grafo Causal Mine-to-Mill: Optimización Integral de Energía
+              Cadena causal de mina a planta: energía y molienda
             </h2>
             <p className="text-xs text-slate-400">
-              Modelado causal del impacto directo de la fragmentación en tronadura sobre la capacidad de molienda SAG
+              Impacto de la fragmentación de tronadura sobre la capacidad de molienda SAG
             </p>
           </div>
         </div>
@@ -164,13 +164,13 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
       {/* Upstream Parameter Sliders */}
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
         <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center gap-2">
-          <Layers className="w-4 h-4 text-amber-400" /> Sensibilidad de Variables Upstream (Simulador en Vivo)
+          <Layers className="w-4 h-4 text-amber-400" /> Sensibilidad de variables de origen (simulador en vivo)
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-1.5">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-300">Factor de Carga de Tronadura (Powder Factor)</span>
+              <span className="font-semibold text-slate-300">Factor de carga de tronadura</span>
               <span className="font-mono font-bold text-amber-400 text-sm">{powderFactor.toFixed(2)} kg/m³</span>
             </div>
             <input
@@ -273,7 +273,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
           </div>
 
           <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-300 space-y-1.5">
-            <h4 className="font-bold text-slate-200">Ley Física Mine-to-Mill:</h4>
+            <h4 className="font-bold text-slate-200">Relación física de mina a planta:</h4>
             <p>
               Un aumento de <b className="text-amber-400">+0.10 kg/m³</b> en energía de tronadura reduce el tamaño P80 en aprox.{' '}
               <b className="text-emerald-400">~24 mm</b>, lo cual incrementa el rendimiento del molino SAG en{' '}
@@ -294,7 +294,7 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
               <div>
                 <div className="font-bold text-emerald-300">Capacidad de Molienda SAG en Rango Óptimo</div>
                 <div className="text-[11px] text-slate-300">
-                  Throughput actual de {impact.sagMillThroughputTph.toLocaleString()} t/h alimentado por fragmentación fina P80={kuzRam.p80}mm.
+                  Rendimiento actual de {impact.sagMillThroughputTph.toLocaleString()} t/h, alimentado por fragmentación fina P80 = {kuzRam.p80} mm.
                 </div>
               </div>
             </div>

@@ -20,7 +20,7 @@ export class SimulationEngine {
   public static tick(currentState: DigitalTwinState, realDeltaMs: number): DigitalTwinState {
     if (currentState.isPaused) return currentState;
 
-    const dtSeconds = (realDeltaMs / 1000) * currentState.simSpeedMultiplier;
+    const dtSeconds = realDeltaMs * currentState.simSpeedMultiplier;
     const simTimeSeconds = currentState.simTimeSeconds + dtSeconds;
 
     // Clone mutable entities

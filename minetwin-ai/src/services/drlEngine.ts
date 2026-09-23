@@ -25,7 +25,7 @@ export interface CurriculumStage {
 export const CURRICULUM_STAGES: CurriculumStage[] = [
   {
     stageNumber: 1,
-    name: 'Fase 1: Single Shovel / Basic Haul (1 Pala + 4 Camiones)',
+    name: 'Fase 1: una pala y acarreo básico (1 pala + 4 camiones)',
     description: 'Entrenamiento base de asignación simple y tiempos de ciclo estándar.',
     status: 'COMPLETED',
     episodesCompleted: 50000,
@@ -35,7 +35,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
   },
   {
     stageNumber: 2,
-    name: 'Fase 2: Multi-Shovel Pit (2 Palas + 10-14 Camiones)',
+    name: 'Fase 2: pit con varias palas (2 palas + 10-14 camiones)',
     description: 'Balanceo dinámico de colas entre bancos de diferente cota y distancia.',
     status: 'COMPLETED',
     episodesCompleted: 120000,
@@ -45,7 +45,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
   },
   {
     stageNumber: 3,
-    name: 'Fase 3: Multi-Destination & Blending (Chancador + Acopio + Botadero)',
+    name: 'Fase 3: varios destinos y blending (chancador + acopio + botadero)',
     description: 'Enrutamiento por ley de corte, litología y restricciones de tolva.',
     status: 'COMPLETED',
     episodesCompleted: 180000,
@@ -55,7 +55,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
   },
   {
     stageNumber: 4,
-    name: 'Fase 4: Congestión de Tráfico & Rampas con Pendiente',
+    name: 'Fase 4: congestión de tráfico y rampas con pendiente',
     description: 'Gestión de cuellos de botella en rampas angostas y desaceleración por carga.',
     status: 'COMPLETED',
     episodesCompleted: 240000,
@@ -65,7 +65,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
   },
   {
     stageNumber: 5,
-    name: 'Fase 5: Resiliencia ante Fallas & Mantenimiento No Programado',
+    name: 'Fase 5: resiliencia ante fallas y mantenimiento no programado',
     description: 'Respuesta ante caída súbita de pala, cierre de rampa o atasco de chancador.',
     status: 'COMPLETED',
     episodesCompleted: 300000,
@@ -75,7 +75,7 @@ export const CURRICULUM_STAGES: CurriculumStage[] = [
   },
   {
     stageNumber: 6,
-    name: 'Fase 6: Integración Causal Mine-to-Mill (Fragmentación a Molienda)',
+    name: 'Fase 6: integración causal de mina a planta (fragmentación a molienda)',
     description: 'Optimización conjunta de P80 de tronadura y alimentación continua a molino SAG.',
     status: 'IN_TRAINING',
     episodesCompleted: 385000,
@@ -114,7 +114,7 @@ export function computePolicyComparisons(state: DigitalTwinState): PolicyCompari
       overallScore: 64,
     },
     {
-      policyName: '2. Heurística Shortest Queue (Cola Mínima)',
+      policyName: '2. Heurística de cola mínima',
       description: 'Regla reactiva enviando al camión disponible a la pala con menor fila.',
       productionTph: 7850,
       fleetProductivityTph: 560,
@@ -130,7 +130,7 @@ export function computePolicyComparisons(state: DigitalTwinState): PolicyCompari
       overallScore: 78,
     },
     {
-      policyName: '3. MineTwin MAPPO DRL Agent (Activa)',
+      policyName: '3. Agente MAPPO de MineTwin (activa)',
       description: 'Agente multi-agente PPO con observación global de colas, rampas y molino SAG.',
       productionTph: 8380,
       fleetProductivityTph: 598,
@@ -146,7 +146,7 @@ export function computePolicyComparisons(state: DigitalTwinState): PolicyCompari
       overallScore: 96,
     },
     {
-      policyName: '4. Shadow Policy v3.4 (Candidata en Evaluación)',
+      policyName: '4. Política en paralelo v3.4 (candidata en evaluación)',
       description: 'Variante con mayor ponderación de desvío predictivo antes de choke en chancador.',
       productionTph: 8490,
       fleetProductivityTph: 606,

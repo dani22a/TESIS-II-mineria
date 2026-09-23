@@ -117,8 +117,8 @@ export function createInitialBlastPatterns(): BlastPatternModel[] {
   return [
     {
       id: 'PAT-104-B3840',
-      name: 'Blast Pattern #104 (Porphyry Cu Ore)',
-      bench: 'Bench 3840 East',
+      name: 'Malla de tronadura #104 (pórfido de Cu)',
+      bench: 'Banco 3840 Este',
       benchElevation: 3840,
       rockUCS: 145,
       rockDensity: 2.72,
@@ -138,8 +138,8 @@ export function createInitialBlastPatterns(): BlastPatternModel[] {
     },
     {
       id: 'PAT-105-B3680',
-      name: 'Blast Pattern #105 (Skarn Cu-Au Pit Bottom)',
-      bench: 'Bench 3680 West',
+      name: 'Malla de tronadura #105 (skarn Cu-Au, fondo de pit)',
+      bench: 'Banco 3680 Oeste',
       benchElevation: 3680,
       rockUCS: 165,
       rockDensity: 2.78,
@@ -211,7 +211,7 @@ export function createInitialShovels(): ShovelTwin[] {
   return [
     {
       id: 'EX-01',
-      name: 'Shovel EX-01 (P&H 4100XPC)',
+      name: 'Pala EX-01 (P&H 4100XPC)',
       model: 'P&H 4100XPC Electric Rope',
       position: { ...MINE_LOCATIONS.SHOVEL_EX01 },
       benchElevation: 3840,
@@ -237,7 +237,7 @@ export function createInitialShovels(): ShovelTwin[] {
     },
     {
       id: 'EX-02',
-      name: 'Shovel EX-02 (Cat 7495 HD)',
+      name: 'Pala EX-02 (Cat 7495 HD)',
       model: 'Cat 7495 High Density Rope',
       position: { ...MINE_LOCATIONS.SHOVEL_EX02 },
       benchElevation: 3680,
@@ -268,7 +268,7 @@ export function createInitialDrills(): DrillRigTwin[] {
   return [
     {
       id: 'DR-01',
-      name: 'Drill Rig DR-01 (Epiroc PV-271)',
+      name: 'Perforadora DR-01 (Epiroc PV-271)',
       model: 'Epiroc Pit Viper 271 Rotary',
       patternId: 'PAT-104-B3840',
       position: { ...MINE_LOCATIONS.DRILL_PAD_01 },
@@ -288,7 +288,7 @@ export function createInitialDrills(): DrillRigTwin[] {
     },
     {
       id: 'DR-02',
-      name: 'Drill Rig DR-02 (Cat MD6310)',
+      name: 'Perforadora DR-02 (Cat MD6310)',
       model: 'Cat MD6310 Rotary Blasthole',
       patternId: 'PAT-105-B3680',
       position: { ...MINE_LOCATIONS.DRILL_PAD_02 },
@@ -343,7 +343,7 @@ export function createInitialTrucks(): TruckTwin[] {
 
     trucks.push({
       id,
-      name: `Haul Truck ${id}`,
+      name: `Camión ${id}`,
       model: tm.model,
       manufacturer: tm.manufacturer,
       payloadCapacity: tm.capacity,
@@ -384,7 +384,7 @@ export function createInitialTrucks(): TruckTwin[] {
 export function createInitialCrusher(): CrusherTwin {
   return {
     id: 'CR-01',
-    name: 'Primary Gyratory Crusher CR-01 (Fuller-Traylor 60x89)',
+    name: 'Chancador giratorio primario CR-01 (Fuller-Traylor 60x89)',
     type: 'PRIMARY_GYRATORY',
     position: { ...MINE_LOCATIONS.CRUSHER_HOPPER },
     operatingState: 'OPERATIONAL',
@@ -406,7 +406,7 @@ export function createInitialCrusher(): CrusherTwin {
 export function createInitialStockpile(): StockpileTwin {
   return {
     id: 'SP-01',
-    name: 'Run of Mine Stockpile SP-01',
+    name: 'Acopio ROM SP-01',
     type: 'ROM_ORE',
     currentTonnage: 185000,
     maxCapacityTons: 350000,
@@ -420,7 +420,7 @@ export function createInitialStockpile(): StockpileTwin {
 export function createInitialMill(): MillCircuitTwin {
   return {
     id: 'ML-01',
-    name: 'Grinding Circuit (40ft SAG + 2x Ball Mills)',
+    name: 'Circuito de molienda (SAG 40 pies + 2 molinos de bolas)',
     sagMillPowerKw: 24200,
     sagMillThroughputTph: 3580,
     ballMillPowerKw: 18400,
@@ -434,7 +434,7 @@ export function createInitialMill(): MillCircuitTwin {
     cycloneFeedPressureKpa: 110,
     bearingTemperatureC: 58.4,
     operatingState: 'OPERATIONAL',
-    millBottleNeckFactor: 'Hardness UCS 155MPa on active feed',
+    millBottleNeckFactor: 'Dureza UCS 155 MPa en la alimentación activa',
   };
 }
 
@@ -449,7 +449,7 @@ export function createInitialAlerts(): MineAlert[] {
       title: 'Predicción de Cola Excesiva en Pala EX-02',
       message: 'El modelo DRL predice acumulación de 3.8 camiones en espera dentro de 14 minutos en Banco 3680.',
       etaMinutes: 14,
-      recommendedAction: 'Reasignar DT-04 y DT-07 a Pala EX-01 para balancear ciclo de carguío.',
+      recommendedAction: 'Reasignar DT-04 y DT-07 a Pala EX-01 para balancear ciclo de carga.',
       acknowledged: false,
     },
     {
@@ -458,7 +458,7 @@ export function createInitialAlerts(): MineAlert[] {
       type: 'MINE_TO_MILL',
       severity: 'INFO',
       assetId: 'ML-01',
-      title: 'Optimización de Fragmentación Mine-to-Mill',
+      title: 'Optimización de fragmentación de mina a planta',
       message: 'P80 actual de 182mm incrementa el consumo específico del molino SAG en +1.1 kWh/t.',
       recommendedAction: 'Aumentar Powder Factor en Patrón #105 de 0.88 a 0.94 kg/m³.',
       acknowledged: false,
@@ -559,10 +559,10 @@ export function createInitialTwinState(): DigitalTwinState {
     timestamp: new Date().toISOString(),
     simTimeSeconds: 0,
     timeMode: 'LIVE',
-    simSpeedMultiplier: 1,
+    simSpeedMultiplier: 5,
     isPaused: false,
     isSimulating: true,
-    simulationSpeed: 1,
+    simulationSpeed: 5,
     currentStrategy: 'DRL_MULTI_OBJECTIVE',
     currentUserRole: 'MINE_ENGINEER',
     selectedAssetId: 'DT-01',

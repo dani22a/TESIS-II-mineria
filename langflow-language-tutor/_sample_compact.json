@@ -1,0 +1,1039 @@
+[
+  {
+    "name": "Multi Agent Flow",
+    "id": "d91988c8-744d-4ade-aced-bc46b08edc02",
+    "nodes": [
+      {
+        "id": "ChatInput-pNKvO",
+        "type": "genericNode",
+        "data_type": "ChatInput",
+        "display_name": "Chat Input",
+        "tool_mode": null,
+        "outputs": [
+          {
+            "name": "message",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "input_value": {
+            "value": "The growing demand for personalized, AI-driven mental health support tools that can provide real-time interventions and track long-term emotional well-being.",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          }
+        },
+        "position": {
+          "x": 1529.0771385757494,
+          "y": 435.05894080249993
+        }
+      },
+      {
+        "id": "ChatOutput-WSW39",
+        "type": "genericNode",
+        "data_type": "ChatOutput",
+        "display_name": "Chat Output",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "message",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "input_value": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Data",
+              "JSON",
+              "DataFrame",
+              "Table",
+              "Message"
+            ]
+          }
+        },
+        "position": {
+          "x": 3253.3744656309145,
+          "y": 1265.5039601160156
+        }
+      },
+      {
+        "id": "Agent-maf-1",
+        "type": "genericNode",
+        "data_type": "Agent",
+        "display_name": "Agent",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "response",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          },
+          {
+            "name": "structured_response",
+            "types": [
+              "Data",
+              "JSON"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "system_prompt": {
+            "value": "You are a visionary product innovator at a cutting-edge tech startup. Your expertise lies in identifying emerging market trends and translating them into ground",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "model": {
+            "value": "",
+            "tool_mode": false,
+            "show": true,
+            "type": "model",
+            "input_types": [
+              "LanguageModel"
+            ]
+          },
+          "api_key": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          },
+          "input_value": {
+            "value": "",
+            "tool_mode": true,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "tools": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "other",
+            "input_types": [
+              "Tool"
+            ]
+          }
+        },
+        "position": {
+          "x": 1956.829495677478,
+          "y": 510.07647141958097
+        }
+      },
+      {
+        "id": "Agent-maf-2",
+        "type": "genericNode",
+        "data_type": "Agent",
+        "display_name": "Agent",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "response",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          },
+          {
+            "name": "structured_response",
+            "types": [
+              "Data",
+              "JSON"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "system_prompt": {
+            "value": "You are a seasoned business analyst with a strong background in tech product development and market research. Your analytical skills are unparalleled, allowing ",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "model": {
+            "value": "",
+            "tool_mode": false,
+            "show": true,
+            "type": "model",
+            "input_types": [
+              "LanguageModel"
+            ]
+          },
+          "api_key": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          },
+          "input_value": {
+            "value": "",
+            "tool_mode": true,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "tools": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "other",
+            "input_types": [
+              "Tool"
+            ]
+          }
+        },
+        "position": {
+          "x": 2403.914916304805,
+          "y": 775.0159799394784
+        }
+      },
+      {
+        "id": "Agent-maf-3",
+        "type": "genericNode",
+        "data_type": "Agent",
+        "display_name": "Agent",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "response",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          },
+          {
+            "name": "structured_response",
+            "types": [
+              "Data",
+              "JSON"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "system_prompt": {
+            "value": "You are an accomplished product manager with a track record of bringing innovative tech products from concept to market. Your strategic thinking and ability to ",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "model": {
+            "value": "",
+            "tool_mode": false,
+            "show": true,
+            "type": "model",
+            "input_types": [
+              "LanguageModel"
+            ]
+          },
+          "api_key": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          },
+          "input_value": {
+            "value": "",
+            "tool_mode": true,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "tools": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "other",
+            "input_types": [
+              "Tool"
+            ]
+          }
+        },
+        "position": {
+          "x": 2815.813058456833,
+          "y": 1068.9332472037395
+        }
+      },
+      {
+        "id": "note-maf",
+        "type": "noteNode",
+        "data_type": "note",
+        "display_name": null,
+        "tool_mode": null,
+        "outputs": [],
+        "interesting": {},
+        "position": {
+          "x": 939.4683670006968,
+          "y": 365.8681656258649
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "ChatInput-pNKvO",
+        "target": "Agent-maf-1",
+        "sourceHandle": "{œdataTypeœ: œChatInputœ, œidœ: œChatInput-pNKvOœ, œnameœ: œmessageœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œAgent-maf-1œ, œinputTypesœ: [œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "id": "ChatInput-pNKvO",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "Agent-maf-1",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "Agent-maf-1",
+        "target": "Agent-maf-2",
+        "sourceHandle": "{œdataTypeœ: œAgentœ, œidœ: œAgent-maf-1œ, œnameœ: œresponseœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œAgent-maf-2œ, œinputTypesœ: [œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Agent",
+            "id": "Agent-maf-1",
+            "name": "response",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "Agent-maf-2",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "Agent-maf-2",
+        "target": "Agent-maf-3",
+        "sourceHandle": "{œdataTypeœ: œAgentœ, œidœ: œAgent-maf-2œ, œnameœ: œresponseœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œAgent-maf-3œ, œinputTypesœ: [œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Agent",
+            "id": "Agent-maf-2",
+            "name": "response",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "Agent-maf-3",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "Agent-maf-3",
+        "target": "ChatOutput-WSW39",
+        "sourceHandle": "{œdataTypeœ: œAgentœ, œidœ: œAgent-maf-3œ, œnameœ: œresponseœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œChatOutput-WSW39œ, œinputTypesœ: [œDataœ, œJSONœ, œDataFrameœ, œTableœ, œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Agent",
+            "id": "Agent-maf-3",
+            "name": "response",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "ChatOutput-WSW39",
+            "inputTypes": [
+              "Data",
+              "JSON",
+              "DataFrame",
+              "Table",
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "Blog Writer",
+    "id": "642ceab2-44cf-4788-afab-586ce093fe40",
+    "nodes": [
+      {
+        "id": "ChatOutput-4JoLk",
+        "type": "genericNode",
+        "data_type": "ChatOutput",
+        "display_name": "Chat Output",
+        "tool_mode": null,
+        "outputs": [
+          {
+            "name": "message",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "input_value": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Data",
+              "JSON",
+              "DataFrame",
+              "Table",
+              "Message"
+            ]
+          }
+        },
+        "position": {
+          "x": 2127.56149179301,
+          "y": 614.4349402179107
+        }
+      },
+      {
+        "id": "URLComponent-8dgnZ",
+        "type": "genericNode",
+        "data_type": "URLComponent",
+        "display_name": "URL",
+        "tool_mode": true,
+        "outputs": [
+          {
+            "name": "component_as_tool",
+            "types": [
+              "Tool"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {},
+        "position": {
+          "x": 944.4494762101147,
+          "y": 609.3836467923117
+        }
+      },
+      {
+        "id": "Agent-9tNMJ",
+        "type": "genericNode",
+        "data_type": "Agent",
+        "display_name": "Agent",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "response",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          },
+          {
+            "name": "structured_response",
+            "types": [
+              "Data",
+              "JSON"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "system_prompt": {
+            "value": "You are an expert blog writer. Using the reference material and the user's instructions provided in the input, write a well-structured, engaging blog post in Ma",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "model": {
+            "value": "",
+            "tool_mode": false,
+            "show": true,
+            "type": "model",
+            "input_types": [
+              "LanguageModel"
+            ]
+          },
+          "api_key": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          },
+          "input_value": {
+            "value": "",
+            "tool_mode": true,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "tools": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "other",
+            "input_types": [
+              "Tool"
+            ]
+          }
+        },
+        "position": {
+          "x": 1719.6235006615243,
+          "y": 403.5003292435426
+        }
+      },
+      {
+        "id": "note-DGfj7",
+        "type": "noteNode",
+        "data_type": "note",
+        "display_name": null,
+        "tool_mode": null,
+        "outputs": [],
+        "interesting": {},
+        "position": {
+          "x": 386.46912286763194,
+          "y": 304.3593839654497
+        }
+      },
+      {
+        "id": "Prompt Template-3URhM",
+        "type": "genericNode",
+        "data_type": "Prompt Template",
+        "display_name": "Prompt Template",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "prompt",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "template": {
+            "value": "You are an expert blog writer and content strategist.\n\nThe reader will provide a single source URL to base the article on:\n\nSOURCE URL: {URL}\n\n## What to do\n1. ",
+            "tool_mode": false,
+            "show": true,
+            "type": "prompt",
+            "input_types": null
+          }
+        },
+        "position": {
+          "x": 1354.5046357800645,
+          "y": 311.13857498441917
+        }
+      },
+      {
+        "id": "ChatInput-w522Z",
+        "type": "genericNode",
+        "data_type": "ChatInput",
+        "display_name": "Chat Input",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "message",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "input_value": {
+            "value": "",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          }
+        },
+        "position": {
+          "x": 944.8062816915035,
+          "y": 335.45370649095037
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "URLComponent-8dgnZ",
+        "target": "Agent-9tNMJ",
+        "sourceHandle": "{œdataTypeœ: œURLComponentœ, œidœ: œURLComponent-8dgnZœ, œnameœ: œcomponent_as_toolœ, œoutput_typesœ: [œToolœ]}",
+        "targetHandle": "{œfieldNameœ: œtoolsœ, œidœ: œAgent-9tNMJœ, œinputTypesœ: [œToolœ], œtypeœ: œotherœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "URLComponent",
+            "id": "URLComponent-8dgnZ",
+            "name": "component_as_tool",
+            "output_types": [
+              "Tool"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "tools",
+            "id": "Agent-9tNMJ",
+            "inputTypes": [
+              "Tool"
+            ],
+            "type": "other"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "Agent-9tNMJ",
+        "target": "ChatOutput-4JoLk",
+        "sourceHandle": "{œdataTypeœ: œAgentœ, œidœ: œAgent-9tNMJœ, œnameœ: œresponseœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œChatOutput-4JoLkœ, œinputTypesœ: [œDataœ, œJSONœ, œDataFrameœ, œTableœ, œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Agent",
+            "id": "Agent-9tNMJ",
+            "name": "response",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "ChatOutput-4JoLk",
+            "inputTypes": [
+              "Data",
+              "JSON",
+              "DataFrame",
+              "Table",
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "Prompt Template-3URhM",
+        "target": "Agent-9tNMJ",
+        "sourceHandle": "{œdataTypeœ: œPrompt Templateœ, œidœ: œPrompt Template-3URhMœ, œnameœ: œpromptœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œsystem_promptœ, œidœ: œAgent-9tNMJœ, œinputTypesœ: [œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt Template",
+            "id": "Prompt Template-3URhM",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "system_prompt",
+            "id": "Agent-9tNMJ",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "ChatInput-w522Z",
+        "target": "Prompt Template-3URhM",
+        "sourceHandle": "{œdataTypeœ: œChatInputœ, œidœ: œChatInput-w522Zœ, œnameœ: œmessageœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œURLœ, œidœ: œPrompt Template-3URhMœ, œinputTypesœ: [œMessageœ, œTextœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "id": "ChatInput-w522Z",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "URL",
+            "id": "Prompt Template-3URhM",
+            "inputTypes": [
+              "Message",
+              "Text"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "Simple Agent",
+    "id": "aee48787-a752-4475-b7f0-6ba24f0508d4",
+    "nodes": [
+      {
+        "id": "ChatInput-tKQ4d",
+        "type": "genericNode",
+        "data_type": "ChatInput",
+        "display_name": "Chat Input",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "message",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "input_value": {
+            "value": "Hello, how are you?",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          }
+        },
+        "position": {
+          "x": 1238.5974541975052,
+          "y": 737.2526297113911
+        }
+      },
+      {
+        "id": "ChatOutput-KxTA8",
+        "type": "genericNode",
+        "data_type": "ChatOutput",
+        "display_name": "Chat Output",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "message",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "input_value": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "other",
+            "input_types": [
+              "Data",
+              "JSON",
+              "DataFrame",
+              "Table",
+              "Message"
+            ]
+          }
+        },
+        "position": {
+          "x": 2087.84675652303,
+          "y": 636.1861485512626
+        }
+      },
+      {
+        "id": "Agent-EXpSZ",
+        "type": "genericNode",
+        "data_type": "Agent",
+        "display_name": "Agent",
+        "tool_mode": false,
+        "outputs": [
+          {
+            "name": "response",
+            "types": [
+              "Message"
+            ],
+            "tool_mode": true
+          },
+          {
+            "name": "structured_response",
+            "types": [
+              "Data",
+              "JSON"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {
+          "system_prompt": {
+            "value": "You are a Langflow Agent — an AI assistant that completes user tasks using the tools configured in this flow.\n\n# Identity\nYou act only within the scope of the c",
+            "tool_mode": false,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "model": {
+            "value": "",
+            "tool_mode": false,
+            "show": true,
+            "type": "model",
+            "input_types": [
+              "LanguageModel"
+            ]
+          },
+          "api_key": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "str",
+            "input_types": []
+          },
+          "input_value": {
+            "value": "",
+            "tool_mode": true,
+            "show": true,
+            "type": "str",
+            "input_types": [
+              "Message"
+            ]
+          },
+          "tools": {
+            "value": "",
+            "tool_mode": null,
+            "show": true,
+            "type": "other",
+            "input_types": [
+              "Tool"
+            ]
+          }
+        },
+        "position": {
+          "x": 1641.6239626366948,
+          "y": 301.10345101561927
+        }
+      },
+      {
+        "id": "URLComponent-Tjh8k",
+        "type": "genericNode",
+        "data_type": "URLComponent",
+        "display_name": "URL",
+        "tool_mode": true,
+        "outputs": [
+          {
+            "name": "component_as_tool",
+            "types": [
+              "Tool"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {},
+        "position": {
+          "x": 1241.645826777893,
+          "y": -34.70663041492506
+        }
+      },
+      {
+        "id": "UnifiedWebSearch-KZ8k6",
+        "type": "genericNode",
+        "data_type": "UnifiedWebSearch",
+        "display_name": "Web Search",
+        "tool_mode": true,
+        "outputs": [
+          {
+            "name": "component_as_tool",
+            "types": [
+              "Tool"
+            ],
+            "tool_mode": true
+          }
+        ],
+        "interesting": {},
+        "position": {
+          "x": 1222.0531262552197,
+          "y": 449.6632062052015
+        }
+      },
+      {
+        "id": "note-5r6R8",
+        "type": "noteNode",
+        "data_type": "note",
+        "display_name": null,
+        "tool_mode": null,
+        "outputs": [],
+        "interesting": {},
+        "position": {
+          "x": 602.9838690115322,
+          "y": 160.4115610417494
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "Agent-EXpSZ",
+        "target": "ChatOutput-KxTA8",
+        "sourceHandle": "{œdataTypeœ: œAgentœ, œidœ: œAgent-EXpSZœ, œnameœ: œresponseœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œChatOutput-KxTA8œ, œinputTypesœ: [œDataœ, œJSONœ, œDataFrameœ, œTableœ, œMessageœ], œtypeœ: œotherœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Agent",
+            "id": "Agent-EXpSZ",
+            "name": "response",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "ChatOutput-KxTA8",
+            "inputTypes": [
+              "Data",
+              "JSON",
+              "DataFrame",
+              "Table",
+              "Message"
+            ],
+            "type": "other"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "ChatInput-tKQ4d",
+        "target": "Agent-EXpSZ",
+        "sourceHandle": "{œdataTypeœ: œChatInputœ, œidœ: œChatInput-tKQ4dœ, œnameœ: œmessageœ, œoutput_typesœ: [œMessageœ]}",
+        "targetHandle": "{œfieldNameœ: œinput_valueœ, œidœ: œAgent-EXpSZœ, œinputTypesœ: [œMessageœ], œtypeœ: œstrœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ChatInput",
+            "id": "ChatInput-tKQ4d",
+            "name": "message",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "Agent-EXpSZ",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "URLComponent-Tjh8k",
+        "target": "Agent-EXpSZ",
+        "sourceHandle": "{œdataTypeœ: œURLComponentœ, œidœ: œURLComponent-Tjh8kœ, œnameœ: œcomponent_as_toolœ, œoutput_typesœ: [œToolœ]}",
+        "targetHandle": "{œfieldNameœ: œtoolsœ, œidœ: œAgent-EXpSZœ, œinputTypesœ: [œToolœ], œtypeœ: œotherœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "URLComponent",
+            "id": "URLComponent-Tjh8k",
+            "name": "component_as_tool",
+            "output_types": [
+              "Tool"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "tools",
+            "id": "Agent-EXpSZ",
+            "inputTypes": [
+              "Tool"
+            ],
+            "type": "other"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      },
+      {
+        "source": "UnifiedWebSearch-KZ8k6",
+        "target": "Agent-EXpSZ",
+        "sourceHandle": "{œdataTypeœ: œUnifiedWebSearchœ, œidœ: œUnifiedWebSearch-KZ8k6œ, œnameœ: œcomponent_as_toolœ, œoutput_typesœ: [œToolœ]}",
+        "targetHandle": "{œfieldNameœ: œtoolsœ, œidœ: œAgent-EXpSZœ, œinputTypesœ: [œToolœ], œtypeœ: œotherœ}",
+        "data": {
+          "sourceHandle": {
+            "dataType": "UnifiedWebSearch",
+            "id": "UnifiedWebSearch-KZ8k6",
+            "name": "component_as_tool",
+            "output_types": [
+              "Tool"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "tools",
+            "id": "Agent-EXpSZ",
+            "inputTypes": [
+              "Tool"
+            ],
+            "type": "other"
+          },
+          "sourceType": null,
+          "targetType": null
+        }
+      }
+    ]
+  }
+]

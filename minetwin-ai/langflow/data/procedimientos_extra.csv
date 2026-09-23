@@ -1,0 +1,5 @@
+codigo,dominio,titulo,regla
+SOP-DSP-04,DESPACHO,Prioridad de ley,Camiones con ley de cobre mayor a 1.2% tienen prioridad de descarga directa en chancador cuando la tolva está bajo 60%.
+SOP-DB-03,TRONADURA,Roca dura,Con UCS de roca mayor a 150 MPa evaluar malla más cerrada antes de subir el factor de carga.
+SOP-PLT-03,PLANTA,Mineral skarn,El mineral skarn es más duro; alimentar mezclado con pórfido para no sobrecargar el SAG.
+SOP-SEG-03,SEGURIDAD,Cierre de rampa,El cierre de una rampa principal debe comunicarse a despacho y registrarse en bitácora con hora de inicio y término.

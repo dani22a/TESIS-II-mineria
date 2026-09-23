@@ -1,0 +1,63 @@
+name: minetwin-langflow
+
+# Langflow + Postgres para el copiloto MineTwin.
+# Puertos distintos a los del tutor de idiomas para que ambos puedan convivir:
+#   Langflow  -> http://127.0.0.1:7861
+#   Postgres  -> 127.0.0.1:5435
+services:
+  langflow:
+    image: docker.io/langflowai/langflow:latest
+    pull_policy: missing
+    ports:
+      - "7861:7860"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      # Reutiliza GEMINI_API_KEY de minetwin-ai/.env (una sola fuente de la clave).
+      - path: ../.env
+        required: false
+    environment:
+      LANGFLOW_DATABASE_URL: postgresql://langflow:langflow@postgres:5432/langflow
+      LANGFLOW_CONFIG_DIR: /app/langflow
+      LANGFLOW_COMPONENTS_PATH: /app/custom_components
+      LANGFLOW_AUTO_LOGIN: "true"
+      LANGFLOW_SKIP_AUTH_AUTO_LOGIN: "true"
+      LANGFLOW_SUPERUSER: ${LANGFLOW_SUPERUSER:-langflow}
+      LANGFLOW_SUPERUSER_PASSWORD: ${LANGFLOW_SUPERUSER_PASSWORD:-minetwin-langflow-2026}
+      # URL del servidor de desarrollo de MineTwin (npm run dev) vista desde el contenedor.
+      MINETWIN_API_URL: ${MINETWIN_API_URL:-http://host.containers.internal:3000}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: langflow
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - langflow-data:/app/langflow
+      - ./custom_components:/app/custom_components:ro
+      - ./data:/app/data:ro
+    restart: unless-stopped
+
+  postgres:
+    image: docker.io/library/postgres:16-trixie
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+    ports:
+      - "5435:5432"
+    volumes:
+      - langflow-postgres:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/01-minetwin.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langflow -d langflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  langflow-postgres:
+  langflow-data:

@@ -20,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { DigitalTwinState } from '../../types/mining';
+import { cycleStateLabel } from '../../i18n/labels';
 
 interface AssetDetailModalProps {
   assetId: string | null;
@@ -75,7 +76,7 @@ export const AssetDetailModal: React.FC<AssetDetailModalProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono">
               <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
                 <div className="text-[10px] text-slate-400 font-sans">Estado de Ciclo</div>
-                <div className="text-sm font-bold text-emerald-400 mt-1">{truck.cycleState}</div>
+                <div className="text-sm font-bold text-emerald-400 mt-1">{cycleStateLabel(truck.cycleState)}</div>
               </div>
               <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
                 <div className="text-[10px] text-slate-400 font-sans">Carga Actual</div>
@@ -86,7 +87,7 @@ export const AssetDetailModal: React.FC<AssetDetailModalProps> = ({
                 <div className="text-sm font-bold text-sky-400 mt-1">{Math.round(truck.speed)} km/h</div>
               </div>
               <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                <div className="text-[10px] text-slate-400 font-sans">Salud Mecánica Twin</div>
+                <div className="text-[10px] text-slate-400 font-sans">Salud mecánica del gemelo</div>
                 <div className="text-sm font-bold text-emerald-300 mt-1">{truck.healthScore}%</div>
               </div>
             </div>
@@ -129,7 +130,7 @@ export const AssetDetailModal: React.FC<AssetDetailModalProps> = ({
             {onReassignTruck && (
               <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-slate-200">Reasignar Pala de Carguío</div>
+                  <div className="font-bold text-slate-200">Reasignar Pala de carga</div>
                   <div className="text-[11px] text-slate-400">Modificar ruta de despacho manualmente</div>
                 </div>
 
@@ -196,7 +197,7 @@ export const AssetDetailModal: React.FC<AssetDetailModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-medium transition text-xs"
           >
-            Cerrar Inspector
+            Cerrar
           </button>
         </div>
       </div>

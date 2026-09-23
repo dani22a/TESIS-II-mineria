@@ -308,7 +308,7 @@ export interface DRLRecommendation {
   status: 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED' | 'EXECUTED';
   approvedBy?: string;
   suggestedAction?: SuggestedTwinAction;
-  source?: 'DRL_MAPPO' | 'LANGGRAPH_COPILOT';
+  source?: 'DRL_MAPPO' | 'LANGGRAPH_COPILOT' | 'LANGFLOW_COPILOT';
   auditTrail: { action: string; timestamp: string; user: string }[];
 }
 

@@ -3,11 +3,11 @@
  */
 
 import { DigitalTwinState, DRLRecommendation } from '../../types/mining';
+import { narrateCopilotReply } from './gemini';
 import { bindTwin, Command, copilotGraph } from './graph';
 import {
   CopilotAgentId,
   explainDrlRecommendation,
-  formatDeterministicReply,
   heuristicRoute,
   proposeCrusherFeed,
   proposeDispatchRebalance,
@@ -45,7 +45,11 @@ function readInterrupt(result: Record<string, unknown>): {
   };
 }
 
-function runDeterministicTurn(state: DigitalTwinState, userMessage: string, threadId: string): CopilotTurnResult {
+async function runDeterministicTurn(
+  state: DigitalTwinState,
+  userMessage: string,
+  threadId: string
+): Promise<CopilotTurnResult> {
   const route = heuristicRoute(userMessage, state.currentUserRole);
   const shouldWrite = wantsWriteAction(userMessage, route);
   let traces: ToolTrace[] = [];
@@ -101,13 +105,21 @@ function runDeterministicTurn(state: DigitalTwinState, userMessage: string, thre
     ];
   }
 
+  const reply = await narrateCopilotReply({
+    userMessage,
+    userRole: state.currentUserRole,
+    route: route as CopilotAgentId,
+    traces,
+    pending,
+  });
+
   return {
     threadId,
     route,
     traces,
     pending,
     interrupted: Boolean(pending),
-    reply: formatDeterministicReply(route as CopilotAgentId, traces, pending),
+    reply,
   };
 }
 

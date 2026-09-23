@@ -1,0 +1,959 @@
+{
+  "models_and_agents": {
+    "Agent": {
+      "display_name": "Agent",
+      "name": null,
+      "base_classes": [
+        "Data",
+        "JSON",
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "response",
+          "display": "Response",
+          "types": [
+            "Message"
+          ]
+        },
+        {
+          "name": "structured_response",
+          "display": "Structured Response",
+          "types": [
+            "Data",
+            "JSON"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "add_calculator_tool",
+          "display": "Calculator",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        },
+        {
+          "name": "add_current_date_tool",
+          "display": "Current Date",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        },
+        {
+          "name": "api_key",
+          "display": "API Key",
+          "type": "str",
+          "input_types": [],
+          "tool_mode": null,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "base_url_ibm_watsonx",
+          "display": "watsonx API Endpoint",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": false,
+          "value": "https://us-south.ml.cloud.ibm.com",
+          "options": [
+            "https://us-south.ml.cloud.ibm.com",
+            "https://eu-de.ml.cloud.ibm.com",
+            "https://eu-gb.ml.cloud.ibm.com",
+            "https://au-syd.ml.cloud.ibm.com",
+            "https://jp-tok.ml.cloud.ibm.com",
+            "https://ca-tor.ml.cloud.ibm.com"
+          ]
+        },
+        {
+          "name": "context_id",
+          "display": "Context ID",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "format_instructions",
+          "display": "Output Format Instructions",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "You are an AI that extracts structured JSON objects from unstructured text. Use ",
+          "options": null
+        },
+        {
+          "name": "handle_parsing_errors",
+          "display": "Handle Parse Errors",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        },
+        {
+          "name": "input_value",
+          "display": "Input",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": true,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "max_iterations",
+          "display": "Max Iterations",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 15,
+          "options": null
+        },
+        {
+          "name": "max_tokens",
+          "display": "Max Tokens",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0,
+          "options": null
+        },
+        {
+          "name": "model",
+          "display": "Language Model",
+          "type": "model",
+          "input_types": [
+            "LanguageModel"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "n_messages",
+          "display": "Number of Chat History Messages",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 100,
+          "options": null
+        },
+        {
+          "name": "output_schema",
+          "display": "Output Schema",
+          "type": "table",
+          "input_types": [
+            "DataFrame",
+            "Table"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": [],
+          "options": null
+        },
+        {
+          "name": "project_id",
+          "display": "watsonx Project ID",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": false,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "stream",
+          "display": "Stream",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        },
+        {
+          "name": "system_prompt",
+          "display": "Agent Instructions",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "You are a Langflow Agent — an AI assistant that completes user tasks using the t",
+          "options": null
+        },
+        {
+          "name": "tools",
+          "display": "Tools",
+          "type": "other",
+          "input_types": [
+            "Tool"
+          ],
+          "tool_mode": null,
+          "show": true,
+          "value": "",
+          "options": null
+        }
+      ],
+      "icon": "bot",
+      "description": "Define the agent's instructions, then enter a task to complete using tools."
+    },
+    "Prompt Template": {
+      "display_name": "Prompt Template",
+      "name": null,
+      "base_classes": [
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "display": "Prompt",
+          "types": [
+            "Message"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "template",
+          "display": "Template",
+          "type": "prompt",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "tool_placeholder",
+          "display": "Tool Placeholder",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": true,
+          "show": false,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "use_double_brackets",
+          "display": "Use Double Brackets",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": false,
+          "options": null
+        }
+      ],
+      "icon": "prompts",
+      "description": "Create a prompt template with dynamic variables."
+    },
+    "LanguageModelComponent": {
+      "display_name": "Language Model",
+      "name": null,
+      "base_classes": [
+        "LanguageModel",
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "text_output",
+          "display": "Model Response",
+          "types": [
+            "Message"
+          ]
+        },
+        {
+          "name": "model_output",
+          "display": "Language Model",
+          "types": [
+            "LanguageModel"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "api_key",
+          "display": "API Key",
+          "type": "str",
+          "input_types": [],
+          "tool_mode": null,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "base_url_ibm_watsonx",
+          "display": "watsonx API Endpoint",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": false,
+          "value": "https://us-south.ml.cloud.ibm.com",
+          "options": [
+            "https://us-south.ml.cloud.ibm.com",
+            "https://eu-de.ml.cloud.ibm.com",
+            "https://eu-gb.ml.cloud.ibm.com",
+            "https://au-syd.ml.cloud.ibm.com",
+            "https://jp-tok.ml.cloud.ibm.com",
+            "https://ca-tor.ml.cloud.ibm.com"
+          ]
+        },
+        {
+          "name": "input_value",
+          "display": "Input",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "max_tokens",
+          "display": "Max Tokens",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0,
+          "options": null
+        },
+        {
+          "name": "model",
+          "display": "Language Model",
+          "type": "model",
+          "input_types": [
+            "LanguageModel"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "model_name",
+          "display": "Model Name Override",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "ollama_base_url",
+          "display": "Ollama API URL",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": false,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "project_id",
+          "display": "watsonx Project ID",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": false,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "provider",
+          "display": "Provider Override",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "stream",
+          "display": "Stream",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": false,
+          "options": null
+        },
+        {
+          "name": "system_message",
+          "display": "System Message",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "temperature",
+          "display": "Temperature",
+          "type": "slider",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0.1,
+          "options": null
+        }
+      ],
+      "icon": "brain-circuit",
+      "description": "Runs a language model given a specified provider."
+    }
+  },
+  "input_output": {
+    "ChatInput": {
+      "display_name": "Chat Input",
+      "name": null,
+      "base_classes": [
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "message",
+          "display": "Chat Message",
+          "types": [
+            "Message"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "context_id",
+          "display": "Context ID",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "files",
+          "display": "Files",
+          "type": "file",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "input_value",
+          "display": "Input Text",
+          "type": "str",
+          "input_types": [],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "sender",
+          "display": "Sender Type",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "User",
+          "options": [
+            "Machine",
+            "User"
+          ]
+        },
+        {
+          "name": "sender_name",
+          "display": "Sender Name",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "User",
+          "options": null
+        },
+        {
+          "name": "session_id",
+          "display": "Session ID",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "should_store_message",
+          "display": "Store Messages",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        }
+      ],
+      "icon": "MessagesSquare",
+      "description": "Get chat inputs from the Playground."
+    },
+    "ChatOutput": {
+      "display_name": "Chat Output",
+      "name": null,
+      "base_classes": [
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "message",
+          "display": "Output Message",
+          "types": [
+            "Message"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "clean_data",
+          "display": "Basic Clean Data",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        },
+        {
+          "name": "context_id",
+          "display": "Context ID",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "data_template",
+          "display": "Data Template",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "{text}",
+          "options": null
+        },
+        {
+          "name": "input_value",
+          "display": "Inputs",
+          "type": "other",
+          "input_types": [
+            "Data",
+            "JSON",
+            "DataFrame",
+            "Table",
+            "Message"
+          ],
+          "tool_mode": null,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "sender",
+          "display": "Sender Type",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "Machine",
+          "options": [
+            "Machine",
+            "User"
+          ]
+        },
+        {
+          "name": "sender_name",
+          "display": "Sender Name",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "AI",
+          "options": null
+        },
+        {
+          "name": "session_id",
+          "display": "Session ID",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "should_store_message",
+          "display": "Store Messages",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": true,
+          "options": null
+        }
+      ],
+      "icon": "MessagesSquare",
+      "description": "Display a chat message in the Playground."
+    }
+  },
+  "google": {
+    "ext:google:GoogleGenerativeAIComponent@official": {
+      "display_name": "Google Generative AI",
+      "name": "GoogleGenerativeAIModel",
+      "base_classes": [
+        "LanguageModel",
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "text_output",
+          "display": "Model Response",
+          "types": [
+            "Message"
+          ]
+        },
+        {
+          "name": "model_output",
+          "display": "Language Model",
+          "types": [
+            "LanguageModel"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "api_key",
+          "display": "Google API Key",
+          "type": "str",
+          "input_types": [],
+          "tool_mode": null,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "input_value",
+          "display": "Input",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "max_output_tokens",
+          "display": "Max Output Tokens",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0,
+          "options": null
+        },
+        {
+          "name": "model_name",
+          "display": "Model",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "gemini-2.5-flash",
+          "options": [
+            "gemini-2.5-flash",
+            "gemini-2.5-pro",
+            "gemini-2.5-flash-lite",
+            "gemini-2.5-flash-preview-09-2025",
+            "gemini-2.5-flash-lite-preview-09-2025",
+            "gemini-2.5-flash-image",
+            "gemini-1.5-pro",
+            "gemini-1.5-flash",
+            "gemini-1.5-flash-8b",
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-lite",
+            "gemini-2.0-flash-preview-image-generation"
+          ]
+        },
+        {
+          "name": "n",
+          "display": "N",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0,
+          "options": null
+        },
+        {
+          "name": "stream",
+          "display": "Stream",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": false,
+          "options": null
+        },
+        {
+          "name": "system_message",
+          "display": "System Message",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "temperature",
+          "display": "Temperature",
+          "type": "slider",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0.1,
+          "options": null
+        },
+        {
+          "name": "tool_model_enabled",
+          "display": "Tool Model Enabled",
+          "type": "bool",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": false,
+          "options": null
+        },
+        {
+          "name": "top_k",
+          "display": "Top K",
+          "type": "int",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": 0,
+          "options": null
+        },
+        {
+          "name": "top_p",
+          "display": "Top P",
+          "type": "float",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        }
+      ],
+      "icon": "GoogleGenerativeAI",
+      "description": "Generate text using Google Generative AI."
+    }
+  },
+  "language_tutor": {
+    "ext:language_tutor:AddWordTool@extra": {
+      "display_name": "Add word tool",
+      "name": "AddWordTool",
+      "base_classes": [
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "display": "Output",
+          "types": [
+            "Message"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "language",
+          "display": "Language",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": true,
+          "show": true,
+          "value": "en",
+          "options": null
+        },
+        {
+          "name": "word",
+          "display": "Word",
+          "type": "str",
+          "input_types": [
+            "Message"
+          ],
+          "tool_mode": true,
+          "show": true,
+          "value": "",
+          "options": null
+        }
+      ],
+      "icon": "plus",
+      "description": "Use this tool to add a new word to the learner vocabulary. Include the word and its language (English, Spanish, or Chinese)."
+    },
+    "ext:language_tutor:UploadWordFile@extra": {
+      "display_name": "Upload Word File",
+      "name": "UploadWordFile",
+      "base_classes": [
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "display": "Output",
+          "types": [
+            "Message"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "csv_file",
+          "display": "CSV file",
+          "type": "file",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "",
+          "options": null
+        },
+        {
+          "name": "column_name",
+          "display": "Column Name",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "word",
+          "options": null
+        },
+        {
+          "name": "default_language",
+          "display": "Default Language",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "en",
+          "options": [
+            "en",
+            "es",
+            "zh"
+          ]
+        },
+        {
+          "name": "language_column",
+          "display": "Language Column",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "language",
+          "options": null
+        }
+      ],
+      "icon": "file-up",
+      "description": "Upload a CSV of known words into the vocabulary database (English, Spanish, Chinese)."
+    },
+    "ext:language_tutor:WordLoader@extra": {
+      "display_name": "Word Loader",
+      "name": "WordLoader",
+      "base_classes": [
+        "Message"
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "display": "Output",
+          "types": [
+            "Message"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "language",
+          "display": "Language",
+          "type": "str",
+          "input_types": null,
+          "tool_mode": false,
+          "show": true,
+          "value": "all",
+          "options": [
+            "all",
+            "en",
+            "es",
+            "zh"
+          ]
+        }
+      ],
+      "icon": "database",
+      "description": "Load known vocabulary from the database for English, Spanish, and Chinese."
+    }
+  }
+}

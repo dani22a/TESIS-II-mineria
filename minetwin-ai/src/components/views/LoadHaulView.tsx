@@ -21,7 +21,8 @@ import {
   Truck,
   Zap,
 } from 'lucide-react';
-import { CycleState, DigitalTwinState, TruckTwin } from '../../types/mining';
+import { CycleState, DigitalTwinState } from '../../types/mining';
+import { cycleStateLabel, destinationTypeLabel, materialTypeLabel } from '../../i18n/labels';
 
 interface LoadHaulViewProps {
   state: DigitalTwinState;
@@ -138,7 +139,7 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
                 <div>
                   <h3 className="font-bold text-white text-sm">{shovel.name}</h3>
                   <p className="text-[10px] text-slate-400 font-mono">
-                    Banco {shovel.benchElevation}m RL • Mineral {shovel.materialType} (Ley {shovel.materialGrade}% Cu)
+                    Banco {shovel.benchElevation} m • {materialTypeLabel(shovel.materialType)} (ley {shovel.materialGrade}% Cu)
                   </p>
                 </div>
               </div>
@@ -156,7 +157,7 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
                 <div className="font-bold text-amber-400 text-xs mt-0.5">{shovel.productivityTph} t/h</div>
               </div>
               <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
-                <div className="text-[10px] text-slate-400 font-sans">Carguío Activo</div>
+                <div className="text-[10px] text-slate-400 font-sans">carga Activo</div>
                 <div className="font-bold text-sky-400 text-xs mt-0.5">{shovel.currentTruckLoadingId || 'Libre'}</div>
               </div>
               <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
@@ -225,13 +226,13 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
               onChange={(e) => setStateFilter(e.target.value)}
               className="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
             >
-              <option value="ALL">Todos los Estados</option>
-              <option value="HAULING">Cargado (Hauling)</option>
-              <option value="LOADING">En Carguío (Loading)</option>
-              <option value="QUEUE_SHOVEL">En Cola Pala</option>
-              <option value="QUEUE_DESTINATION">En Cola Chancador</option>
-              <option value="RETURNING">Retorno Vacío</option>
-              <option value="DUMPING">Descarga</option>
+              <option value="ALL">Todos los estados</option>
+              <option value="HAULING">{cycleStateLabel('HAULING')}</option>
+              <option value="LOADING">{cycleStateLabel('LOADING')}</option>
+              <option value="QUEUE_SHOVEL">{cycleStateLabel('QUEUE_SHOVEL')}</option>
+              <option value="QUEUE_DESTINATION">{cycleStateLabel('QUEUE_DESTINATION')}</option>
+              <option value="RETURNING">{cycleStateLabel('RETURNING')}</option>
+              <option value="DUMPING">{cycleStateLabel('DUMPING')}</option>
             </select>
           </div>
         </div>
@@ -248,8 +249,8 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
                 <th className="py-2.5 px-3 text-right">Carga (t)</th>
                 <th className="py-2.5 px-3 text-right">Velocidad</th>
                 <th className="py-2.5 px-3 text-right">Consumo (L/h)</th>
-                <th className="py-2.5 px-3 text-right">Salud Twin</th>
-                <th className="py-2.5 px-3 text-center">Acción Despacho</th>
+                <th className="py-2.5 px-3 text-right">Salud del gemelo</th>
+                <th className="py-2.5 px-3 text-center">Acción de despacho</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 font-mono">
@@ -272,7 +273,7 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
                         truck.cycleState
                       )}`}
                     >
-                      {truck.cycleState}
+                      {cycleStateLabel(truck.cycleState)}
                     </span>
                   </td>
 
@@ -281,7 +282,7 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
                   </td>
 
                   <td className="py-2.5 px-3 text-slate-300 text-[11px]">
-                    {truck.destinationId} ({truck.destinationType})
+                    {truck.destinationId} ({destinationTypeLabel(truck.destinationType)})
                   </td>
 
                   <td className="py-2.5 px-3 text-right font-bold text-slate-200">

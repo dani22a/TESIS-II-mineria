@@ -183,8 +183,8 @@ export function proposePowderFactorAdjust(state: DigitalTwinState): DRLRecommend
     id: `REC-LG-${Date.now()}`,
     timestamp: nowStamp(),
     category: 'POWDER_FACTOR_ADJUST',
-    title: `Ajuste de powder factor en ${pattern.id}`,
-    what: `Subir powder factor de ${pattern.powderFactor} a ${nextPf} kg/m³ en ${pattern.id}.`,
+    title: `Ajuste de factor de carga en ${pattern.id}`,
+    what: `Subir el factor de carga de ${pattern.powderFactor} a ${nextPf} kg/m³ en ${pattern.id}.`,
     why: `P80 actual ${current.p80} mm y cuello de molino: ${state.mill.millBottleNeckFactor}. Kuz-Ram proyecta P80 ${next.p80} mm y ${next.sagKwhT} kWh/t.`,
     expectedImpact: {
       productionDeltaTph: 120,
@@ -254,12 +254,36 @@ export function proposeCrusherFeed(state: DigitalTwinState): DRLRecommendation {
 }
 
 export function heuristicRoute(message: string, role: DigitalTwinState['currentUserRole']): CopilotAgentId {
-  const t = message.toLowerCase();
-  if (/escenario|what-if|what if|si cae|si llueve|si ex-|impacto si/.test(t)) return 'scenario_agent';
-  if (/p80|kuz-ram|kuz ram|kuzram|tronadura|powder|fragment|malla/.test(t)) return 'blast_agent';
-  if (/sag|molino|chancador|tolva|skarn|molienda/.test(t)) return 'mill_agent';
-  if (/explica|rec-drl|recomend|auditor|alerta|mappo/.test(t)) return 'xai_agent';
-  if (/cola|reasign|despach|camión|camion|pala|flota/.test(t)) return 'dispatch_agent';
+  const t = message
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '');
+
+  if (
+    /escenario|what-if|what if|si cae|si llueve|si ex-|impacto si|se rompe|falla la pala|fuera de servicio|cierre de rampa|si llueve|barro|lodo|\+3 camiones|mas camiones|tres camiones/.test(
+      t
+    )
+  ) {
+    return 'scenario_agent';
+  }
+  if (
+    /p80|kuz-ram|kuz ram|kuzram|tronadura|powder|fragment|malla|factor de carga|mineral grueso|tamano de roca|voladura/.test(
+      t
+    )
+  ) {
+    return 'blast_agent';
+  }
+  if (/sag|molino|chancador|tolva|skarn|molienda|planta|energia del molino/.test(t)) {
+    return 'mill_agent';
+  }
+  if (
+    /explica|rec-drl|recomend|auditor|alerta|mappo|por que la ia|por que recomienda|politica activa/.test(t)
+  ) {
+    return 'xai_agent';
+  }
+  if (/cola|reasign|despach|camion|pala|flota|esperando|espera en/.test(t)) {
+    return 'dispatch_agent';
+  }
   if (role === 'DRILL_BLAST_ENGINEER') return 'blast_agent';
   if (role === 'METALLURGIST') return 'mill_agent';
   if (role === 'DATA_SCIENTIST') return 'xai_agent';
@@ -272,9 +296,9 @@ export function wantsWriteAction(message: string, agent: CopilotAgentId): boolea
     if (agent === 'scenario_agent' || agent === 'xai_agent') return false;
     if (/qué pasa|impacto|cuánto|p80/.test(t) && !/propon|reasign|aplic/.test(t)) return false;
   }
-  if (agent === 'dispatch_agent' && /reasign|rebalance|propon|qué camiones/.test(t)) return true;
-  if (agent === 'blast_agent' && /propon|aplic|sube|ajustar/.test(t)) return true;
-  if (agent === 'mill_agent' && /prioriz|desví|desvi|propon/.test(t)) return true;
+  if (agent === 'dispatch_agent' && /reasign|rebalance|propon|qué camiones|mover camiones/.test(t)) return true;
+  if (agent === 'blast_agent' && /propon|aplic|sube|ajustar|explosivo/.test(t)) return true;
+  if (agent === 'mill_agent' && /prioriz|desví|desvi|propon|mandar mineral/.test(t)) return true;
   return /propon|reasign|aplic|ejecut|aprueb/.test(t);
 }
 
@@ -283,16 +307,56 @@ export function formatDeterministicReply(
   traces: ToolTrace[],
   pending: DRLRecommendation | null
 ): string {
-  const payload = traces.map((tr) => `• ${tr.citation}: ${JSON.stringify(tr.result)}`).join('\n');
-  const hitl = pending
-    ? `\n\nAcción de escritura pausada (HITL LangGraph): ${pending.title}. ${pending.what} Requiere aprobación humana.`
-    : '';
   const intro: Record<CopilotAgentId, string> = {
-    dispatch_agent: 'Agente de despacho. Cifras tomadas del gemelo vivo (no del LLM).',
-    blast_agent: 'Agente Drill & Blast. Fragmentación calculada con Kuz-Ram determinista.',
-    mill_agent: 'Agente Mine-to-Mill. Propagación a SAG desde el motor físico existente.',
-    scenario_agent: 'Agente de escenarios. What-if ejecutado con el mismo motor del Scenario Lab.',
-    xai_agent: 'Agente XAI. Explicación anclada a recomendaciones DRL y KPIs vivos.',
+    dispatch_agent: 'Agente de despacho. Cifras del gemelo vivo (no inventadas por el modelo).',
+    blast_agent: 'Agente de perforación y tronadura. Fragmentación con Kuz-Ram.',
+    mill_agent: 'Agente de mina a planta. Propagación a SAG desde el motor físico.',
+    scenario_agent: 'Agente de escenarios. Simulación de qué pasaría con el mismo motor del laboratorio de escenarios.',
+    xai_agent: 'Agente XAI. Explicación anclada a DRL y KPIs vivos.',
   };
-  return `${intro[agent]}\n\n${payload}${hitl}`;
+
+  const lines: string[] = [intro[agent], ''];
+  for (const tr of traces) {
+    const result = tr.result as Record<string, unknown> | null;
+    const nested = (result?.result ?? result) as Record<string, unknown> | undefined;
+    const inputs = (result?.inputs ?? {}) as Record<string, unknown>;
+    if (tr.tool === 'run_what_if_scenario' && nested) {
+      if (inputs.shovelOutage && inputs.shovelOutage !== 'NONE') {
+        lines.push(`• Pala fuera de servicio: ${inputs.shovelOutage}.`);
+      }
+      if (inputs.weather && inputs.weather !== 'CLEAR') {
+        lines.push(`• Clima simulado: ${inputs.weather}.`);
+      } else {
+        lines.push('• El motor no aplicó lluvia en este escenario (clima = despejado).');
+      }
+      if (typeof nested.productionTonsPerHour === 'number') {
+        lines.push(
+          `• Producción: ${nested.productionTonsPerHour} t/h (${nested.productionDeltaPercent}% vs base). Fuente: scenarioEngine.`
+        );
+      }
+      if (typeof nested.totalCycleTimeMin === 'number') {
+        lines.push(`• Ciclo de camión: ${nested.totalCycleTimeMin} min (Δ ${nested.cycleTimeDeltaMin} min).`);
+      }
+      if (typeof nested.unitCostUsdPerTon === 'number') {
+        lines.push(`• Costo unitario: ${nested.unitCostUsdPerTon} USD/t.`);
+      }
+      const bottlenecks = nested.bottlenecks;
+      if (Array.isArray(bottlenecks) && bottlenecks.length > 0) {
+        lines.push(`• Cuello de botella: ${bottlenecks.join('; ')}`);
+      }
+    } else if (tr.tool === 'run_kuz_ram' || tr.tool === 'evaluate_mine_to_mill') {
+      const payload = (result?.actual ?? result) as Record<string, unknown>;
+      if (payload?.p80 != null) lines.push(`• P80: ${payload.p80} mm (Kuz-Ram).`);
+      if (payload?.sagKwhT != null) lines.push(`• Energía SAG: ${payload.sagKwhT} kWh/t.`);
+      if (payload?.sagTph != null) lines.push(`• Rendimiento SAG: ${payload.sagTph} t/h.`);
+    } else {
+      lines.push(`• Herramienta ${tr.tool} (${tr.citation}) ejecutada. Detalle en la línea de tiempo de la derecha.`);
+    }
+  }
+
+  if (pending) {
+    lines.push('', `Acción pausada (aprobación humana): ${pending.title}. ${pending.what}`);
+  }
+
+  return lines.join('\n');
 }
