@@ -1,0 +1,3460 @@
+{
+  "schema_version": 1,
+  "target": "Usage_kWh",
+  "unit": "kWh/15min",
+  "model": "XGBoost",
+  "seed": 42,
+  "variable_contract": {
+    "target": "Usage_kWh",
+    "inputs": [
+      {
+        "name": "hour",
+        "type": "float (hour of day at interval start)",
+        "allowed": "0 to 23.75 in steps of 0.25 (the exported table uses integer hours 0-23)",
+        "twin_signal": "Simulation clock of the twin (hour + minute/60)",
+        "model_use": "hour_sin = sin(2*pi*h/24), hour_cos = cos(2*pi*h/24)"
+      },
+      {
+        "name": "day",
+        "type": "categorical",
+        "allowed": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "twin_signal": "Simulation clock of the twin (day of week)",
+        "model_use": "one-hot, 7 columns (WeekStatus is derivable from it and is not used)"
+      },
+      {
+        "name": "load_type",
+        "type": "categorical",
+        "allowed": [
+          "Light_Load",
+          "Medium_Load",
+          "Maximum_Load"
+        ],
+        "twin_signal": "SAG mill tonnage divided by nominal tonnage",
+        "rule": {
+          "Light_Load": "ratio < 0.75",
+          "Medium_Load": "0.75 <= ratio <= 0.90",
+          "Maximum_Load": "ratio > 0.90",
+          "thresholds": {
+            "medium_from": 0.75,
+            "maximum_above": 0.9
+          }
+        },
+        "model_use": "one-hot, 3 columns"
+      }
+    ],
+    "excluded": [
+      {
+        "name": "Lagging_Current_Reactive.Power_kVarh",
+        "reason": "Analysed in the lab only; the twin cannot produce it."
+      },
+      {
+        "name": "Leading_Current_Reactive_Power_kVarh",
+        "reason": "Analysed in the lab only; the twin cannot produce it."
+      },
+      {
+        "name": "Lagging_Current_Power_Factor",
+        "reason": "Analysed in the lab only; the twin cannot produce it."
+      },
+      {
+        "name": "Leading_Current_Power_Factor",
+        "reason": "Analysed in the lab only; the twin cannot produce it."
+      },
+      {
+        "name": "NSM",
+        "reason": "Seconds since midnight; redundant with the hour of day."
+      },
+      {
+        "name": "WeekStatus",
+        "reason": "Derivable from day of week."
+      },
+      {
+        "name": "CO2(tCO2)",
+        "reason": "Almost a copy of consumption (VIF); computed afterwards from kWh."
+      }
+    ],
+    "preprocessing": {
+      "interval_convention": "The file stamps the END of each 15-min interval. Features use the interval START (end - 15 min); the 00:00 record closes the previous day.",
+      "features": [
+        "hour_sin",
+        "hour_cos",
+        "day_Monday",
+        "day_Tuesday",
+        "day_Wednesday",
+        "day_Thursday",
+        "day_Friday",
+        "day_Saturday",
+        "day_Sunday",
+        "load_type_Light_Load",
+        "load_type_Medium_Load",
+        "load_type_Maximum_Load"
+      ],
+      "elastic_net": "ColumnTransformer (one-hot + sin/cos) -> StandardScaler -> ElasticNet",
+      "trees": "ColumnTransformer (one-hot + sin/cos passthrough) -> RandomForest / XGBoost, no scaling",
+      "seed": 42
+    },
+    "post_computed": {
+      "co2_tco2": {
+        "formula": "co2_tco2 = kwh * factor",
+        "factor_tco2_per_kwh": 0.00042079465676130706,
+        "note": "CO2 is derived from kWh after the prediction; it never enters the model."
+      }
+    },
+    "load_type_rule_summary": "load_type from SAG tonnage / nominal: < 0.75 Light, <= 0.90 Medium, > 0.90 Maximum"
+  },
+  "hyperparameters": {
+    "Elastic Net": {
+      "alpha": 0.5456725485601477,
+      "l1_ratio": 0.4461372443656412
+    },
+    "Random Forest": {
+      "max_depth": 13,
+      "min_samples_leaf": 8,
+      "n_estimators": 288
+    },
+    "XGBoost": {
+      "colsample_bytree": 0.7797802696552814,
+      "learning_rate": 0.013833507535062186,
+      "max_depth": 8,
+      "n_estimators": 506,
+      "reg_lambda": 3.459583241762642,
+      "subsample": 0.8663689426469987
+    }
+  },
+  "exam_metrics": {
+    "per_model": {
+      "Elastic Net": {
+        "mae": 17.201575395760642,
+        "rmse": 23.630859925046217,
+        "mape": 230.82535956564573,
+        "r2": 0.4530622502929956
+      },
+      "Random Forest": {
+        "mae": 11.576925435915433,
+        "rmse": 19.505916652805023,
+        "mape": 99.97591034974687,
+        "r2": 0.6273410327232573
+      },
+      "XGBoost": {
+        "mae": 11.49004270653416,
+        "rmse": 19.295426861042397,
+        "mape": 100.24291404067067,
+        "r2": 0.6353404186513392
+      }
+    },
+    "exported": "XGBoost",
+    "unit": "kWh (MAPE in %)",
+    "criterion": "lowest exam MAE"
+  },
+  "prediction_table": [
+    {
+      "hour": 0,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.64
+    },
+    {
+      "hour": 1,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.31
+    },
+    {
+      "hour": 2,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.35
+    },
+    {
+      "hour": 3,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.77
+    },
+    {
+      "hour": 4,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.24
+    },
+    {
+      "hour": 5,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.25
+    },
+    {
+      "hour": 6,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.23
+    },
+    {
+      "hour": 7,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 4.12
+    },
+    {
+      "hour": 8,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 58.08
+    },
+    {
+      "hour": 9,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 4.15
+    },
+    {
+      "hour": 10,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.71
+    },
+    {
+      "hour": 11,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 2.99
+    },
+    {
+      "hour": 12,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.35
+    },
+    {
+      "hour": 13,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 4.52
+    },
+    {
+      "hour": 14,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.92
+    },
+    {
+      "hour": 15,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 5.9
+    },
+    {
+      "hour": 16,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 2.96
+    },
+    {
+      "hour": 17,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.17
+    },
+    {
+      "hour": 18,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 4.28
+    },
+    {
+      "hour": 19,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 4.67
+    },
+    {
+      "hour": 20,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.2
+    },
+    {
+      "hour": 21,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 2.7
+    },
+    {
+      "hour": 22,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 3.12
+    },
+    {
+      "hour": 23,
+      "day": "Monday",
+      "load_type": "Light_Load",
+      "kwh": 10.36
+    },
+    {
+      "hour": 0,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 11.47
+    },
+    {
+      "hour": 1,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 6.41
+    },
+    {
+      "hour": 2,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.49
+    },
+    {
+      "hour": 3,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.75
+    },
+    {
+      "hour": 4,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.41
+    },
+    {
+      "hour": 5,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.36
+    },
+    {
+      "hour": 6,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.29
+    },
+    {
+      "hour": 7,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 5.55
+    },
+    {
+      "hour": 8,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 58.73
+    },
+    {
+      "hour": 9,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 3.86
+    },
+    {
+      "hour": 10,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 3.63
+    },
+    {
+      "hour": 11,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.06
+    },
+    {
+      "hour": 12,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 2.9
+    },
+    {
+      "hour": 13,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.12
+    },
+    {
+      "hour": 14,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 3.5
+    },
+    {
+      "hour": 15,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 5.93
+    },
+    {
+      "hour": 16,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 3.99
+    },
+    {
+      "hour": 17,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 2.96
+    },
+    {
+      "hour": 18,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.33
+    },
+    {
+      "hour": 19,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 4.11
+    },
+    {
+      "hour": 20,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 2.84
+    },
+    {
+      "hour": 21,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 2.72
+    },
+    {
+      "hour": 22,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 3.11
+    },
+    {
+      "hour": 23,
+      "day": "Tuesday",
+      "load_type": "Light_Load",
+      "kwh": 10.58
+    },
+    {
+      "hour": 0,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 10.55
+    },
+    {
+      "hour": 1,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 5.85
+    },
+    {
+      "hour": 2,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.41
+    },
+    {
+      "hour": 3,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.83
+    },
+    {
+      "hour": 4,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.36
+    },
+    {
+      "hour": 5,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.2
+    },
+    {
+      "hour": 6,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.35
+    },
+    {
+      "hour": 7,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 5.85
+    },
+    {
+      "hour": 8,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 61.56
+    },
+    {
+      "hour": 9,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.08
+    },
+    {
+      "hour": 10,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 3.67
+    },
+    {
+      "hour": 11,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 3.59
+    },
+    {
+      "hour": 12,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 2.84
+    },
+    {
+      "hour": 13,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 3.48
+    },
+    {
+      "hour": 14,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 3.74
+    },
+    {
+      "hour": 15,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 5.78
+    },
+    {
+      "hour": 16,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.35
+    },
+    {
+      "hour": 17,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.49
+    },
+    {
+      "hour": 18,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 2.42
+    },
+    {
+      "hour": 19,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 2.26
+    },
+    {
+      "hour": 20,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 1.34
+    },
+    {
+      "hour": 21,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 2.86
+    },
+    {
+      "hour": 22,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 3.09
+    },
+    {
+      "hour": 23,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 9.87
+    },
+    {
+      "hour": 0,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 10.0
+    },
+    {
+      "hour": 1,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 6.17
+    },
+    {
+      "hour": 2,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.95
+    },
+    {
+      "hour": 3,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 5.54
+    },
+    {
+      "hour": 4,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 5.25
+    },
+    {
+      "hour": 5,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 5.11
+    },
+    {
+      "hour": 6,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 5.08
+    },
+    {
+      "hour": 7,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 6.06
+    },
+    {
+      "hour": 8,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 70.79
+    },
+    {
+      "hour": 9,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.4
+    },
+    {
+      "hour": 10,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.86
+    },
+    {
+      "hour": 11,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.69
+    },
+    {
+      "hour": 12,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.13
+    },
+    {
+      "hour": 13,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.18
+    },
+    {
+      "hour": 14,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.03
+    },
+    {
+      "hour": 15,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 7.8
+    },
+    {
+      "hour": 16,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.84
+    },
+    {
+      "hour": 17,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.24
+    },
+    {
+      "hour": 18,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.99
+    },
+    {
+      "hour": 19,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 4.28
+    },
+    {
+      "hour": 20,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.01
+    },
+    {
+      "hour": 21,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.0
+    },
+    {
+      "hour": 22,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 3.3
+    },
+    {
+      "hour": 23,
+      "day": "Thursday",
+      "load_type": "Light_Load",
+      "kwh": 10.77
+    },
+    {
+      "hour": 0,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 10.27
+    },
+    {
+      "hour": 1,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 6.04
+    },
+    {
+      "hour": 2,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 5.71
+    },
+    {
+      "hour": 3,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 5.65
+    },
+    {
+      "hour": 4,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 5.29
+    },
+    {
+      "hour": 5,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 5.73
+    },
+    {
+      "hour": 6,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 6.01
+    },
+    {
+      "hour": 7,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 6.55
+    },
+    {
+      "hour": 8,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 60.43
+    },
+    {
+      "hour": 9,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 4.24
+    },
+    {
+      "hour": 10,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 3.42
+    },
+    {
+      "hour": 11,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 3.75
+    },
+    {
+      "hour": 12,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 3.09
+    },
+    {
+      "hour": 13,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 4.22
+    },
+    {
+      "hour": 14,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 4.42
+    },
+    {
+      "hour": 15,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 6.45
+    },
+    {
+      "hour": 16,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 4.59
+    },
+    {
+      "hour": 17,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 3.46
+    },
+    {
+      "hour": 18,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 4.26
+    },
+    {
+      "hour": 19,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 4.32
+    },
+    {
+      "hour": 20,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 2.82
+    },
+    {
+      "hour": 21,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 3.48
+    },
+    {
+      "hour": 22,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 3.69
+    },
+    {
+      "hour": 23,
+      "day": "Friday",
+      "load_type": "Light_Load",
+      "kwh": 10.87
+    },
+    {
+      "hour": 0,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 10.72
+    },
+    {
+      "hour": 1,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 7.22
+    },
+    {
+      "hour": 2,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 5.34
+    },
+    {
+      "hour": 3,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 5.16
+    },
+    {
+      "hour": 4,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 5.35
+    },
+    {
+      "hour": 5,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 5.21
+    },
+    {
+      "hour": 6,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 5.25
+    },
+    {
+      "hour": 7,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 4.97
+    },
+    {
+      "hour": 8,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 33.14
+    },
+    {
+      "hour": 9,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.78
+    },
+    {
+      "hour": 10,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 4.0
+    },
+    {
+      "hour": 11,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 4.0
+    },
+    {
+      "hour": 12,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.22
+    },
+    {
+      "hour": 13,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.48
+    },
+    {
+      "hour": 14,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.73
+    },
+    {
+      "hour": 15,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 4.15
+    },
+    {
+      "hour": 16,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.59
+    },
+    {
+      "hour": 17,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.21
+    },
+    {
+      "hour": 18,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.24
+    },
+    {
+      "hour": 19,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.18
+    },
+    {
+      "hour": 20,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.11
+    },
+    {
+      "hour": 21,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.44
+    },
+    {
+      "hour": 22,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 3.62
+    },
+    {
+      "hour": 23,
+      "day": "Saturday",
+      "load_type": "Light_Load",
+      "kwh": 6.98
+    },
+    {
+      "hour": 0,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 5.86
+    },
+    {
+      "hour": 1,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 4.43
+    },
+    {
+      "hour": 2,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 4.1
+    },
+    {
+      "hour": 3,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.82
+    },
+    {
+      "hour": 4,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.95
+    },
+    {
+      "hour": 5,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.5
+    },
+    {
+      "hour": 6,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.32
+    },
+    {
+      "hour": 7,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.46
+    },
+    {
+      "hour": 8,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 15.0
+    },
+    {
+      "hour": 9,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.46
+    },
+    {
+      "hour": 10,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.45
+    },
+    {
+      "hour": 11,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.36
+    },
+    {
+      "hour": 12,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.42
+    },
+    {
+      "hour": 13,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.44
+    },
+    {
+      "hour": 14,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.39
+    },
+    {
+      "hour": 15,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.28
+    },
+    {
+      "hour": 16,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.28
+    },
+    {
+      "hour": 17,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.22
+    },
+    {
+      "hour": 18,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.33
+    },
+    {
+      "hour": 19,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.32
+    },
+    {
+      "hour": 20,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.38
+    },
+    {
+      "hour": 21,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.46
+    },
+    {
+      "hour": 22,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.15
+    },
+    {
+      "hour": 23,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.47
+    },
+    {
+      "hour": 0,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 11.02
+    },
+    {
+      "hour": 1,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 13.88
+    },
+    {
+      "hour": 2,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 16.24
+    },
+    {
+      "hour": 3,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 34.69
+    },
+    {
+      "hour": 4,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 50.91
+    },
+    {
+      "hour": 5,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 50.55
+    },
+    {
+      "hour": 6,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 46.88
+    },
+    {
+      "hour": 7,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 64.98
+    },
+    {
+      "hour": 8,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 74.01
+    },
+    {
+      "hour": 9,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 73.28
+    },
+    {
+      "hour": 10,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 77.61
+    },
+    {
+      "hour": 11,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 53.18
+    },
+    {
+      "hour": 12,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 8.75
+    },
+    {
+      "hour": 13,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 83.29
+    },
+    {
+      "hour": 14,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 80.35
+    },
+    {
+      "hour": 15,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 77.55
+    },
+    {
+      "hour": 16,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 79.28
+    },
+    {
+      "hour": 17,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 49.07
+    },
+    {
+      "hour": 18,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 49.55
+    },
+    {
+      "hour": 19,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 56.32
+    },
+    {
+      "hour": 20,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 53.7
+    },
+    {
+      "hour": 21,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 13.55
+    },
+    {
+      "hour": 22,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 4.76
+    },
+    {
+      "hour": 23,
+      "day": "Monday",
+      "load_type": "Medium_Load",
+      "kwh": 4.73
+    },
+    {
+      "hour": 0,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 12.13
+    },
+    {
+      "hour": 1,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 13.73
+    },
+    {
+      "hour": 2,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 15.78
+    },
+    {
+      "hour": 3,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 34.81
+    },
+    {
+      "hour": 4,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 51.29
+    },
+    {
+      "hour": 5,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 52.16
+    },
+    {
+      "hour": 6,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 47.08
+    },
+    {
+      "hour": 7,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 66.73
+    },
+    {
+      "hour": 8,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 76.31
+    },
+    {
+      "hour": 9,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 73.63
+    },
+    {
+      "hour": 10,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 76.48
+    },
+    {
+      "hour": 11,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 53.94
+    },
+    {
+      "hour": 12,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 8.42
+    },
+    {
+      "hour": 13,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 84.0
+    },
+    {
+      "hour": 14,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 84.33
+    },
+    {
+      "hour": 15,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 84.0
+    },
+    {
+      "hour": 16,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 86.55
+    },
+    {
+      "hour": 17,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 50.36
+    },
+    {
+      "hour": 18,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 54.21
+    },
+    {
+      "hour": 19,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 56.16
+    },
+    {
+      "hour": 20,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 53.91
+    },
+    {
+      "hour": 21,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 12.71
+    },
+    {
+      "hour": 22,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 3.97
+    },
+    {
+      "hour": 23,
+      "day": "Tuesday",
+      "load_type": "Medium_Load",
+      "kwh": 4.29
+    },
+    {
+      "hour": 0,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 11.75
+    },
+    {
+      "hour": 1,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 13.62
+    },
+    {
+      "hour": 2,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 16.36
+    },
+    {
+      "hour": 3,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 29.28
+    },
+    {
+      "hour": 4,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 41.28
+    },
+    {
+      "hour": 5,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 41.56
+    },
+    {
+      "hour": 6,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 44.79
+    },
+    {
+      "hour": 7,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 68.52
+    },
+    {
+      "hour": 8,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 78.48
+    },
+    {
+      "hour": 9,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 74.34
+    },
+    {
+      "hour": 10,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 74.43
+    },
+    {
+      "hour": 11,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 52.34
+    },
+    {
+      "hour": 12,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 8.0
+    },
+    {
+      "hour": 13,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 80.9
+    },
+    {
+      "hour": 14,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 86.52
+    },
+    {
+      "hour": 15,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 89.37
+    },
+    {
+      "hour": 16,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 92.09
+    },
+    {
+      "hour": 17,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 49.44
+    },
+    {
+      "hour": 18,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 35.28
+    },
+    {
+      "hour": 19,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 38.59
+    },
+    {
+      "hour": 20,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 36.53
+    },
+    {
+      "hour": 21,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 14.72
+    },
+    {
+      "hour": 22,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 3.88
+    },
+    {
+      "hour": 23,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 3.95
+    },
+    {
+      "hour": 0,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 12.48
+    },
+    {
+      "hour": 1,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 14.47
+    },
+    {
+      "hour": 2,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 17.19
+    },
+    {
+      "hour": 3,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 35.71
+    },
+    {
+      "hour": 4,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 50.48
+    },
+    {
+      "hour": 5,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 51.01
+    },
+    {
+      "hour": 6,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 48.12
+    },
+    {
+      "hour": 7,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 70.89
+    },
+    {
+      "hour": 8,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 82.99
+    },
+    {
+      "hour": 9,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 77.85
+    },
+    {
+      "hour": 10,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 81.91
+    },
+    {
+      "hour": 11,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 54.91
+    },
+    {
+      "hour": 12,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 9.35
+    },
+    {
+      "hour": 13,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 94.12
+    },
+    {
+      "hour": 14,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 100.67
+    },
+    {
+      "hour": 15,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 97.15
+    },
+    {
+      "hour": 16,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 96.43
+    },
+    {
+      "hour": 17,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 47.53
+    },
+    {
+      "hour": 18,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 49.98
+    },
+    {
+      "hour": 19,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 51.06
+    },
+    {
+      "hour": 20,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 52.67
+    },
+    {
+      "hour": 21,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 16.22
+    },
+    {
+      "hour": 22,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 4.45
+    },
+    {
+      "hour": 23,
+      "day": "Thursday",
+      "load_type": "Medium_Load",
+      "kwh": 4.89
+    },
+    {
+      "hour": 0,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 10.52
+    },
+    {
+      "hour": 1,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 11.67
+    },
+    {
+      "hour": 2,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 14.41
+    },
+    {
+      "hour": 3,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 32.55
+    },
+    {
+      "hour": 4,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 47.5
+    },
+    {
+      "hour": 5,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 48.07
+    },
+    {
+      "hour": 6,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 45.31
+    },
+    {
+      "hour": 7,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 67.23
+    },
+    {
+      "hour": 8,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 78.83
+    },
+    {
+      "hour": 9,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 70.74
+    },
+    {
+      "hour": 10,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 72.33
+    },
+    {
+      "hour": 11,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 50.52
+    },
+    {
+      "hour": 12,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 7.78
+    },
+    {
+      "hour": 13,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 85.93
+    },
+    {
+      "hour": 14,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 90.08
+    },
+    {
+      "hour": 15,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 94.99
+    },
+    {
+      "hour": 16,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 92.13
+    },
+    {
+      "hour": 17,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 46.1
+    },
+    {
+      "hour": 18,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 45.94
+    },
+    {
+      "hour": 19,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 50.52
+    },
+    {
+      "hour": 20,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 47.09
+    },
+    {
+      "hour": 21,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 14.89
+    },
+    {
+      "hour": 22,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 4.06
+    },
+    {
+      "hour": 23,
+      "day": "Friday",
+      "load_type": "Medium_Load",
+      "kwh": 4.35
+    },
+    {
+      "hour": 0,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 9.16
+    },
+    {
+      "hour": 1,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 9.97
+    },
+    {
+      "hour": 2,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 10.93
+    },
+    {
+      "hour": 3,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 13.49
+    },
+    {
+      "hour": 4,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 15.32
+    },
+    {
+      "hour": 5,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 15.48
+    },
+    {
+      "hour": 6,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 16.51
+    },
+    {
+      "hour": 7,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 38.86
+    },
+    {
+      "hour": 8,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 50.61
+    },
+    {
+      "hour": 9,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 47.25
+    },
+    {
+      "hour": 10,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 49.79
+    },
+    {
+      "hour": 11,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 32.57
+    },
+    {
+      "hour": 12,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 5.94
+    },
+    {
+      "hour": 13,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 52.28
+    },
+    {
+      "hour": 14,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 58.1
+    },
+    {
+      "hour": 15,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 56.08
+    },
+    {
+      "hour": 16,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 49.81
+    },
+    {
+      "hour": 17,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 5.96
+    },
+    {
+      "hour": 18,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 4.35
+    },
+    {
+      "hour": 19,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 3.91
+    },
+    {
+      "hour": 20,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 8.83
+    },
+    {
+      "hour": 21,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 8.44
+    },
+    {
+      "hour": 22,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 2.88
+    },
+    {
+      "hour": 23,
+      "day": "Saturday",
+      "load_type": "Medium_Load",
+      "kwh": 2.56
+    },
+    {
+      "hour": 0,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 8.21
+    },
+    {
+      "hour": 1,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 9.12
+    },
+    {
+      "hour": 2,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 10.43
+    },
+    {
+      "hour": 3,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 12.87
+    },
+    {
+      "hour": 4,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 15.62
+    },
+    {
+      "hour": 5,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 15.71
+    },
+    {
+      "hour": 6,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 15.23
+    },
+    {
+      "hour": 7,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 27.18
+    },
+    {
+      "hour": 8,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 37.46
+    },
+    {
+      "hour": 9,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 39.07
+    },
+    {
+      "hour": 10,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 35.0
+    },
+    {
+      "hour": 11,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 25.07
+    },
+    {
+      "hour": 12,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 5.79
+    },
+    {
+      "hour": 13,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 25.72
+    },
+    {
+      "hour": 14,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 32.77
+    },
+    {
+      "hour": 15,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 34.44
+    },
+    {
+      "hour": 16,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 28.22
+    },
+    {
+      "hour": 17,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 8.13
+    },
+    {
+      "hour": 18,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 9.52
+    },
+    {
+      "hour": 19,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 8.88
+    },
+    {
+      "hour": 20,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 8.81
+    },
+    {
+      "hour": 21,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 5.56
+    },
+    {
+      "hour": 22,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 3.1
+    },
+    {
+      "hour": 23,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 3.3
+    },
+    {
+      "hour": 0,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 36.76
+    },
+    {
+      "hour": 1,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.3
+    },
+    {
+      "hour": 2,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 39.18
+    },
+    {
+      "hour": 3,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 49.0
+    },
+    {
+      "hour": 4,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.09
+    },
+    {
+      "hour": 5,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.94
+    },
+    {
+      "hour": 6,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 61.62
+    },
+    {
+      "hour": 7,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.71
+    },
+    {
+      "hour": 8,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.67
+    },
+    {
+      "hour": 9,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 70.0
+    },
+    {
+      "hour": 10,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.67
+    },
+    {
+      "hour": 11,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.12
+    },
+    {
+      "hour": 12,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 41.61
+    },
+    {
+      "hour": 13,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 65.06
+    },
+    {
+      "hour": 14,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.4
+    },
+    {
+      "hour": 15,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 70.25
+    },
+    {
+      "hour": 16,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 69.46
+    },
+    {
+      "hour": 17,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 69.27
+    },
+    {
+      "hour": 18,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.33
+    },
+    {
+      "hour": 19,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 75.6
+    },
+    {
+      "hour": 20,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 63.18
+    },
+    {
+      "hour": 21,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 41.04
+    },
+    {
+      "hour": 22,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.73
+    },
+    {
+      "hour": 23,
+      "day": "Monday",
+      "load_type": "Maximum_Load",
+      "kwh": 35.04
+    },
+    {
+      "hour": 0,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.89
+    },
+    {
+      "hour": 1,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.45
+    },
+    {
+      "hour": 2,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.0
+    },
+    {
+      "hour": 3,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 45.55
+    },
+    {
+      "hour": 4,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.4
+    },
+    {
+      "hour": 5,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 67.36
+    },
+    {
+      "hour": 6,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 62.6
+    },
+    {
+      "hour": 7,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.78
+    },
+    {
+      "hour": 8,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.4
+    },
+    {
+      "hour": 9,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 69.09
+    },
+    {
+      "hour": 10,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.18
+    },
+    {
+      "hour": 11,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 74.98
+    },
+    {
+      "hour": 12,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 43.29
+    },
+    {
+      "hour": 13,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 64.12
+    },
+    {
+      "hour": 14,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 68.42
+    },
+    {
+      "hour": 15,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 70.03
+    },
+    {
+      "hour": 16,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.07
+    },
+    {
+      "hour": 17,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.15
+    },
+    {
+      "hour": 18,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.24
+    },
+    {
+      "hour": 19,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 77.9
+    },
+    {
+      "hour": 20,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 61.33
+    },
+    {
+      "hour": 21,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 31.7
+    },
+    {
+      "hour": 22,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 30.59
+    },
+    {
+      "hour": 23,
+      "day": "Tuesday",
+      "load_type": "Maximum_Load",
+      "kwh": 30.31
+    },
+    {
+      "hour": 0,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 37.54
+    },
+    {
+      "hour": 1,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.07
+    },
+    {
+      "hour": 2,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 35.6
+    },
+    {
+      "hour": 3,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 40.21
+    },
+    {
+      "hour": 4,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 49.03
+    },
+    {
+      "hour": 5,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 51.99
+    },
+    {
+      "hour": 6,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 60.64
+    },
+    {
+      "hour": 7,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.74
+    },
+    {
+      "hour": 8,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.01
+    },
+    {
+      "hour": 9,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 68.0
+    },
+    {
+      "hour": 10,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.34
+    },
+    {
+      "hour": 11,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.0
+    },
+    {
+      "hour": 12,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 39.42
+    },
+    {
+      "hour": 13,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 60.97
+    },
+    {
+      "hour": 14,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 67.69
+    },
+    {
+      "hour": 15,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 65.58
+    },
+    {
+      "hour": 16,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.88
+    },
+    {
+      "hour": 17,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 78.22
+    },
+    {
+      "hour": 18,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 51.72
+    },
+    {
+      "hour": 19,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 47.67
+    },
+    {
+      "hour": 20,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 42.61
+    },
+    {
+      "hour": 21,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.97
+    },
+    {
+      "hour": 22,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.55
+    },
+    {
+      "hour": 23,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.68
+    },
+    {
+      "hour": 0,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 51.9
+    },
+    {
+      "hour": 1,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 53.17
+    },
+    {
+      "hour": 2,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 53.04
+    },
+    {
+      "hour": 3,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 63.02
+    },
+    {
+      "hour": 4,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 80.67
+    },
+    {
+      "hour": 5,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 80.3
+    },
+    {
+      "hour": 6,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.29
+    },
+    {
+      "hour": 7,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.19
+    },
+    {
+      "hour": 8,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 77.63
+    },
+    {
+      "hour": 9,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 73.62
+    },
+    {
+      "hour": 10,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 74.83
+    },
+    {
+      "hour": 11,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 73.8
+    },
+    {
+      "hour": 12,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 43.27
+    },
+    {
+      "hour": 13,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 58.72
+    },
+    {
+      "hour": 14,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 63.9
+    },
+    {
+      "hour": 15,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.63
+    },
+    {
+      "hour": 16,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 64.76
+    },
+    {
+      "hour": 17,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 77.49
+    },
+    {
+      "hour": 18,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 82.72
+    },
+    {
+      "hour": 19,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 89.53
+    },
+    {
+      "hour": 20,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 72.36
+    },
+    {
+      "hour": 21,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 46.74
+    },
+    {
+      "hour": 22,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 46.42
+    },
+    {
+      "hour": 23,
+      "day": "Thursday",
+      "load_type": "Maximum_Load",
+      "kwh": 49.04
+    },
+    {
+      "hour": 0,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 39.58
+    },
+    {
+      "hour": 1,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 40.87
+    },
+    {
+      "hour": 2,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 43.3
+    },
+    {
+      "hour": 3,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 52.69
+    },
+    {
+      "hour": 4,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 68.02
+    },
+    {
+      "hour": 5,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 68.57
+    },
+    {
+      "hour": 6,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 63.73
+    },
+    {
+      "hour": 7,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 65.19
+    },
+    {
+      "hour": 8,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 69.17
+    },
+    {
+      "hour": 9,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 65.63
+    },
+    {
+      "hour": 10,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 67.38
+    },
+    {
+      "hour": 11,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 69.69
+    },
+    {
+      "hour": 12,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 39.43
+    },
+    {
+      "hour": 13,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 59.21
+    },
+    {
+      "hour": 14,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.47
+    },
+    {
+      "hour": 15,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 62.34
+    },
+    {
+      "hour": 16,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 65.78
+    },
+    {
+      "hour": 17,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 76.74
+    },
+    {
+      "hour": 18,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 75.73
+    },
+    {
+      "hour": 19,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 78.16
+    },
+    {
+      "hour": 20,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 66.45
+    },
+    {
+      "hour": 21,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 48.58
+    },
+    {
+      "hour": 22,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 45.02
+    },
+    {
+      "hour": 23,
+      "day": "Friday",
+      "load_type": "Maximum_Load",
+      "kwh": 36.54
+    },
+    {
+      "hour": 0,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 31.93
+    },
+    {
+      "hour": 1,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.54
+    },
+    {
+      "hour": 2,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 32.88
+    },
+    {
+      "hour": 3,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.95
+    },
+    {
+      "hour": 4,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 36.1
+    },
+    {
+      "hour": 5,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 36.23
+    },
+    {
+      "hour": 6,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 35.8
+    },
+    {
+      "hour": 7,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.49
+    },
+    {
+      "hour": 8,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 47.26
+    },
+    {
+      "hour": 9,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 45.57
+    },
+    {
+      "hour": 10,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 46.97
+    },
+    {
+      "hour": 11,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 42.81
+    },
+    {
+      "hour": 12,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 20.73
+    },
+    {
+      "hour": 13,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.35
+    },
+    {
+      "hour": 14,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 45.98
+    },
+    {
+      "hour": 15,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 47.19
+    },
+    {
+      "hour": 16,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 39.61
+    },
+    {
+      "hour": 17,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 34.6
+    },
+    {
+      "hour": 18,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 33.13
+    },
+    {
+      "hour": 19,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 32.78
+    },
+    {
+      "hour": 20,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 36.04
+    },
+    {
+      "hour": 21,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 34.03
+    },
+    {
+      "hour": 22,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 32.7
+    },
+    {
+      "hour": 23,
+      "day": "Saturday",
+      "load_type": "Maximum_Load",
+      "kwh": 28.41
+    },
+    {
+      "hour": 0,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 7.12
+    },
+    {
+      "hour": 1,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 7.82
+    },
+    {
+      "hour": 2,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 8.9
+    },
+    {
+      "hour": 3,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 12.06
+    },
+    {
+      "hour": 4,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 15.42
+    },
+    {
+      "hour": 5,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 16.07
+    },
+    {
+      "hour": 6,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 17.64
+    },
+    {
+      "hour": 7,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 28.01
+    },
+    {
+      "hour": 8,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 36.36
+    },
+    {
+      "hour": 9,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 39.33
+    },
+    {
+      "hour": 10,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.93
+    },
+    {
+      "hour": 11,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 34.67
+    },
+    {
+      "hour": 12,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 16.72
+    },
+    {
+      "hour": 13,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 34.49
+    },
+    {
+      "hour": 14,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 35.61
+    },
+    {
+      "hour": 15,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 31.79
+    },
+    {
+      "hour": 16,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 23.22
+    },
+    {
+      "hour": 17,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 13.77
+    },
+    {
+      "hour": 18,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 7.63
+    },
+    {
+      "hour": 19,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 8.56
+    },
+    {
+      "hour": 20,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 10.38
+    },
+    {
+      "hour": 21,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 8.15
+    },
+    {
+      "hour": 22,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 7.04
+    },
+    {
+      "hour": 23,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 3.81
+    }
+  ],
+  "scenario_explanations": [
+    {
+      "id": "madrugada_Wednesday_Light_Load",
+      "hour": 3,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 4.83,
+      "phrase": "Carga ligera, miércoles a las 03:00: la carga ligera -15.7 kWh, la hora (madrugada) -7.9 kWh, el día (miércoles) +0.6 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 4.8 kWh."
+    },
+    {
+      "id": "madrugada_Wednesday_Medium_Load",
+      "hour": 3,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 29.28,
+      "phrase": "Carga media, miércoles a las 03:00: la carga media +13.1 kWh, la hora (madrugada) -12.4 kWh, el día (miércoles) +0.7 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 29.3 kWh."
+    },
+    {
+      "id": "madrugada_Wednesday_Maximum_Load",
+      "hour": 3,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 40.21,
+      "phrase": "Carga máxima, miércoles a las 03:00: la carga máxima +26.1 kWh, la hora (madrugada) -12.4 kWh, el día (miércoles) -1.3 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 40.2 kWh."
+    },
+    {
+      "id": "madrugada_Sunday_Light_Load",
+      "hour": 3,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.82,
+      "phrase": "Carga ligera, domingo a las 03:00: la carga ligera -11.1 kWh, el día (domingo) -8.4 kWh, la hora (madrugada) -4.5 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 3.8 kWh."
+    },
+    {
+      "id": "madrugada_Sunday_Medium_Load",
+      "hour": 3,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 12.87,
+      "phrase": "Carga media, domingo a las 03:00: el día (domingo) -16.8 kWh, la carga media +9.2 kWh, la hora (madrugada) -7.3 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 12.9 kWh."
+    },
+    {
+      "id": "madrugada_Sunday_Maximum_Load",
+      "hour": 3,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 12.06,
+      "phrase": "Carga máxima, domingo a las 03:00: el día (domingo) -23.3 kWh, la carga máxima +16.8 kWh, la hora (madrugada) -9.2 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 12.1 kWh."
+    },
+    {
+      "id": "mañana_Wednesday_Light_Load",
+      "hour": 10,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 3.67,
+      "phrase": "Carga ligera, miércoles a las 10:00: la carga ligera -25.5 kWh, el día (miércoles) +1.1 kWh, la hora (mañana) +0.2 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 3.7 kWh."
+    },
+    {
+      "id": "mañana_Wednesday_Medium_Load",
+      "hour": 10,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 74.43,
+      "phrase": "Carga media, miércoles a las 10:00: la carga media +25.6 kWh, la hora (mañana) +17.7 kWh, el día (miércoles) +3.3 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 74.4 kWh."
+    },
+    {
+      "id": "mañana_Wednesday_Maximum_Load",
+      "hour": 10,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 71.34,
+      "phrase": "Carga máxima, miércoles a las 10:00: la carga máxima +28.1 kWh, la hora (mañana) +12.0 kWh, el día (miércoles) +3.5 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 71.3 kWh."
+    },
+    {
+      "id": "mañana_Sunday_Light_Load",
+      "hour": 10,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.45,
+      "phrase": "Carga ligera, domingo a las 10:00: la carga ligera -17.6 kWh, el día (domingo) -9.9 kWh, la hora (mañana) +3.1 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 3.5 kWh."
+    },
+    {
+      "id": "mañana_Sunday_Medium_Load",
+      "hour": 10,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 35.0,
+      "phrase": "Carga media, domingo a las 10:00: el día (domingo) -24.3 kWh, la carga media +16.5 kWh, la hora (mañana) +15.0 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 35.0 kWh."
+    },
+    {
+      "id": "mañana_Sunday_Maximum_Load",
+      "hour": 10,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 38.93,
+      "phrase": "Carga máxima, domingo a las 10:00: el día (domingo) -22.5 kWh, la carga máxima +21.4 kWh, la hora (mañana) +12.2 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 38.9 kWh."
+    },
+    {
+      "id": "tarde_Wednesday_Light_Load",
+      "hour": 15,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 5.78,
+      "phrase": "Carga ligera, miércoles a las 15:00: la carga ligera -24.8 kWh, la hora (tarde) +2.4 kWh, el día (miércoles) +0.3 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 5.8 kWh."
+    },
+    {
+      "id": "tarde_Wednesday_Medium_Load",
+      "hour": 15,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 89.37,
+      "phrase": "Carga media, miércoles a las 15:00: la carga media +29.3 kWh, la hora (tarde) +27.5 kWh, el día (miércoles) +4.7 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 89.4 kWh."
+    },
+    {
+      "id": "tarde_Wednesday_Maximum_Load",
+      "hour": 15,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 65.58,
+      "phrase": "Carga máxima, miércoles a las 15:00: la carga máxima +23.6 kWh, la hora (tarde) +11.5 kWh, el día (miércoles) +2.6 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 65.6 kWh."
+    },
+    {
+      "id": "tarde_Sunday_Light_Load",
+      "hour": 15,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.28,
+      "phrase": "Carga ligera, domingo a las 15:00: la carga ligera -16.1 kWh, el día (domingo) -12.7 kWh, la hora (tarde) +4.3 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 3.3 kWh."
+    },
+    {
+      "id": "tarde_Sunday_Medium_Load",
+      "hour": 15,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 34.44,
+      "phrase": "Carga media, domingo a las 15:00: el día (domingo) -28.4 kWh, la carga media +17.7 kWh, la hora (tarde) +17.3 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 34.4 kWh."
+    },
+    {
+      "id": "tarde_Sunday_Maximum_Load",
+      "hour": 15,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 31.79,
+      "phrase": "Carga máxima, domingo a las 15:00: el día (domingo) -24.5 kWh, la carga máxima +18.6 kWh, la hora (tarde) +9.8 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 31.8 kWh."
+    },
+    {
+      "id": "noche_Wednesday_Light_Load",
+      "hour": 20,
+      "day": "Wednesday",
+      "load_type": "Light_Load",
+      "kwh": 1.34,
+      "phrase": "Carga ligera, miércoles a las 20:00: la carga ligera -18.9 kWh, la hora (noche) -6.0 kWh, el día (miércoles) -1.5 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 1.3 kWh."
+    },
+    {
+      "id": "noche_Wednesday_Medium_Load",
+      "hour": 20,
+      "day": "Wednesday",
+      "load_type": "Medium_Load",
+      "kwh": 36.53,
+      "phrase": "Carga media, miércoles a las 20:00: la carga media +16.9 kWh, la hora (noche) -6.9 kWh, el día (miércoles) -1.2 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 36.5 kWh."
+    },
+    {
+      "id": "noche_Wednesday_Maximum_Load",
+      "hour": 20,
+      "day": "Wednesday",
+      "load_type": "Maximum_Load",
+      "kwh": 42.61,
+      "phrase": "Carga máxima, miércoles a las 20:00: la carga máxima +26.8 kWh, la hora (noche) -8.0 kWh, el día (miércoles) -4.0 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 42.6 kWh."
+    },
+    {
+      "id": "noche_Sunday_Light_Load",
+      "hour": 20,
+      "day": "Sunday",
+      "load_type": "Light_Load",
+      "kwh": 3.38,
+      "phrase": "Carga ligera, domingo a las 20:00: la carga ligera -12.1 kWh, el día (domingo) -8.7 kWh, la hora (noche) -3.6 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 3.4 kWh."
+    },
+    {
+      "id": "noche_Sunday_Medium_Load",
+      "hour": 20,
+      "day": "Sunday",
+      "load_type": "Medium_Load",
+      "kwh": 8.81,
+      "phrase": "Carga media, domingo a las 20:00: el día (domingo) -22.9 kWh, la carga media +9.7 kWh, la hora (noche) -5.8 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 8.8 kWh."
+    },
+    {
+      "id": "noche_Sunday_Maximum_Load",
+      "hour": 20,
+      "day": "Sunday",
+      "load_type": "Maximum_Load",
+      "kwh": 10.38,
+      "phrase": "Carga máxima, domingo a las 20:00: el día (domingo) -27.4 kWh, la carga máxima +17.1 kWh, la hora (noche) -7.1 kWh frente al promedio de la planta (27.8 kWh); XGBoost estima 10.4 kWh."
+    }
+  ],
+  "stats_summary": {
+    "kruskal_wallis_load_type": {
+      "H": 17109.099132500152,
+      "p": 0.0,
+      "epsilon2": 0.48825810236322037,
+      "dunn_all_pairs_p_lt_0.001": true
+    },
+    "mann_whitney_weekday_vs_weekend": {
+      "U": 175276841.5,
+      "p": 0.0,
+      "median_weekday": 7.6,
+      "median_weekend": 3.46
+    },
+    "spearman_with_kwh": {
+      "Lagging_Current_Reactive.Power_kVarh": 0.6449373744353163,
+      "Leading_Current_Reactive_Power_kVarh": -0.13170278467399105,
+      "Lagging_Current_Power_Factor": 0.3751581279575107,
+      "Leading_Current_Power_Factor": 0.19350079011622798,
+      "CO2(tCO2)": 0.881513949180869,
+      "NSM": 0.32218017286919387
+    },
+    "vif_with_co2": {
+      "CO2(tCO2)": 43.132236475787124,
+      "Usage_kWh": 50.41019167638982
+    },
+    "kpss_level": {
+      "statistic": 2.335248909829734,
+      "p_bounded": 0.01
+    },
+    "friedman_weekly_mae": {
+      "n_windows": 13,
+      "chi2": 20.46153846153848,
+      "p": 3.6044032901779916e-05,
+      "mean_ranks": {
+        "Elastic Net": 3.0,
+        "Random Forest": 1.6923076923076923,
+        "XGBoost": 1.3076923076923077
+      }
+    },
+    "nemenyi_p": {
+      "Elastic Net": {
+        "Elastic Net": 1.0,
+        "Random Forest": 0.0024665762380968737,
+        "XGBoost": 4.752728949686258e-05
+      },
+      "Random Forest": {
+        "Elastic Net": 0.0024665762380968737,
+        "Random Forest": 1.0,
+        "XGBoost": 0.5891587440452052
+      },
+      "XGBoost": {
+        "Elastic Net": 4.752728949686258e-05,
+        "Random Forest": 0.5891587440452052,
+        "XGBoost": 1.0
+      }
+    },
+    "diebold_mariano_december_abs_error": [
+      {
+        "a": "XGBoost",
+        "b": "Elastic Net",
+        "stat": -5.863937046814644,
+        "p_nw": 4.520189142251943e-09,
+        "p_lag96": 1.4046640367095717e-05,
+        "mean_loss_diff_kwh": -3.8893854503306535
+      },
+      {
+        "a": "XGBoost",
+        "b": "Random Forest",
+        "stat": -2.605977883024716,
+        "p_nw": 0.00916123769834754,
+        "p_lag96": 0.045450749212523664,
+        "mean_loss_diff_kwh": -0.12636294002649406
+      }
+    ]
+  },
+  "notes": [
+    "El modelo exportado es XGBoost: el de menor MAE en el examen (1 oct a 31 dic 2018), entrenado solo con 1 ene a 30 sep.",
+    "La tabla de predicción promedia las predicciones de los minutos :00, :15, :30 y :45 de cada hora; el valor es kWh por intervalo de 15 min.",
+    "Las frases de scenario_explanations provienen de los valores SHAP de XGBoost (aporte de hora, día y carga sobre el promedio de la planta).",
+    "Combinaciones que casi no ocurren en los datos (por ejemplo carga máxima en domingo de madrugada) son extrapolaciones del modelo.",
+    "El CO2 no entra al modelo: se calcula como kWh por el factor de variable_contract.post_computed.",
+    "Corte por inicio de intervalo: entrenamiento hasta 2018-09-30 23:45, examen desde 2018-10-01 00:00.",
+    "MAPE se calcula solo sobre registros con consumo real mayor o igual a 1 kWh."
+  ]
+}

@@ -8,7 +8,7 @@ import streamlit as st
 
 from lab import stats_tests as T
 from lab.config import LOAD_ES, LOAD_TYPES
-from lab.ui import load_data, reading, require_data
+from lab.ui import load_data, read_json, reading, require_data
 
 
 @st.cache_data(show_spinner="Ejecutando pruebas estadísticas...")
@@ -98,4 +98,37 @@ def render() -> None:
         "La decisión combina evidencia estadística (efecto grande de hora, día y carga) con la restricción de negocio: "
         "solo se usa lo que el gemelo puede producir.",
         "El siguiente paso, Preparación, construye un pipeline reproducible con estas tres variables y la semilla 42.",
+    )
+
+    _model_tests()
+
+
+def _model_tests() -> None:
+    """Friedman/Nemenyi and Diebold-Mariano results between models (computed at training time)."""
+    st.subheader("Pruebas entre modelos")
+    res = read_json("pruebas_modelos.json")
+    if res is None:
+        st.info("Estas pruebas se calculan al entrenar los modelos: ejecute `python train.py` o el botón de la pantalla Evaluación.")
+        return
+    fn, dm = res["friedman_nemenyi"], res["diebold_mariano"]
+    rows = [{"prueba": "Friedman sobre el MAE semanal del examen", "estadístico": f"chi² = {fn['chi2']:.2f}",
+             "p": "< 0.001" if fn["p"] < 0.001 else f"{fn['p']:.3f}",
+             "lectura": "Rangos medios: " + ", ".join(f"{k} {v:.2f}" for k, v in fn["mean_ranks"].items())}]
+    models = list(fn["mean_ranks"])
+    for i, a in enumerate(models):
+        for b in models[i + 1:]:
+            p = fn["nemenyi"][a][b]
+            rows.append({"prueba": f"Nemenyi: {a} vs {b}", "estadístico": "-", "p": "< 0.001" if p < 0.001 else f"{p:.3f}",
+                         "lectura": "Difieren" if p < 0.05 else "No se distinguen"})
+    for r in dm:
+        rows.append({"prueba": f"Diebold-Mariano (diciembre): {r['model_a']} vs {r['model_b']}", "estadístico": f"DM = {r['stat']:.2f}",
+                     "p": "< 0.001" if r["p"] < 0.001 else f"{r['p']:.3f}",
+                     "lectura": f"Diferencia media de error {r['mean_diff']:+.2f} kWh (negativa: {r['model_a']} mejor)"})
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+    reading(
+        f"Friedman con {fn['n_windows']} semanas: p {'menor a 0.001' if fn['p'] < 0.001 else round(fn['p'], 3)}. "
+        + " ".join(f"XGBoost frente a {r['model_b']}: p {r['p']:.3g}." for r in dm),
+        "Friedman y Nemenyi ordenan los modelos por su error semanal; Diebold-Mariano contrasta las predicciones de diciembre con una "
+        "varianza robusta a la autocorrelación.",
+        "El detalle y las figuras están en Evaluación; aquí queda el registro de que la elección del modelo se apoya en pruebas y no solo en un promedio.",
     )

@@ -63,3 +63,17 @@ def not_trained_message(what: str = "Esta pantalla") -> None:
 
 def fmt(x: float, digits: int = 1) -> str:
     return f"{x:,.{digits}f}"
+
+
+def train_all_button(key: str) -> None:
+    """'Entrenar / Re-entrenar' button that runs the same code as train.py (phases 5-8 end to end)."""
+    reuse = st.checkbox("Reutilizar los hiperparámetros congelados (más rápido)", value=True, key=f"reuse_{key}")
+    if st.button("Entrenar / Re-entrenar y exportar el artefacto", key=key):
+        from . import pipeline  # lazy: pulls in xgboost and shap
+
+        bar = st.progress(0.0)
+        with st.spinner("Entrenando y exportando (puede tardar un par de minutos)..."):
+            pipeline.run_all(progress=lambda msg, frac: bar.progress(min(frac, 1.0), text=msg), reuse_search=reuse)
+        st.cache_data.clear()
+        st.success("Entrenamiento terminado; artefactos actualizados.")
+        st.rerun()

@@ -1,0 +1,58 @@
+{
+  "friedman_nemenyi": {
+    "n_windows": 13,
+    "chi2": 20.46153846153848,
+    "p": 3.6044032901779916e-05,
+    "mean_ranks": {
+      "Elastic Net": 3.0,
+      "Random Forest": 1.6923076923076923,
+      "XGBoost": 1.3076923076923077
+    },
+    "nemenyi": {
+      "Elastic Net": {
+        "Elastic Net": 1.0,
+        "Random Forest": 0.0024665762380968737,
+        "XGBoost": 4.752728949686258e-05
+      },
+      "Random Forest": {
+        "Elastic Net": 0.0024665762380968737,
+        "Random Forest": 1.0,
+        "XGBoost": 0.5891587440452052
+      },
+      "XGBoost": {
+        "Elastic Net": 4.752728949686258e-05,
+        "Random Forest": 0.5891587440452052,
+        "XGBoost": 1.0
+      }
+    }
+  },
+  "diebold_mariano": [
+    {
+      "model_a": "XGBoost",
+      "model_b": "Elastic Net",
+      "n": 2976,
+      "mae_a": 11.898147905601931,
+      "mae_b": 15.787533355932583,
+      "mean_diff": -3.8893854503306535,
+      "stat": -5.863937046814644,
+      "p": 4.520189142251943e-09,
+      "lags": 8,
+      "stat_lag96": -4.343130864517213,
+      "p_lag96": 1.4046640367095717e-05
+    },
+    {
+      "model_a": "XGBoost",
+      "model_b": "Random Forest",
+      "n": 2976,
+      "mae_a": 11.898147905601931,
+      "mae_b": 12.024510845628425,
+      "mean_diff": -0.12636294002649406,
+      "stat": -2.605977883024716,
+      "p": 0.00916123769834754,
+      "lags": 8,
+      "stat_lag96": -2.0004587564126317,
+      "p_lag96": 0.045450749212523664
+    }
+  ],
+  "dm_note": "Absolute-error loss on December; HAC (Newey-West) variance; p_lag96 uses a one-day bandwidth."
+}
