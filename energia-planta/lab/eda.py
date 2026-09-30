@@ -7,10 +7,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 from scipy import stats
 
-from .config import DAYS, DAYS_ES, LOAD_COLORS, LOAD_ES, LOAD_TYPES, TARGET
+from .config import DAYS, DAYS_ES, LOAD_COLORS, LOAD_ES, LOAD_SHORT, LOAD_TYPES, TARGET
+from .theme import ACCENT, COLUMN_SHORT, NEUTRAL, POSITIVE, TEMPLATE, style_fig
 
 MONTHS_ES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
-_TPL = "plotly_white"
+_TPL = TEMPLATE
 
 
 def figure_series(df: pd.DataFrame):
@@ -19,10 +20,11 @@ def figure_series(df: pd.DataFrame):
     daily = d.set_index("ts_start")[TARGET].resample("D").mean()
     fig = go.Figure()
     fig.add_trace(go.Scattergl(x=d["ts_start"], y=d[TARGET], mode="lines", name="Cada 15 min",
-                               line=dict(width=0.6, color="#9db7d5")))
+                               line=dict(width=0.6, color=NEUTRAL)))
     fig.add_trace(go.Scatter(x=daily.index, y=daily.values, mode="lines", name="Media diaria",
-                             line=dict(width=2, color="#d64550")))
-    fig.update_layout(template=_TPL, yaxis_title="kWh por 15 min", height=380, legend=dict(orientation="h"))
+                             line=dict(width=2, color=ACCENT)))
+    style_fig(fig, "Consumo de la planta durante el año completo", x="Fecha", y="Consumo (kWh / 15 min)")
+    fig.update_layout(hovermode="x unified")
 
     monthly = d.groupby("month")[TARGET].mean()
     hi, lo = monthly.idxmax(), monthly.idxmin()
@@ -49,14 +51,15 @@ def figure_profile(df: pd.DataFrame):
     fig = go.Figure()
     for lt in LOAD_TYPES:
         p = prof[prof["Load_Type"] == lt]
-        fig.add_trace(go.Scatter(x=p["hour"], y=p[TARGET], mode="lines+markers", name=LOAD_ES[lt],
+        fig.add_trace(go.Scatter(x=p["hour"], y=p[TARGET], mode="lines+markers", name=LOAD_SHORT[lt],
                                  line=dict(color=LOAD_COLORS[lt])))
     overall = df.groupby("hour")[TARGET].mean()
     fig.add_trace(go.Scatter(x=overall.index, y=overall.values, mode="lines", name="Todas las cargas",
                              line=dict(color="#444", dash="dot")))
-    fig.update_layout(template=_TPL, xaxis_title="Hora del día (inicio del intervalo)",
-                      yaxis_title="kWh medios por 15 min", height=380, legend=dict(orientation="h"))
+    style_fig(fig, "Consumo medio por hora del día, según el tipo de carga",
+              x="Hora del día (inicio del intervalo)", y="Consumo medio (kWh / 15 min)")
     fig.update_xaxes(dtick=2)
+    fig.update_layout(hovermode="x unified")
 
     night = overall.loc[[2, 3, 4, 5]].mean()
     work = overall.loc[8:11].mean()
@@ -83,8 +86,9 @@ def figure_box_day(df: pd.DataFrame):
     d = df.copy()
     d["Día"] = d["day"].map(DAYS_ES)
     fig = px.box(d, x="Día", y=TARGET, category_orders={"Día": [DAYS_ES[x] for x in DAYS]}, template=_TPL,
-                 color_discrete_sequence=["#4c9be8"], points=False)
-    fig.update_layout(yaxis_title="kWh por 15 min", height=360)
+                 color_discrete_sequence=[ACCENT], points=False)
+    style_fig(fig, "Distribución del consumo según el día de la semana", x="Día de la semana",
+              y="Consumo (kWh / 15 min)", legend=False)
     med = d.groupby("day")[TARGET].median().reindex(DAYS)
     mean = d.groupby("day")[TARGET].mean().reindex(DAYS)
     wk = mean[["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]]
@@ -106,10 +110,11 @@ def figure_box_day(df: pd.DataFrame):
 
 def figure_box_load(df: pd.DataFrame):
     d = df.copy()
-    d["Tipo de carga"] = d["Load_Type"].map(LOAD_ES)
+    d["Tipo de carga"] = d["Load_Type"].map(LOAD_SHORT)
     fig = px.box(d, x="Tipo de carga", y=TARGET, color="Load_Type", color_discrete_map=LOAD_COLORS,
-                 category_orders={"Tipo de carga": [LOAD_ES[t] for t in LOAD_TYPES]}, template=_TPL, points=False)
-    fig.update_layout(showlegend=False, yaxis_title="kWh por 15 min", height=360)
+                 category_orders={"Tipo de carga": [LOAD_SHORT[t] for t in LOAD_TYPES]}, template=_TPL, points=False)
+    style_fig(fig, "Distribución del consumo según el tipo de carga", x="Tipo de carga",
+              y="Consumo (kWh / 15 min)", legend=False)
     q = d.groupby("Load_Type")[TARGET].quantile([0.25, 0.5, 0.75]).unstack().reindex(LOAD_TYPES)
     see = "; ".join(
         f"{LOAD_ES[t].lower()}: mediana {q.loc[t, 0.5]:.1f} kWh (rango intercuartil {q.loc[t, 0.25]:.1f} a {q.loc[t, 0.75]:.1f})"
@@ -128,12 +133,16 @@ def figure_box_load(df: pd.DataFrame):
 
 
 def figure_spearman(matrix: pd.DataFrame):
-    labels = [c.replace("_Current", "").replace("Power_", "P.").replace("_", " ") for c in matrix.columns]
+    labels = [COLUMN_SHORT.get(c, c) for c in matrix.columns]
     fig = go.Figure(go.Heatmap(z=matrix.values, x=labels, y=labels, zmin=-1, zmax=1, colorscale="RdBu_r",
-                               text=np.round(matrix.values, 2), texttemplate="%{text}"))
-    fig.update_layout(template=_TPL, height=460)
+                               text=np.round(matrix.values, 2), texttemplate="%{text}",
+                               colorbar=dict(title="Correlación"),
+                               hovertemplate="%{y} y %{x}: %{z:.2f}<extra></extra>"))
+    style_fig(fig, "Correlación de Spearman entre las variables del archivo", height=500, legend=False)
+    fig.update_layout(margin=dict(t=64))
+    fig.update_yaxes(autorange="reversed")
     r = matrix[TARGET].drop(TARGET).sort_values(key=lambda s: -s.abs())
-    top = ", ".join(f"{k.replace('_', ' ')} ({v:.2f})" for k, v in r.head(3).items())
+    top = ", ".join(f"{COLUMN_SHORT.get(k, k).lower()} ({v:.2f})" for k, v in r.head(3).items())
     see = f"Las mayores correlaciones de Spearman con el consumo son: {top}. NSM y factor de potencia leading quedan por debajo de 0.4."
     meaning = (
         "El CO2 sigue al consumo casi peso a peso y la reactiva lagging lo acompaña; ambas son consecuencia de operar "
@@ -156,16 +165,18 @@ def figure_co2(df: pd.DataFrame):
     z = lambda s: (s - s.mean()) / s.std()
     from plotly.subplots import make_subplots
 
-    fig = make_subplots(rows=1, cols=2, subplot_titles=("kWh frente a CO2 (6,000 registros)", "Una semana estandarizada"))
-    fig.add_trace(go.Scattergl(x=rs[TARGET], y=rs[co2], mode="markers", marker=dict(size=4, opacity=0.35, color="#4c9be8"),
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Consumo frente a CO2 (6,000 registros)", "Una semana, ambas series estandarizadas"))
+    fig.add_trace(go.Scattergl(x=rs[TARGET], y=rs[co2], mode="markers", marker=dict(size=4, opacity=0.35, color=NEUTRAL),
                                name="Registros"), row=1, col=1)
     xs = np.array([0, df[TARGET].max()])
-    fig.add_trace(go.Scatter(x=xs, y=intercept + slope * xs, mode="lines", line=dict(color="#d64550"), name="Recta ajustada"), row=1, col=1)
-    fig.add_trace(go.Scatter(x=week["ts_start"], y=z(week[TARGET]), mode="lines", name="kWh (z)", line=dict(color="#4c9be8")), row=1, col=2)
-    fig.add_trace(go.Scatter(x=week["ts_start"], y=z(week[co2]), mode="lines", name="CO2 (z)", line=dict(color="#d64550", dash="dot")), row=1, col=2)
-    fig.update_xaxes(title_text="kWh por 15 min", row=1, col=1)
-    fig.update_yaxes(title_text="tCO2", row=1, col=1)
-    fig.update_layout(template=_TPL, height=400, legend=dict(orientation="h"))
+    fig.add_trace(go.Scatter(x=xs, y=intercept + slope * xs, mode="lines", line=dict(color=POSITIVE), name="Recta ajustada"), row=1, col=1)
+    fig.add_trace(go.Scatter(x=week["ts_start"], y=z(week[TARGET]), mode="lines", name="Consumo (estandarizado)", line=dict(color=ACCENT)), row=1, col=2)
+    fig.add_trace(go.Scatter(x=week["ts_start"], y=z(week[co2]), mode="lines", name="CO2 (estandarizado)", line=dict(color=POSITIVE, dash="dot")), row=1, col=2)
+    style_fig(fig, "El CO2 reproduce al consumo", height=420)
+    fig.update_xaxes(title_text="Consumo (kWh / 15 min)", row=1, col=1)
+    fig.update_yaxes(title_text="CO2 (tCO2 / 15 min)", row=1, col=1)
+    fig.update_xaxes(title_text="Fecha", row=1, col=2)
+    fig.update_yaxes(title_text="Desviaciones estándar", row=1, col=2)
 
     n_levels = df[co2].nunique()
     ratio = df[co2].sum() / df[TARGET].sum()

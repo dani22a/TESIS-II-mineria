@@ -12,6 +12,7 @@ from statsmodels.tools import add_constant
 from statsmodels.tsa.stattools import acf, kpss
 
 from .config import LOAD_TYPES, TARGET
+from .theme import COLUMN_SHORT
 
 REACTIVE_PF = [
     "Lagging_Current_Reactive.Power_kVarh",
@@ -119,28 +120,35 @@ def _fmt_p(p: float) -> str:
     return "< 0.001" if p < 0.001 else f"{p:.3f}"
 
 
+def _diff_verdict(p: float, noun: str = "diferencia") -> str:
+    return f"✅ {noun.capitalize()} significativa" if p < 0.05 else f"⚠️ Sin {noun} significativa"
+
+
 def test_table(t: dict) -> pd.DataFrame:
     """Compact table: test, statistic, p and a one-line reading."""
     kl, kh, mw = t["kruskal_load"], t["kruskal_hour"], t["mann_whitney"]
     sp_ = t["spearman"].set_index("variable")
     vif = t["vif"].set_index("variable")
     rows = [
-        {"prueba": "Kruskal-Wallis: kWh por tipo de carga", "estadístico": f"H = {kl['H']:,.0f}", "p": _fmt_p(kl["p"]),
+        {"prueba": "Kruskal-Wallis: consumo por tipo de carga", "estadístico": f"H = {kl['H']:,.0f}", "p": _fmt_p(kl["p"]), "veredicto": _diff_verdict(kl["p"]),
          "lectura": f"Las tres cargas tienen distribuciones distintas (tamaño de efecto {kl['eps2']:.2f})."},
-        {"prueba": "Kruskal-Wallis: kWh por hora del día", "estadístico": f"H = {kh['H']:,.0f}", "p": _fmt_p(kh["p"]),
+        {"prueba": "Kruskal-Wallis: consumo por hora del día", "estadístico": f"H = {kh['H']:,.0f}", "p": _fmt_p(kh["p"]), "veredicto": _diff_verdict(kh["p"]),
          "lectura": f"El consumo cambia con la hora: de {kh['min']:.1f} kWh ({kh['min_hour']:02d}h) a {kh['max']:.1f} kWh ({kh['max_hour']:02d}h) en promedio."},
-        {"prueba": "Mann-Whitney: día laborable vs fin de semana", "estadístico": f"U = {mw['U']:,.0f}", "p": _fmt_p(mw["p"]),
+        {"prueba": "Mann-Whitney: día laborable vs fin de semana", "estadístico": f"U = {mw['U']:,.0f}", "p": _fmt_p(mw["p"]), "veredicto": _diff_verdict(mw["p"]),
          "lectura": f"Mediana {mw['median_weekday']:.1f} kWh entre semana y {mw['median_weekend']:.1f} kWh en fin de semana."},
     ]
     for col in NUMERIC:
         r = sp_.loc[col]
-        rows.append({"prueba": f"Spearman: {col} vs kWh", "estadístico": f"rho = {r['rho']:.2f}", "p": _fmt_p(r["p"]),
+        rows.append({"prueba": f"Spearman: {COLUMN_SHORT[col].lower()} vs consumo", "estadístico": f"rho = {r['rho']:.2f}",
+                     "p": _fmt_p(r["p"]), "veredicto": _diff_verdict(r["p"], "asociación"),
                      "lectura": "Asociación " + ("fuerte" if abs(r["rho"]) >= 0.7 else "moderada" if abs(r["rho"]) >= 0.4 else "débil") + "."})
-    rows.append({"prueba": "VIF de CO2 (con kWh en el conjunto)", "estadístico": f"VIF = {vif.loc['CO2(tCO2)', 'VIF con CO2']:.1f}", "p": "-",
+    rows.append({"prueba": "VIF del CO2 (con el consumo en el conjunto)", "estadístico": f"VIF = {vif.loc['CO2(tCO2)', 'VIF con CO2']:.1f}", "p": "-",
+                 "veredicto": "⚠️ Variable redundante" if vif.loc["CO2(tCO2)", "VIF con CO2"] > 10 else "✅ Sin redundancia",
                  "lectura": "Por encima de 10 indica redundancia: el CO2 es casi una copia del consumo."})
     k0 = t["kpss"].iloc[0]
-    rows.append({"prueba": "KPSS sobre la serie de 15 min (nivel)", "estadístico": f"{k0['estadístico']:.2f}", "p": f"<= {k0['p (acotado a 0.01-0.10)']:.2f}"
+    rows.append({"prueba": "KPSS sobre la serie de 15 min (estabilidad del nivel)", "estadístico": f"{k0['estadístico']:.2f}", "p": f"<= {k0['p (acotado a 0.01-0.10)']:.2f}"
                  if k0["p (acotado a 0.01-0.10)"] <= 0.01 else f"{k0['p (acotado a 0.01-0.10)']:.2f}",
+                 "veredicto": "⚠️ Serie no estacionaria" if k0["p (acotado a 0.01-0.10)"] < 0.05 else "✅ Serie estacionaria",
                  "lectura": "Se rechaza la estacionariedad." if k0["p (acotado a 0.01-0.10)"] < 0.05 else "No se rechaza la estacionariedad."})
     return pd.DataFrame(rows)
 
@@ -152,20 +160,20 @@ def variable_decisions(t: dict) -> pd.DataFrame:
     vif = t["vif"].set_index("variable")
     rho_nsm_hour = None
     rows = [
-        ("hour (seno y coseno)", "Entra",
+        ("Hora del día (seno y coseno)", "✅ Entra al modelo",
          f"Kruskal-Wallis por hora H = {kh['H']:,.0f} (p {_fmt_p(kh['p'])}); perfil de {kh['min']:.1f} a {kh['max']:.1f} kWh."),
-        ("day (día de la semana)", "Entra",
+        ("Día de la semana", "✅ Entra al modelo",
          f"Mann-Whitney p {_fmt_p(mw['p'])}: mediana {mw['median_weekday']:.1f} kWh entre semana frente a {mw['median_weekend']:.1f} kWh en fin de semana."),
-        ("load_type", "Entra",
+        ("Tipo de carga", "✅ Entra al modelo",
          f"Kruskal-Wallis H = {kl['H']:,.0f} (p {_fmt_p(kl['p'])}), efecto {kl['eps2']:.2f}; Dunn separa las tres cargas."),
-        ("Reactiva lagging / leading", "No entra",
+        ("Potencia reactiva (inductiva / capacitiva)", "❌ No entra",
          f"rho = {sp_['Lagging_Current_Reactive.Power_kVarh']:.2f} / {sp_['Leading_Current_Reactive_Power_kVarh']:.2f}: informan, pero el gemelo no las produce."),
-        ("Factor de potencia lagging / leading", "No entra",
+        ("Factor de potencia (inductivo / capacitivo)", "❌ No entra",
          f"rho = {sp_['Lagging_Current_Power_Factor']:.2f} / {sp_['Leading_Current_Power_Factor']:.2f}: solo para entender el archivo."),
-        ("NSM", "No entra",
+        ("Segundos desde medianoche (NSM)", "❌ No entra",
          f"rho = {sp_['NSM']:.2f} con kWh; son los segundos desde medianoche, redundante con la hora."),
-        ("CO2(tCO2)", "No entra",
+        ("CO2 (tCO2)", "❌ No entra",
          f"rho = {sp_['CO2(tCO2)']:.2f} y VIF = {vif.loc['CO2(tCO2)', 'VIF con CO2']:.0f}: copia del consumo; se calcula después desde kWh."),
-        ("WeekStatus", "No entra", "Se deriva del día de la semana."),
+        ("Tipo de día (WeekStatus)", "❌ No entra", "Se deriva del día de la semana."),
     ]
     return pd.DataFrame(rows, columns=["variable", "decisión", "evidencia"])

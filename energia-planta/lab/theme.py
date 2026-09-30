@@ -48,6 +48,8 @@ _LOAD_ES = {"Light_Load": "Ligera", "Medium_Load": "Media", "Maximum_Load": "Má
 
 def feature_label(name: str) -> str:
     """Readable name of a model column (hour_sin, day_Monday, load_type_Light_Load...)."""
+    if name == "(intercepto)":
+        return "Intercepto"
     if name == "hour_sin":
         return "Hora (seno)"
     if name == "hour_cos":

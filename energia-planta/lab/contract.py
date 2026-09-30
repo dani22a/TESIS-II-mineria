@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from .config import DAYS, LOAD_THRESHOLDS, LOAD_TYPES, SEED, TARGET, UNIT
 from .features import feature_names
+from .theme import COLUMN_ES
 
 # Model inputs: only what the digital twin can produce.
 INPUTS = [
@@ -61,21 +62,21 @@ PREPROCESSING = {
 def contract_table_rows() -> list[dict]:
     """Rows for the Negocio screen table (Spanish labels)."""
     rows = [
-        {"variable": "Usage_kWh", "rol": "Objetivo",
+        {"variable": COLUMN_ES["Usage_kWh"], "rol": "Objetivo",
          "unidad / valores": UNIT, "señal del gemelo": "Salida: kWh de la planta cada 15 min"},
-        {"variable": "hour", "rol": "Entrada",
+        {"variable": "Hora del día", "rol": "Entrada",
          "unidad / valores": "0 a 23.75 (se codifica como seno y coseno)",
          "señal del gemelo": "Reloj de simulación"},
-        {"variable": "day", "rol": "Entrada",
+        {"variable": "Día de la semana", "rol": "Entrada",
          "unidad / valores": "Lunes a Domingo",
          "señal del gemelo": "Reloj de simulación"},
-        {"variable": "load_type", "rol": "Entrada",
-         "unidad / valores": "Light / Medium / Maximum",
+        {"variable": "Tipo de carga", "rol": "Entrada",
+         "unidad / valores": "Ligera / Media / Máxima",
          "señal del gemelo": "Tonelaje SAG / nominal: menor a 75 % ligera, hasta 90 % media, mayor a 90 % máxima"},
     ]
     for e in EXCLUDED:
         rows.append({
-            "variable": e["name"],
+            "variable": COLUMN_ES.get(e["name"], e["name"]),
             "rol": "Solo laboratorio" if "Analysed" in e["reason"] else "Excluida",
             "unidad / valores": "-",
             "señal del gemelo": "No la produce el gemelo" if "Analysed" in e["reason"]

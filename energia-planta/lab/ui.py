@@ -175,11 +175,12 @@ def read_json(name: str):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def not_trained_message(what: str = "Esta pantalla") -> None:
+def not_trained_message(what: str = "Esta pantalla", *, button: bool = True) -> None:
     """The single banner used whenever a screen needs results that do not exist yet."""
+    how = ("Pulse el botón de abajo, o ejecute `python train.py` en la terminal"
+           if button else "Ejecute `python train.py` en la terminal, o use el botón de entrenamiento de la fase 7 · Evaluación")
     st.warning(
-        f"**{what} aún no tiene resultados porque el modelo no ha sido entrenado.** "
-        "Pulse el botón de abajo, o ejecute `python train.py` en la terminal; tarda un par de minutos.",
+        f"**{what} aún no tiene resultados porque el modelo no ha sido entrenado.** {how}; tarda un par de minutos.",
         icon=":material/hourglass_empty:",
     )
 
