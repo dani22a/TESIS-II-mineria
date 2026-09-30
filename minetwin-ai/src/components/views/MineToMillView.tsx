@@ -2,7 +2,7 @@
  * MineTwin AI - Mine-to-Mill Causal Graph & SAG Grinding Optimization
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -20,6 +20,13 @@ import {
 } from 'lucide-react';
 import { DigitalTwinState } from '../../types/mining';
 import { calculateKuzRamFragmentation, evaluateMineToMillImpact } from '../../services/kuzRamModel';
+import {
+  getPlantEnergyStatus,
+  loadPlantEnergyModel,
+  predictPlantEnergy,
+  SAG_NOMINAL_TPH,
+} from '../../services/plantEnergy';
+import { plantLoadTypeLabel, weekdayLabel } from '../../i18n/labels';
 
 interface MineToMillViewProps {
   state: DigitalTwinState;
@@ -29,6 +36,23 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
   const [rockUCS, setRockUCS] = useState<number>(145);
   const [powderFactor, setPowderFactor] = useState<number>(0.88);
   const [selectedNodeIndex, setSelectedNodeIndex] = useState<number>(3); // Default to Fragmentation
+  // What-if SAG tonnage for the plant energy card; null follows the live twin value.
+  const [sagWhatIfTph, setSagWhatIfTph] = useState<number | null>(null);
+  const [plantEnergyStatus, setPlantEnergyStatus] = useState(getPlantEnergyStatus());
+
+  useEffect(() => {
+    let active = true;
+    loadPlantEnergyModel().then((next) => {
+      if (active) setPlantEnergyStatus(next);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const liveSagTph = state.mill.sagMillThroughputTph;
+  const plantSagTph = sagWhatIfTph ?? liveSagTph;
+  const plantEnergy = plantEnergyStatus === 'ready' ? predictPlantEnergy(plantSagTph, state.simTimeSeconds) : null;
 
   // Compute live propagation
   const kuzRam = calculateKuzRamFragmentation({
@@ -210,6 +234,101 @@ export const MineToMillView: React.FC<MineToMillViewProps> = ({ state }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Plant electrical consumption (energia-planta model) */}
+      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
+        <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center gap-2">
+          <Zap className="w-4 h-4 text-sky-400" /> Consumo eléctrico de la planta (modelo XGBoost, cada 15 min)
+        </h3>
+
+        {plantEnergy ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 text-xs">
+            <div className="lg:col-span-3 bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+              <div className="text-[10px] text-slate-400 font-semibold uppercase">Consumo predicho</div>
+              <div className="text-2xl font-bold font-mono text-sky-400 mt-1">
+                {plantEnergy.kwh15min.toLocaleString(undefined, { maximumFractionDigits: 1 })}{' '}
+                <span className="text-xs text-slate-400">kWh / 15 min</span>
+              </div>
+              <div className="text-[10px] text-slate-500 mt-1">
+                Reloj de planta: {weekdayLabel(plantEnergy.day)} {String(plantEnergy.hour).padStart(2, '0')}:00
+              </div>
+            </div>
+
+            <div className="lg:col-span-3 bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+              <div className="text-[10px] text-slate-400 font-semibold uppercase">Tipo de carga</div>
+              <div
+                className={`text-base font-bold mt-1 ${
+                  plantEnergy.loadType === 'Maximum_Load'
+                    ? 'text-red-400'
+                    : plantEnergy.loadType === 'Medium_Load'
+                      ? 'text-amber-400'
+                      : 'text-emerald-400'
+                }`}
+              >
+                {plantLoadTypeLabel(plantEnergy.loadType)}
+              </div>
+              <div className="text-[10px] text-slate-500 mt-1 font-mono">
+                SAG {plantSagTph.toLocaleString()} t/h = {Math.round(plantEnergy.sagRatio * 100)}% del nominal (
+                {SAG_NOMINAL_TPH.toLocaleString()} t/h)
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-1.5">
+              <div className="text-[10px] text-slate-400 font-semibold uppercase">Explicación (SHAP)</div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">{plantEnergy.phrase}</p>
+              {!plantEnergy.phraseExact && plantEnergy.phraseScenario && (
+                <p className="text-[10px] text-slate-500">
+                  Aproximada: escenario de referencia más cercano ({weekdayLabel(plantEnergy.phraseScenario.day)}{' '}
+                  {String(plantEnergy.phraseScenario.hour).padStart(2, '0')}:00). La cifra de kWh corresponde a la hora
+                  y el día actuales.
+                </p>
+              )}
+            </div>
+
+            <div className="lg:col-span-12 bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-1.5">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-slate-300">Tonelaje SAG (simulación)</span>
+                <span className="font-mono font-bold text-sky-400 text-sm">
+                  {plantSagTph.toLocaleString()} t/h {sagWhatIfTph === null ? '(en vivo)' : '(manual)'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="2400"
+                max="4400"
+                step="50"
+                value={plantSagTph}
+                onChange={(e) => setSagWhatIfTph(parseInt(e.target.value, 10))}
+                className="w-full accent-sky-500 cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>&lt; 3 000 t/h (carga ligera)</span>
+                <span>3 000 a 3 600 t/h (carga media)</span>
+                <span>&gt; 3 600 t/h (carga máxima)</span>
+              </div>
+              {sagWhatIfTph !== null && (
+                <button
+                  type="button"
+                  onClick={() => setSagWhatIfTph(null)}
+                  className="text-[10px] px-2 py-1 rounded-md border border-slate-700 text-slate-300 hover:border-sky-500/60"
+                >
+                  Volver al valor en vivo ({liveSagTph.toLocaleString()} t/h)
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="p-3 rounded-xl border border-slate-800 bg-slate-950/80 text-xs text-slate-400">
+            {plantEnergyStatus === 'loading' || plantEnergyStatus === 'idle'
+              ? 'Cargando el modelo eléctrico de la planta...'
+              : 'Modelo eléctrico no cargado. Falta el archivo planta_xgboost.json; el resto de la vista sigue funcionando.'}
+          </div>
+        )}
+        <p className="text-[10px] text-slate-500">
+          Independiente de la energía específica del SAG ({impact.sagMillSpecificEnergyKwhT} kWh/t, modelo Kuz-Ram):
+          aquí se estima el consumo eléctrico total de la planta.
+        </p>
       </div>
 
       {/* Causal Graph Node Pipeline */}
