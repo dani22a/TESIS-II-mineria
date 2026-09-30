@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+scipy
+scikit-learn
+xgboost
+shap
+statsmodels
+scikit-posthocs
+plotly
+matplotlib

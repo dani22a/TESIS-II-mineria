@@ -1,0 +1,7 @@
+data/*.csv
+__pycache__/
+.venv/
+# Heavy training artifacts (small JSON files in artefactos/ ARE versioned)
+artefactos/*.joblib
+artefactos/*.parquet
+artefactos/*.csv
