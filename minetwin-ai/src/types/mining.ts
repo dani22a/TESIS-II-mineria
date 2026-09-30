@@ -245,6 +245,8 @@ export interface StockpileTwin {
   fillPercentage: number;
 }
 
+export type PlantLoadType = 'Light_Load' | 'Medium_Load' | 'Maximum_Load';
+
 export interface MillCircuitTwin {
   id: string;
   name: string;
@@ -262,6 +264,12 @@ export interface MillCircuitTwin {
   bearingTemperatureC: number;
   operatingState: OperatingState;
   millBottleNeckFactor: string; // e.g. 'Coarse feed from P80=240mm' or 'UCS hardness 185MPa'
+  // Plant electrical consumption (energia-planta model, see services/plantEnergy.ts).
+  // Undefined until the artifact is loaded or when it is unavailable.
+  plantEnergyKwh15min?: number; // predicted plant kWh per 15 min
+  plantLoadType?: PlantLoadType; // derived from SAG tonnage vs nominal
+  plantEnergyPhrase?: string; // SHAP-based explanation (Spanish)
+  plantClock?: { hour: number; day: string }; // simulated plant wall clock
 }
 
 export interface MineAlert {

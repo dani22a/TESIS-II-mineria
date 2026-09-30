@@ -12,6 +12,7 @@ import {
   TruckTwin,
 } from '../types/mining';
 import { interpolateRoadPosition } from './roadNetwork';
+import { predictPlantEnergy } from './plantEnergy';
 
 export class SimulationEngine {
   /**
@@ -223,6 +224,14 @@ export class SimulationEngine {
 
     mill.sagMillThroughputTph = Math.round(3550 + Math.random() * 60 - 30);
     mill.specificEnergyKwhPerTon = Math.round((15.6 + Math.random() * 0.4) * 10) / 10;
+
+    // Plant consumption (kWh/15 min) from the energia-planta model. Independent of the
+    // SAG specific energy above; stays undefined when the artifact is not loaded.
+    const plant = predictPlantEnergy(mill.sagMillThroughputTph, simTimeSeconds);
+    mill.plantEnergyKwh15min = plant?.kwh15min;
+    mill.plantLoadType = plant?.loadType;
+    mill.plantEnergyPhrase = plant?.phrase;
+    mill.plantClock = plant ? { hour: plant.hour, day: plant.day } : undefined;
 
     // 6. Aggregate Live KPIs
     const totalTonsToday = shovels.reduce((acc, s) => acc + s.totalMinedTodayTons, 0);

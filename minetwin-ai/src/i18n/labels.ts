@@ -8,6 +8,7 @@ import {
   DigitalTwinAlert,
   DRLRecommendation,
   MaterialType,
+  PlantLoadType,
   UserRole,
 } from '../types/mining';
 
@@ -123,4 +124,28 @@ export function timeModeLabel(mode: 'HISTORICAL' | 'LIVE' | 'PREDICTION' | 'SCEN
 
 export function copilotAgentLabel(agent: string): string {
   return COPILOT_AGENT_LABELS[agent] ?? agent;
+}
+
+export const PLANT_LOAD_TYPE_LABELS: Record<PlantLoadType, string> = {
+  Light_Load: 'Carga ligera',
+  Medium_Load: 'Carga media',
+  Maximum_Load: 'Carga máxima',
+};
+
+export function plantLoadTypeLabel(type: PlantLoadType): string {
+  return PLANT_LOAD_TYPE_LABELS[type];
+}
+
+export const WEEKDAY_LABELS: Record<string, string> = {
+  Monday: 'lunes',
+  Tuesday: 'martes',
+  Wednesday: 'miércoles',
+  Thursday: 'jueves',
+  Friday: 'viernes',
+  Saturday: 'sábado',
+  Sunday: 'domingo',
+};
+
+export function weekdayLabel(day: string): string {
+  return WEEKDAY_LABELS[day] ?? day;
 }
