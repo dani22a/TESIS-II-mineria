@@ -19,7 +19,7 @@ PURPOSE = (
 
 def render() -> None:
     page_header(1, PURPOSE, [
-        ("Qué se predice", "Consumo de la planta", "Energía eléctrica que consume la planta en cada intervalo."),
+        ("Qué se predice", "Consumo", "Energía eléctrica que consume la planta en cada intervalo."),
         ("Unidad", "kWh / 15 min", "Kilovatios-hora consumidos en cada intervalo de 15 minutos."),
         ("Entradas del modelo", f"{len(contract.INPUTS)} variables", "Hora del día, día de la semana y tipo de carga."),
         ("Métrica principal", "MAE (kWh)", help_text("MAE")),

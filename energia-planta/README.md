@@ -17,11 +17,24 @@ python train.py          # entrenamiento completo sin interfaz (ver más abajo)
 
 | Ruta | Contenido |
 | --- | --- |
-| `app.py` | Menú lateral con las 8 fases CRISP-DM |
+| `app.py` | Barra lateral (fases, estado, glosario) y enrutado a la pantalla de cada fase |
 | `screens/` | Una pantalla por fase (`negocio`, `datos`, `eda`, `pruebas`, `preparacion`, `modelado`, `evaluacion`, `despliegue`) |
 | `lab/` | Módulos importables: datos, contrato de variables, pruebas, modelos, evaluación, explicabilidad, exportación |
 | `artefactos/` | Resultados en caché. Los JSON pequeños se versionan; `*.joblib`, `*.csv` y `*.parquet` no |
 | `data/` | CSV original (ignorado por git) |
+
+## Interfaz
+
+- **Navegación:** la barra lateral muestra el título, las 8 fases numeradas con una pregunta corta cada una
+  (`st.radio` con clave `fase`), la fase actual, el estado del proyecto (datos, modelo, artefacto) y un glosario.
+  Cada pantalla termina con un botón «Ir a la fase siguiente».
+- **Esqueleto común** (`lab/ui.py`): `page_header` (título con número de fase, para qué sirve, 3-4 tarjetas KPI),
+  contenido en pestañas, `reading` (lectura de tres líneas), `next_step`. Sin artefactos se muestra un único aviso
+  con la acción a seguir (`not_trained_message`, `missing_data_banner`).
+- **Dónde editar:** textos de fases y orden en `lab/config.py` (`PHASE_META`); glosario en `lab/glossary.py`
+  (se usa en tooltips y expanders); colores, plantilla de Plotly, nombres en español de columnas y CSS en
+  `lab/theme.py`; tema de Streamlit en `.streamlit/config.toml`.
+- **Formato de números:** punto decimal y coma de miles, unidad tras un espacio (`11.49 kWh`, `35,040`).
 
 ## Decisiones de diseño
 
