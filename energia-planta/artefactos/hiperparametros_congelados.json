@@ -1,0 +1,139 @@
+{
+  "seed": 42,
+  "scoring": "neg_mean_absolute_error",
+  "split": {
+    "train_start": "2018-01-01 00:00:00",
+    "train_end": "2018-09-30 23:45:00",
+    "exam_start": "2018-10-01 00:00:00",
+    "exam_end": "2018-12-31 23:45:00",
+    "n_train": 26208,
+    "n_exam": 8832,
+    "note": "Split by interval start (ts_start). The 2019-01-01 00:00 record starts at 2018-12-31 23:45 and belongs to the exam."
+  },
+  "cv": {
+    "type": "TimeSeriesSplit",
+    "n_splits": 5,
+    "folds": [
+      {
+        "fold": 1,
+        "train_start": "2018-01-01 00:00:00",
+        "train_end": "2018-02-15 11:45:00",
+        "val_start": "2018-02-15 12:00:00",
+        "val_end": "2018-04-01 23:45:00",
+        "n_train": 4368,
+        "n_val": 4368
+      },
+      {
+        "fold": 2,
+        "train_start": "2018-01-01 00:00:00",
+        "train_end": "2018-04-01 23:45:00",
+        "val_start": "2018-04-02 00:00:00",
+        "val_end": "2018-05-17 11:45:00",
+        "n_train": 8736,
+        "n_val": 4368
+      },
+      {
+        "fold": 3,
+        "train_start": "2018-01-01 00:00:00",
+        "train_end": "2018-05-17 11:45:00",
+        "val_start": "2018-05-17 12:00:00",
+        "val_end": "2018-07-01 23:45:00",
+        "n_train": 13104,
+        "n_val": 4368
+      },
+      {
+        "fold": 4,
+        "train_start": "2018-01-01 00:00:00",
+        "train_end": "2018-07-01 23:45:00",
+        "val_start": "2018-07-02 00:00:00",
+        "val_end": "2018-08-16 11:45:00",
+        "n_train": 17472,
+        "n_val": 4368
+      },
+      {
+        "fold": 5,
+        "train_start": "2018-01-01 00:00:00",
+        "train_end": "2018-08-16 11:45:00",
+        "val_start": "2018-08-16 12:00:00",
+        "val_end": "2018-09-30 23:45:00",
+        "n_train": 21840,
+        "n_val": 4368
+      }
+    ]
+  },
+  "models": {
+    "Elastic Net": {
+      "params": {
+        "alpha": 0.5456725485601477,
+        "l1_ratio": 0.4461372443656412
+      },
+      "cv_mae": 18.843854014122417,
+      "cv_mae_std": 2.1721735024123876,
+      "cv_mae_folds": [
+        22.48936084180575,
+        19.56310346489755,
+        18.059577422480736,
+        18.2282719195361,
+        15.878956421891953
+      ],
+      "n_iter": 30,
+      "seconds": 9.8,
+      "search_space": {
+        "alpha": "log-uniforme entre 0.001 y 10",
+        "l1_ratio": "uniforme entre 0.05 y 0.95"
+      }
+    },
+    "Random Forest": {
+      "params": {
+        "max_depth": 13,
+        "min_samples_leaf": 8,
+        "n_estimators": 288
+      },
+      "cv_mae": 12.444324171280993,
+      "cv_mae_std": 2.9332149398606786,
+      "cv_mae_folds": [
+        17.95209860633807,
+        12.643401542500307,
+        11.49781283613789,
+        10.52090002590037,
+        9.607407845528332
+      ],
+      "n_iter": 15,
+      "seconds": 35.7,
+      "search_space": {
+        "n_estimators": "entero entre 100 y 400",
+        "max_depth": "entero entre 3 y 20",
+        "min_samples_leaf": "entero entre 1 y 40"
+      }
+    },
+    "XGBoost": {
+      "params": {
+        "colsample_bytree": 0.7797802696552814,
+        "learning_rate": 0.013833507535062186,
+        "max_depth": 8,
+        "n_estimators": 506,
+        "reg_lambda": 3.459583241762642,
+        "subsample": 0.8663689426469987
+      },
+      "cv_mae": 12.47659389496308,
+      "cv_mae_std": 2.8955951051857807,
+      "cv_mae_folds": [
+        17.895770879909666,
+        12.723467914583265,
+        11.534160634530334,
+        10.58884532677221,
+        9.640724719019929
+      ],
+      "n_iter": 30,
+      "seconds": 14.5,
+      "search_space": {
+        "n_estimators": "entero entre 100 y 600",
+        "max_depth": "entero entre 2 y 8",
+        "learning_rate": "log-uniforme entre 0.01 y 0.3",
+        "subsample": "uniforme entre 0.6 y 1.0",
+        "colsample_bytree": "uniforme entre 0.6 y 1.0",
+        "reg_lambda": "log-uniforme entre 0.1 y 20"
+      }
+    }
+  }
+}

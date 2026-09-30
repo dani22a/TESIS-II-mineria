@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from .config import DAYS, LOAD_THRESHOLDS, LOAD_TYPES, SEED, TARGET, UNIT
+from .features import feature_names
 
 # Model inputs: only what the digital twin can produce.
 INPUTS = [
@@ -50,9 +51,7 @@ PREPROCESSING = {
         "The file stamps the END of each 15-min interval. Features use the interval START "
         "(end - 15 min); the 00:00 record closes the previous day."
     ),
-    "features": ["hour_sin", "hour_cos"]
-    + [f"day_{d}" for d in DAYS]
-    + [f"load_{t}" for t in LOAD_TYPES],
+    "features": feature_names(),
     "elastic_net": "ColumnTransformer (one-hot + sin/cos) -> StandardScaler -> ElasticNet",
     "trees": "ColumnTransformer (one-hot + sin/cos passthrough) -> RandomForest / XGBoost, no scaling",
     "seed": SEED,
