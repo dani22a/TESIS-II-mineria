@@ -3,28 +3,21 @@ import importlib
 
 import streamlit as st
 
-from lab.config import PHASES, SEED
+from lab.config import PHASES
+from lab.ui import inject_css, render_sidebar
 
-st.set_page_config(page_title="Laboratorio de energía de planta", layout="wide")
+st.set_page_config(page_title="Laboratorio de energía de planta", page_icon=":material/bolt:", layout="wide")
 
 # Screen modules by phase; a phase whose module is not implemented yet is shown as pending.
-SCREENS = {
-    "1. Negocio": "screens.negocio",
-    "2. Datos": "screens.datos",
-    "3. EDA": "screens.eda",
-    "4. Pruebas": "screens.pruebas",
-    "5. Preparación": "screens.preparacion",
-    "6. Modelado": "screens.modelado",
-    "7. Evaluación": "screens.evaluacion",
-    "8. Despliegue": "screens.despliegue",
-}
+SCREENS = dict(zip(PHASES, (
+    "screens.negocio", "screens.datos", "screens.eda", "screens.pruebas",
+    "screens.preparacion", "screens.modelado", "screens.evaluacion", "screens.despliegue",
+)))
 
 
 def main() -> None:
-    st.sidebar.title("Energía de planta")
-    st.sidebar.caption("CRISP-DM · Usage_kWh cada 15 min")
-    phase = st.sidebar.radio("Fase", PHASES, key="fase")
-    st.sidebar.markdown(f"Semilla fija: **{SEED}**")
+    inject_css()
+    phase = render_sidebar()
 
     try:
         module = importlib.import_module(SCREENS[phase])
