@@ -39,6 +39,9 @@ export interface TwinSnapshot {
   mill: {
     sagMillThroughputTph: number;
     specificEnergyKwhPerTon: number;
+    plantEnergyKwh15min: number | null; // null = electrical model not loaded
+    plantLoadType: string | null;
+    plantEnergyPhrase: string | null;
     millBottleNeckFactor: string;
   };
   blastPatterns: {
@@ -99,6 +102,9 @@ export function buildTwinSnapshot(state: DigitalTwinState): TwinSnapshot {
     mill: {
       sagMillThroughputTph: state.mill.sagMillThroughputTph,
       specificEnergyKwhPerTon: state.mill.specificEnergyKwhPerTon,
+      plantEnergyKwh15min: state.mill.plantEnergyKwh15min ?? null,
+      plantLoadType: state.mill.plantLoadType ?? null,
+      plantEnergyPhrase: state.mill.plantEnergyPhrase ?? null,
       millBottleNeckFactor: state.mill.millBottleNeckFactor,
     },
     blastPatterns: state.blastPatterns.map((p) => ({

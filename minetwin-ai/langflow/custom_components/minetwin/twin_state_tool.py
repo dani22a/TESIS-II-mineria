@@ -47,7 +47,7 @@ class TwinStateTool(Component):
     display_name = "Consultar gemelo"
     description = (
         "Consulta el estado vivo del gemelo digital de MineTwin: producción total (t/h), colas por pala, "
-        "camiones en cola, nivel de tolva del chancador, rendimiento y energía del molino SAG. "
+        "camiones en cola, nivel de tolva del chancador, rendimiento y energía específica del molino SAG (kWh/t) y consumo eléctrico de la planta (kWh por 15 min, tipo de carga). "
         "Úsala para cualquier pregunta sobre cómo está la mina ahora."
     )
     icon = "radar"

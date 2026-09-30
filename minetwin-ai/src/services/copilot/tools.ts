@@ -42,7 +42,30 @@ export function queryTwinState(state: DigitalTwinState): Record<string, unknown>
     crusherChokePercent: state.crusher.chokeLevelPercent,
     sagTph: state.mill.sagMillThroughputTph,
     sagKwhT: state.mill.specificEnergyKwhPerTon,
+    ...plantEnergyFromState(state),
     millBottleneck: state.mill.millBottleNeckFactor,
+  };
+}
+
+/**
+ * Plant electrical consumption (kWh per 15 min, energia-planta model). Different
+ * magnitude from sagKwhT (SAG specific energy, Kuz-Ram kWh/t): cite both, never mix them.
+ */
+export function plantEnergyFromState(state: DigitalTwinState) {
+  const mill = state.mill;
+  if (mill.plantEnergyKwh15min === undefined || !mill.plantLoadType) {
+    return {
+      plantKwh15min: 'no cargado' as const,
+      plantLoadType: null,
+      plantPhrase: null,
+      plantClock: null,
+    };
+  }
+  return {
+    plantKwh15min: mill.plantEnergyKwh15min,
+    plantLoadType: mill.plantLoadType,
+    plantPhrase: mill.plantEnergyPhrase ?? null,
+    plantClock: mill.plantClock ?? null,
   };
 }
 
@@ -302,6 +325,12 @@ export function wantsWriteAction(message: string, agent: CopilotAgentId): boolea
   return /propon|reasign|aplic|ejecut|aprueb/.test(t);
 }
 
+const LOAD_LABELS: Record<string, string> = {
+  Light_Load: 'carga ligera',
+  Medium_Load: 'carga media',
+  Maximum_Load: 'carga máxima',
+};
+
 export function formatDeterministicReply(
   agent: CopilotAgentId,
   traces: ToolTrace[],
@@ -343,6 +372,15 @@ export function formatDeterministicReply(
       const bottlenecks = nested.bottlenecks;
       if (Array.isArray(bottlenecks) && bottlenecks.length > 0) {
         lines.push(`• Cuello de botella: ${bottlenecks.join('; ')}`);
+      }
+    } else if (tr.tool === 'query_twin_state' && tr.agent === 'mill_agent' && result) {
+      if (result.sagKwhT != null) lines.push(`• Energía específica SAG: ${result.sagKwhT} kWh/t (Kuz-Ram / gemelo).`);
+      if (typeof result.plantKwh15min === 'number') {
+        const load = LOAD_LABELS[String(result.plantLoadType)] ?? String(result.plantLoadType);
+        lines.push(`• Consumo de la planta: ${result.plantKwh15min} kWh por 15 min, ${load} (modelo eléctrico XGBoost).`);
+        if (typeof result.plantPhrase === 'string' && result.plantPhrase) lines.push(`• Referencia SHAP (escenario más cercano, cifra aproximada): `);
+      } else {
+        lines.push('• Consumo de la planta (kWh por 15 min): modelo eléctrico no cargado.');
       }
     } else if (tr.tool === 'run_kuz_ram' || tr.tool === 'evaluate_mine_to_mill') {
       const payload = (result?.actual ?? result) as Record<string, unknown>;

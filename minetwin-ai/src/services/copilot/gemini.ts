@@ -69,7 +69,13 @@ export function buildNarrationPrompt(params: {
     `Tools JSON:\n${JSON.stringify(params.traces)}\n` +
     `Pendiente HITL: ${params.pending ? params.pending.what : 'ninguna'}\n` +
     `Responde en español latino neutro, breve, con viñetas. ` +
-    `No pegues JSON. Cita de dónde sale cada número (Kuz-Ram, laboratorio de escenarios, gemelo).`
+    `No pegues JSON. Cita de dónde sale cada número (Kuz-Ram, laboratorio de escenarios, gemelo).` +
+    (params.route === 'mill_agent'
+      ? `
+Agente de planta: cita SIEMPRE ambas cifras de energía, sin mezclarlas: la energía específica del SAG ` +
+        `(sagKwhT, kWh/t, Kuz-Ram) y el consumo eléctrico de la planta (plantKwh15min, kWh por 15 min) con su tipo de carga ` +
+        `(plantLoadType) y la explicación (plantPhrase). Si plantKwh15min es "no cargado", dilo.`
+      : '')
   );
 }
 
