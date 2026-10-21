@@ -2,7 +2,7 @@
  * MineTwin AI - Data Ingestion, OT Connectivity & Security RBAC Audit
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Activity,
   CheckCircle2,
@@ -17,6 +17,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { DigitalTwinState, UserRole } from '../../types/mining';
+import { ExportMenu } from '../ExportMenu';
 
 interface SystemDataViewProps {
   state: DigitalTwinState;
@@ -24,6 +25,7 @@ interface SystemDataViewProps {
 }
 
 export const SystemDataView: React.FC<SystemDataViewProps> = ({ state, onChangeRole }) => {
+  const auditTableRef = useRef<HTMLDivElement>(null);
   const pipelines = [
     { name: 'Concentrador de eventos de despacho (Kafka)', protocol: 'Kafka 3.4', status: 'En línea', latency: '42 ms', throughput: '18.4 k msg/s' },
     { name: 'Puente OPC-UA de planta y chancador', protocol: 'OPC-UA TCP', status: 'En línea', latency: '65 ms', throughput: '4.2 k tags/s' },
@@ -127,11 +129,14 @@ export const SystemDataView: React.FC<SystemDataViewProps> = ({ state, onChangeR
 
       {/* Bottom: Audit Trail Log */}
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl text-xs space-y-3">
-        <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center gap-1.5 border-b border-slate-800 pb-2">
-          <UserCheck className="w-4 h-4 text-sky-400" /> Registro de auditoría y trazabilidad
-        </h3>
+        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+          <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center gap-1.5">
+            <UserCheck className="w-4 h-4 text-sky-400" /> Registro de auditoría y trazabilidad
+          </h3>
+          <ExportMenu kind="table" targetRef={auditTableRef} title="Registro de auditoría y trazabilidad" />
+        </div>
 
-        <div className="overflow-x-auto">
+        <div ref={auditTableRef} className="overflow-x-auto">
           <table className="w-full text-left font-mono text-xs">
             <thead className="bg-slate-950/80 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-800 font-sans">
               <tr>

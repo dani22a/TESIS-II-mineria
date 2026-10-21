@@ -2,7 +2,7 @@
  * MineTwin AI - Drill & Blast Engineering & Kuz-Ram Fragmentation Suite
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -24,6 +24,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { BlastPatternModel, DigitalTwinState } from '../../types/mining';
+import { ExportMenu } from '../ExportMenu';
 import { chokeRiskLabel } from '../../i18n/labels';
 import {
   calculateKuzRamFragmentation,
@@ -36,6 +37,7 @@ interface DrillBlastViewProps {
 }
 
 export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
+  const psdChartRef = useRef<HTMLDivElement>(null);
   const [selectedPatternId, setSelectedPatternId] = useState<string>('PAT-104-B3840');
   const pattern = state.blastPatterns.find((p) => p.id === selectedPatternId) || state.blastPatterns[0];
 
@@ -270,9 +272,12 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
             <h3 className="font-bold text-slate-200 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-emerald-400" /> Curva Granulométrica Rosin-Rammler
             </h3>
-            <span className="font-mono text-[10px] text-slate-400">
-              Índice Uniformidad n: <b className="text-emerald-400">{kuzRam.uniformityIndexN}</b>
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-slate-400">
+                Índice Uniformidad n: <b className="text-emerald-400">{kuzRam.uniformityIndexN}</b>
+              </span>
+              <ExportMenu kind="chart" targetRef={psdChartRef} title="Curva granulométrica Rosin-Rammler" />
+            </div>
           </div>
 
           {/* Kuz-Ram Key Output Cards */}
@@ -298,7 +303,7 @@ export const DrillBlastView: React.FC<DrillBlastViewProps> = ({ state }) => {
           </div>
 
           {/* Recharts PSD Area Chart */}
-          <div className="flex-1 min-h-[240px] w-full bg-slate-950/60 p-2 rounded-xl border border-slate-800">
+          <div ref={psdChartRef} className="flex-1 min-h-[240px] w-full bg-slate-950/60 p-2 rounded-xl border border-slate-800">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={kuzRam.curveData} margin={{ top: 10, right: 15, left: -20, bottom: 0 }}>
                 <defs>
