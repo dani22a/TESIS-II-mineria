@@ -1,0 +1,38 @@
+{
+  "name": "TB RAG flow (prototype)",
+  "description": "PROTOTYPE export mirroring langchain-service /rag: authorized docs -> split -> keyword retriever -> prompt -> LLM. Hand-written skeleton, not exported from a running Langflow; re-save it from the Langflow UI after import. Never connect images or patient identifiers. Answers must cite sources and say 'insufficient evidence' when retrieval is weak.",
+  "is_component": false,
+  "tags": ["tb-screening", "rag", "prototype"],
+  "data": {
+    "nodes": [
+      {"id": "Directory-1", "type": "genericNode", "position": {"x": 0, "y": 0},
+       "data": {"type": "Directory", "display_name": "Authorized docs",
+                "node": {"template": {"path": {"value": "langchain-service/docs"}, "types": {"value": ["md"]}}}}},
+      {"id": "Split-1", "type": "genericNode", "position": {"x": 300, "y": 0},
+       "data": {"type": "SplitText", "display_name": "Split by paragraph",
+                "node": {"template": {"chunk_size": {"value": 600}, "chunk_overlap": {"value": 50}, "separator": {"value": "\n\n"}}}}},
+      {"id": "Retriever-1", "type": "genericNode", "position": {"x": 600, "y": 0},
+       "data": {"type": "BM25Retriever", "display_name": "Keyword retriever (BM25)",
+                "node": {"template": {"top_k": {"value": 3}, "min_score": {"value": 1.0}}}}},
+      {"id": "ChatInput-1", "type": "genericNode", "position": {"x": 600, "y": 250},
+       "data": {"type": "ChatInput", "display_name": "Question", "node": {"template": {}}}},
+      {"id": "Prompt-1", "type": "genericNode", "position": {"x": 900, "y": 100},
+       "data": {"type": "Prompt", "display_name": "Grounded prompt",
+                "node": {"template": {"template": {"value": "Answer ONLY from the context below and cite the source file names. If the context does not contain the answer, reply exactly: Insufficient evidence in the authorized documents to answer this question.\n\nContext:\n{context}\n\nQuestion: {question}"}}}}},
+      {"id": "LLM-1", "type": "genericNode", "position": {"x": 1200, "y": 100},
+       "data": {"type": "LanguageModel", "display_name": "LLM (optional)",
+                "node": {"template": {"api_key": {"value": "", "load_from_db": true, "name": "LLM_API_KEY"}, "temperature": {"value": 0}}}}},
+      {"id": "ChatOutput-1", "type": "genericNode", "position": {"x": 1500, "y": 100},
+       "data": {"type": "ChatOutput", "display_name": "Answer with sources", "node": {"template": {}}}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "Directory-1", "target": "Split-1"},
+      {"id": "e2", "source": "Split-1", "target": "Retriever-1"},
+      {"id": "e3", "source": "ChatInput-1", "target": "Retriever-1"},
+      {"id": "e4", "source": "Retriever-1", "target": "Prompt-1"},
+      {"id": "e5", "source": "ChatInput-1", "target": "Prompt-1"},
+      {"id": "e6", "source": "Prompt-1", "target": "LLM-1"},
+      {"id": "e7", "source": "LLM-1", "target": "ChatOutput-1"}
+    ]
+  }
+}

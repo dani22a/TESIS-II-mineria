@@ -1,0 +1,4 @@
+# Optional: only needed when an LLM key is configured (ANTHROPIC_API_KEY or OPENAI_API_KEY)
+langchain-core>=0.3
+langchain-openai>=0.2
+langchain-anthropic>=0.3

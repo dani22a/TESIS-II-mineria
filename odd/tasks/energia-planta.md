@@ -11,6 +11,7 @@
 - [x] T3 Preparation, 3 models, temporal validation, random search, frozen hyperparams.
 - [x] T4 SHAP, Friedman/Nemenyi + Diebold-Mariano, evaluation, deployment, export `artefactos/planta_xgboost.json`.
 - [x] T5 Twin: types, `plantEnergy.ts`, Mine-Mill card, copilot citation, graceful fallback.
+- [x] T6 Streamlit UX refinement (accepted scope change requested by the user). Route: single delegated writer.
 
 ## Progress / evidence
 (commits and checks recorded per task)
@@ -19,6 +20,7 @@
 - T3 1d379b9 feat(energia-planta): pipelines, TimeSeriesSplit(5) + RandomizedSearchCV (seed 42, MAE), frozen hyperparameters. Evidence: run_modeling() completed in ~65 s; frozen CV MAE: Elastic Net 18.84, Random Forest 12.44, XGBoost 12.48 kWh; Preparación and Modelado render without exception; Modelado degrades to a 'not trained' message when artefactos/hiperparametros_congelados.json is missing.
 - T4 4c7593c feat(energia-planta): evaluation, SHAP, export. Evidence: `python train.py` completed (115 s, exit 0). Exam MAE/RMSE/MAPE/R2: Elastic Net 17.202/23.631/230.8%/0.453; Random Forest 11.577/19.506/100.0%/0.627; XGBoost 11.490/19.295/100.2%/0.635. Friedman (13 weekly windows) chi2 20.46 p 3.6e-5, ranks EN 3.00 RF 1.69 XGB 1.31. DM Dec XGB vs EN p 4.5e-9; vs RF p 0.0092 (p 0.045 with 1-day HAC lag). Winner XGBoost. planta_xgboost.json validated by export.validate_artifact: 12 top-level keys, 504 rows, 24 scenarios, finite numbers. All 8 screens render via AppTest without exception.
 - T5 9614600 feat(minetwin): plantEnergy service + mill fields + artifact copy; a05bed1 feat(minetwin): Mine-Mill plant energy card; 12a1192 feat(minetwin): plant copilot cites plant kWh. Route: delegated writer. Evidence: `npm run lint` (tsc --noEmit) clean before and after; `npm run build` OK; tsx script: SAG 2500/3400/3700/4200 t/h at Mon 06:00 -> Light 3.23 / Medium 46.88 / Maximum 61.62 / Maximum 61.62 kWh (at Mon 14:00: 3.92 / 80.35 / 71.40 / 71.40, model itself has Maximum < Medium at that hour); missing JSON -> status 'unavailable', predict null, no throw; tick leaves mill.plant* undefined when unloaded and sets them once loaded, specificEnergyKwhPerTon untouched. Not verified visually in a browser. Constants: SAG_NOMINAL_TPH=4000, clock Monday 06:00 start, time scale 60.
+- T6 e0aff2a feat(energia-planta): shared page layout, theme, glossary; screens/lab presentation changes landed in 18c9e0a (an automatic commit titled 'add skill registry...' swept them in); 3fe20ba README Interfaz + KPI fix. Evidence: AppTest, all 8 screens render without exception with artifacts (metrics/tabs per screen OK) and with artefactos/data pointed at an empty temp dir (friendly banner on screens 1-7 and 8, 0 exceptions); next-step button navigates (1 -> 2). Visual: one screenshot of Negocio + sidebar seen (loopback 127.0.0.1:8599), KPI truncation fixed; other pages NOT visually verified. Server stopped, port 8599 not listening. No push.
 
 ## Next step
-close / user decides push & PR
+user decides push & PR

@@ -1,0 +1,10 @@
+numpy
+pandas
+pillow
+scikit-learn
+scipy
+torch
+torchvision
+optuna
+# optional: mlflow
+pytest

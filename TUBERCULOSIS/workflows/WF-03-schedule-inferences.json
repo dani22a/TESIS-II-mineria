@@ -1,0 +1,259 @@
+{
+  "name": "WF-03 Schedule pending inferences",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/15 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "9c587b02-3264-4d8e-89ba-901eaa0e44d5",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tb-run-pending",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "id": "76b7b3c9-0c91-4c34-87fe-9527c91af1b8",
+      "name": "Webhook (on demand)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ],
+      "webhookId": "tb-run-pending-0001",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CREDENTIAL_ID",
+          "name": "TB webhook header auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.TB_API_URL }}/cases",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.N8N_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "image_uploaded"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        }
+      },
+      "id": "1306fda5-96c8-40a3-8fb2-43e44ac90ad9",
+      "name": "List cases pending inference",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst arr = Array.isArray(body) ? body : Object.values(body);\nreturn arr.map(c => ({json: {id: c.id}}));"
+      },
+      "id": "d3f70db6-3314-4c02-819f-2151cbfa7332",
+      "name": "One item per case",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.TB_API_URL }}/cases/{{ $json.id }}/inference",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.N8N_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "7185c538-0d5d-40f7-808e-a50ee7d38189",
+      "name": "Run inference",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst failed = items.filter(i => i.json.error || i.json.status === 'technical_failure').length;\nreturn [{json: {attempted: items.length, failed}}];"
+      },
+      "id": "519ffdc4-4fef-4ea9-892e-9a1af1bc3ec1",
+      "name": "Summarize run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.TB_API_URL }}/ops/events",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.N8N_API_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({workflow: 'WF-03', event: 'inference_batch', outcome: ($json.failed > 0 ? 'failure' : 'success'), detail: {attempted: $json.attempted, failed: $json.failed}}) }}"
+      },
+      "id": "e9af24ff-b929-4db0-81d2-ded91c633600",
+      "name": "Log inference batch",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1560,
+        300
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "List cases pending inference",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List cases pending inference": {
+      "main": [
+        [
+          {
+            "node": "One item per case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "One item per case": {
+      "main": [
+        [
+          {
+            "node": "Run inference",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run inference": {
+      "main": [
+        [
+          {
+            "node": "Summarize run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize run": {
+      "main": [
+        [
+          {
+            "node": "Log inference batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook (on demand)": {
+      "main": [
+        [
+          {
+            "node": "List cases pending inference",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": [
+    {
+      "name": "tb-screening"
+    }
+  ],
+  "meta": {
+    "note": "Set env TB_API_URL and N8N_API_TOKEN; see workflows/README.md"
+  }
+}

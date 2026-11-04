@@ -1,0 +1,29 @@
+# Minimal stack, compatible with podman-compose and docker compose.
+# PostgreSQL is external (your local instance): create the database and set DATABASE_URL.
+#   podman-compose config
+#   podman-compose up -d --build
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      # From inside a container the host is host.containers.internal (podman) / host.docker.internal (docker)
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://USER:PASS@host.containers.internal:5432/tb_screening}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me}
+      STORAGE_DIR: /data/storage
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    ports:
+      - "8000:8000"
+    volumes:
+      - backenddata:/data
+
+  frontend:
+    build:
+      context: ./frontend   # Dockerfile is added with the frontend task
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  backenddata:
