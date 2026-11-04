@@ -2,7 +2,7 @@
  * MineTwin AI - DRL Policy Optimizer & Multi-Objective Decision Engine
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Activity,
   AlertCircle,
@@ -32,6 +32,7 @@ import {
   computePolicyComparisons,
   CURRICULUM_STAGES,
 } from '../../services/drlEngine';
+import { ExportMenu } from '../ExportMenu';
 
 interface AiOptimizerViewProps {
   state: DigitalTwinState;
@@ -46,6 +47,7 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
   onApproveRecommendation,
   onRejectRecommendation,
 }) => {
+  const policyTableRef = useRef<HTMLDivElement>(null);
   const [weights, setWeights] = useState<DRLRewardWeights>({ ...state.rewardWeights });
   const policyComparisons = computePolicyComparisons(state);
 
@@ -82,14 +84,17 @@ export const AiOptimizerView: React.FC<AiOptimizerViewProps> = ({
 
       {/* Policy Benchmark Matrix Table */}
       <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
-        <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center justify-between">
-          <span className="flex items-center gap-2">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-slate-200 uppercase tracking-wider text-xs flex items-center gap-2">
             <Activity className="w-4 h-4 text-emerald-400" /> Comparativa de políticas operacionales
-          </span>
-          <span className="text-[10px] text-slate-400 font-mono font-normal">Escala normalizada 0-100</span>
-        </h3>
+          </h3>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-slate-400 font-mono font-normal">Escala normalizada 0-100</span>
+            <ExportMenu kind="table" targetRef={policyTableRef} title="Comparativa de políticas operacionales" />
+          </div>
+        </div>
 
-        <div className="overflow-x-auto">
+        <div ref={policyTableRef} className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-950/80 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-800 font-sans">
               <tr>

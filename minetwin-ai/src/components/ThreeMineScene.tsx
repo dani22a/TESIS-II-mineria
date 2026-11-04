@@ -20,6 +20,7 @@ import {
   hexToCss,
   updateAssetLabel,
 } from './mineSceneBuilders';
+import { ExportMenu } from './ExportMenu';
 import { animateProcess, createProcessFx, disposeProcessFx, ProcessFx } from './mineSceneAnimations';
 
 interface ThreeMineSceneProps {
@@ -548,6 +549,13 @@ export const ThreeMineScene: React.FC<ThreeMineSceneProps> = ({ state, onSelectA
     if (phi !== undefined) cameraAnglePhiRef.current = phi;
   };
 
+  const getThreeContext = () => {
+    const renderer = rendererRef.current;
+    const scene = sceneRef.current;
+    const camera = cameraRef.current;
+    return renderer && scene && camera ? { renderer, scene, camera } : null;
+  };
+
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
       <div className="absolute inset-0" ref={mountRef} />
@@ -591,6 +599,7 @@ export const ThreeMineScene: React.FC<ThreeMineSceneProps> = ({ state, onSelectA
           >
             Tronadura
           </button>
+          <ExportMenu kind="three" getThree={getThreeContext} title="Escena 3D del pit" className="ml-auto" />
         </div>
         <div className="bg-slate-900/84 backdrop-blur-md px-3 py-2.5 rounded-xl border border-slate-700/60 shadow-xl text-[11px] text-slate-300 space-y-1.5 w-fit">
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Cómo leer el mapa</div>

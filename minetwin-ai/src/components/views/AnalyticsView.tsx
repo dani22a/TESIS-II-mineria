@@ -2,7 +2,7 @@
  * MineTwin AI - Analytics & Telemetry Visualization Suite
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Area,
   AreaChart,
@@ -27,12 +27,18 @@ import {
   Zap,
 } from 'lucide-react';
 import { DigitalTwinState } from '../../types/mining';
+import { ExportMenu } from '../ExportMenu';
 
 interface AnalyticsViewProps {
   state: DigitalTwinState;
 }
 
 export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
+  const prodRef = useRef<HTMLDivElement>(null);
+  const cycleRef = useRef<HTMLDivElement>(null);
+  const fuelRef = useRef<HTMLDivElement>(null);
+  const costRef = useRef<HTMLDivElement>(null);
+
   // Cycle time decomposition data
   const cycleBreakdownData = [
     { name: 'Retorno Vacío', minutes: 7.2, color: '#38bdf8' },
@@ -81,9 +87,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
             <h3 className="font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-amber-400" /> Producción Mina (t/h) vs Molienda SAG (t/h)
             </h3>
+            <ExportMenu kind="chart" targetRef={prodRef} title="Producción Mina vs Molienda SAG" />
           </div>
 
-          <div className="flex-1 w-full min-h-[220px]">
+          <div ref={prodRef} className="flex-1 w-full min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={state.kpiHistory} margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -106,10 +113,13 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
             <h3 className="font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-sky-400" /> Descomposición de Tiempos de Ciclo de Camión
             </h3>
-            <span className="font-mono text-[10px] text-slate-400">Total: 26.8 min</span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-slate-400">Total: 26.8 min</span>
+              <ExportMenu kind="chart" targetRef={cycleRef} title="Descomposición de tiempos de ciclo de camión" />
+            </div>
           </div>
 
-          <div className="flex-1 w-full min-h-[220px]">
+          <div ref={cycleRef} className="flex-1 w-full min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={cycleBreakdownData} layout="vertical" margin={{ top: 10, right: 15, left: 40, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -131,9 +141,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
             <h3 className="font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
               <Fuel className="w-4 h-4 text-purple-400" /> Consumo de Diésel (L/h) vs Pendiente de Rampa (%)
             </h3>
+            <ExportMenu kind="chart" targetRef={fuelRef} title="Consumo de diésel vs pendiente de rampa" />
           </div>
 
-          <div className="flex-1 w-full min-h-[220px]">
+          <div ref={fuelRef} className="flex-1 w-full min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={fuelGradientData} margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -156,9 +167,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({ state }) => {
             <h3 className="font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-1.5">
               <Zap className="w-4 h-4 text-emerald-400" /> Evolución del Costo Unitario ($/t)
             </h3>
+            <ExportMenu kind="chart" targetRef={costRef} title="Evolución del costo unitario" />
           </div>
 
-          <div className="flex-1 w-full min-h-[220px]">
+          <div ref={costRef} className="flex-1 w-full min-h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={state.kpiHistory} margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
                 <defs>

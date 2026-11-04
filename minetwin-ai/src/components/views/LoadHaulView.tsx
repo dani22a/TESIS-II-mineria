@@ -2,7 +2,7 @@
  * MineTwin AI - Load & Haul Fleet Operations & Dispatch Command
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -22,6 +22,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { CycleState, DigitalTwinState } from '../../types/mining';
+import { ExportMenu } from '../ExportMenu';
 import { cycleStateLabel, destinationTypeLabel, materialTypeLabel } from '../../i18n/labels';
 
 interface LoadHaulViewProps {
@@ -37,6 +38,7 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
   onOpenAssetDetail,
   onManualReassignTruck,
 }) => {
+  const fleetTableRef = useRef<HTMLDivElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [stateFilter, setStateFilter] = useState<string>('ALL');
 
@@ -234,11 +236,12 @@ export const LoadHaulView: React.FC<LoadHaulViewProps> = ({
               <option value="RETURNING">{cycleStateLabel('RETURNING')}</option>
               <option value="DUMPING">{cycleStateLabel('DUMPING')}</option>
             </select>
+            <ExportMenu kind="table" targetRef={fleetTableRef} title="Matriz operacional de camiones" />
           </div>
         </div>
 
         {/* Fleet Table */}
-        <div className="overflow-x-auto flex-1">
+        <div ref={fleetTableRef} className="overflow-x-auto flex-1">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-950/80 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-800">
               <tr>
