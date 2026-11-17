@@ -281,6 +281,45 @@ function appendLegend(container: Element, svg: SVGSVGElement, clone: SVGSVGEleme
   clone.appendChild(g);
 }
 
+/**
+ * Recharts animates series with a growing clip rect (areas) and a "Npx Mpx" dash pattern (lines).
+ * A snapshot taken mid-animation would be partly or fully empty, so undo both in the clone.
+ */
+function neutralizeAnimation(clone: SVGSVGElement, width: number, height: number): void {
+  clone
+    .querySelectorAll('.recharts-area clipPath rect, .recharts-line clipPath rect, .recharts-scatter clipPath rect')
+    .forEach((r) => {
+      r.setAttribute('x', '0');
+      r.setAttribute('y', '0');
+      r.setAttribute('width', String(width));
+      r.setAttribute('height', String(height));
+    });
+  clone.querySelectorAll('.recharts-curve').forEach((el) => {
+    if (/^[\d.]+px [\d.]+px$/.test(el.getAttribute('stroke-dasharray') ?? '')) {
+      el.removeAttribute('stroke-dasharray');
+      const st = el.getAttribute('style');
+      if (st) el.setAttribute('style', st.replace(/stroke-dasharray:[^;]*;/, ''));
+    }
+  });
+}
+
+/**
+ * Wait until the chart stops changing (series animations finished), up to `timeoutMs`.
+ * Returns whether it settled; callers still get a usable snapshot thanks to neutralizeAnimation.
+ */
+export async function waitForChartSettled(svgEl: Element, timeoutMs = 3000, stepMs = 120): Promise<boolean> {
+  const full = () => svgEl.innerHTML;
+  const t0 = Date.now();
+  let prev = full();
+  while (Date.now() - t0 < timeoutMs) {
+    await new Promise((r) => setTimeout(r, stepMs));
+    const cur = full();
+    if (cur === prev) return true;
+    prev = cur;
+  }
+  return false;
+}
+
 export function buildStandaloneSvg(
   svgEl: SVGSVGElement,
   opts: { background?: ExportBackground; container?: Element } = {},
@@ -293,6 +332,7 @@ export function buildStandaloneSvg(
 
   const clone = svgEl.cloneNode(true) as SVGSVGElement;
   inlineStyles(svgEl, clone);
+  neutralizeAnimation(clone, width, height);
   clone.removeAttribute('class');
   clone.removeAttribute('tabindex');
   clone.setAttribute('xmlns', SVG_NS);
@@ -429,7 +469,37 @@ export async function exportPdf(svgEl: SVGSVGElement, opts: ChartExportOptions &
 /* Tables                                                              */
 /* ------------------------------------------------------------------ */
 
-const cellText = (el: Element) => (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+/**
+ * Visible text of a cell. Block/flex/inline-block children are separated by a space so that
+ * "<div>Name</div><div>Description</div>" does not collapse into "NameDescription".
+ */
+function collectText(node: Node, out: string[]): void {
+  if (node.nodeType === Node.TEXT_NODE) {
+    out.push(node.nodeValue ?? '');
+    return;
+  }
+  if (node.nodeType !== Node.ELEMENT_NODE) return;
+  const el = node as Element;
+  if (el.tagName === 'BR') {
+    out.push(' ');
+    return;
+  }
+  let sep = '';
+  try {
+    sep = getComputedStyle(el).display === 'inline' ? '' : ' ';
+  } catch {
+    sep = '';
+  }
+  out.push(sep);
+  el.childNodes.forEach((c) => collectText(c, out));
+  out.push(sep);
+}
+
+const cellText = (el: Element) => {
+  const parts: string[] = [];
+  el.childNodes.forEach((c) => collectText(c, parts));
+  return parts.join('').replace(/\s+/g, ' ').trim();
+};
 
 export function tableToRows(tableEl: HTMLTableElement): string[][] {
   const rows: string[][] = [];

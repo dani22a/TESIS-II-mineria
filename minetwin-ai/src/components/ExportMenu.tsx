@@ -22,6 +22,7 @@ import {
   findChartSvg,
   findTable,
   tableToRows,
+  waitForChartSettled,
 } from '../services/exportService';
 
 export interface ThreeExportContext {
@@ -140,6 +141,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ kind, targetRef, getThre
     void run(async () => {
       if (action === 'svg') {
         const { svg, root } = getTarget();
+        await waitForChartSettled(svg!);
         exportSvg(svg!, { filename: buildFilename(title, 'svg'), container: root, background: 'white' });
         return 'SVG descargado';
       }
@@ -179,10 +181,12 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ kind, targetRef, getThre
         msg = `PNG ${r.w} × ${r.h} px${r.clamped ? ' (reducido al límite del navegador)' : ''}`;
       } else if (dialog === 'pdf') {
         const { svg, root } = getTarget();
+        await waitForChartSettled(svg!);
         await exportPdf(svg!, { widthCm: wCm, filename: buildFilename(title, 'pdf'), container: root, background });
         msg = 'PDF descargado';
       } else if (kind === 'chart') {
         const { svg, root } = getTarget();
+        await waitForChartSettled(svg!);
         const r = await exportPng(svg!, { widthCm: wCm, dpi: d, filename: buildFilename(title, 'png'), container: root, background });
         msg = `PNG ${r.w} × ${r.h} px a ${d} DPI`;
       } else {
