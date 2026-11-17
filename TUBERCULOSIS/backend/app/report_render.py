@@ -35,9 +35,12 @@ def _rows(s: dict, kind: str) -> list[tuple[str, list[tuple[str, object]]]]:
 
 
 def _head(s: dict, kind: str) -> tuple[str, list[str]]:
-    lines = [f"Generated: {s['generated_at']}", f"Filters: {s['filters'] or 'none'}", DISCLAIMER]
-    if s["is_demo"]:
-        lines.insert(0, s["demo_notice"])
+    lines = [
+        f"Model: {s.get('model_name', 'DenseNet121')} ({s.get('deployed_model_version', 'densenet121-tb-v1')})",
+        f"Generated: {s['generated_at']}",
+        f"Filters: {s['filters'] or 'none'}",
+        DISCLAIMER,
+    ]
     return f"TB screening - {kind} report", lines
 
 

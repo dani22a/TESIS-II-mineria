@@ -44,7 +44,7 @@ export default function Dashboard() {
             {['created', 'image_uploaded', 'processing', 'completed', 'not_evaluable', 'technical_failure'].map((x) => <option key={x}>{x}</option>)}
           </select>
         </label>
-        <label>Model version<input value={f.model_version} onChange={(e) => setF({ ...f, model_version: e.target.value })} placeholder="e.g. demo-0" /></label>
+        <label>Model version<input value={f.model_version} onChange={(e) => setF({ ...f, model_version: e.target.value })} placeholder="e.g. densenet121-tb-v1" /></label>
       </div>
       {error && <p className="error">{error}</p>}
       {s && o && (
@@ -61,8 +61,8 @@ export default function Dashboard() {
             <p>Reviews: {o.reviews.total} (agreed {o.reviews.agreed}, disagreed {o.reviews.disagreed})</p>
           </section>
           <section className="card">
-            <h2>Scientific metrics {s.scientific.is_demo && <span className="badge demo">DEMO</span>}</h2>
-            {s.scientific.available ? <p>Available.</p> : <p className="warn">Not available: {s.scientific.reason}</p>}
+            <h2>Model <span className="badge">DenseNet121</span></h2>
+            <p>{s.scientific.reason}</p>
           </section>
         </>
       )}

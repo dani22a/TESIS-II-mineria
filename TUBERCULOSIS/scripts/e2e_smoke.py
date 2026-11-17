@@ -48,7 +48,7 @@ def login(c: httpx.Client, email: str) -> dict:
 def run(base: str) -> None:
     c = httpx.Client(base_url=base, timeout=60)
     h = c.get("/health")
-    check("health", h.status_code == 200 and h.json().get("demo_mode") is True, h.text)
+    check("health", h.status_code == 200 and h.json().get("engine") == "densenet121-tb-v1", h.text)
 
     op = login(c, "operator@demo.local")
     check("login operator", True)
@@ -78,8 +78,8 @@ def run(base: str) -> None:
 
     r = c.post(f"/cases/{cid}/inference", headers=op)
     inf = r.json()
-    check("demo inference", r.status_code == 201 and inf.get("is_demo") is True and inf.get("model_version") == "demo-0",
-          f"status={inf.get('status')} label={inf.get('label')} score={inf.get('score')} is_demo={inf.get('is_demo')}")
+    check("inference", r.status_code == 201 and inf.get("is_demo") is False and inf.get("model_version") == "densenet121-tb-v1",
+          f"status={inf.get('status')} label={inf.get('label')} score={inf.get('score')} model={inf.get('model_version')}")
 
     r = c.post(f"/cases/{cid}/reviews", headers=op,
                json={"agrees": True, "final_label": "no_compatible_findings"})
@@ -89,7 +89,7 @@ def run(base: str) -> None:
     check("reviewer evaluation", r.status_code == 201, r.text[:120])
 
     r = c.get("/dashboard/summary", headers=ad)
-    check("dashboard summary", r.status_code == 200 and r.json().get("is_demo") is True,
+    check("dashboard summary", r.status_code == 200 and r.json().get("model_name") == "DenseNet121",
           f"total_cases={r.json().get('operational', {}).get('total_cases')}")
 
     for fmt in ("pdf", "docx", "xlsx"):
@@ -103,13 +103,13 @@ def run(base: str) -> None:
                     from pypdf import PdfReader
                     rd = PdfReader(io.BytesIO(body))
                     text = " ".join((p.extract_text() or "") for p in rd.pages)
-                    ok = len(rd.pages) >= 1 and "demo" in text.lower()
-                    detail += f", {len(rd.pages)} page(s), demo flag in text={'demo' in text.lower()}"
+                    ok = len(rd.pages) >= 1 and "densenet121" in text.lower()
+                    detail += f", {len(rd.pages)} page(s), model in text={'densenet121' in text.lower()}"
                 elif fmt == "docx":
                     import docx
                     d = docx.Document(io.BytesIO(body))
                     text = " ".join(p.text for p in d.paragraphs)
-                    ok = len(d.paragraphs) > 0 and "demo" in text.lower()
+                    ok = len(d.paragraphs) > 0 and "densenet121" in text.lower()
                     detail += f", {len(d.paragraphs)} paragraphs, {len(d.tables)} tables"
                 else:
                     import openpyxl

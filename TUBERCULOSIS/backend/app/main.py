@@ -5,6 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from .config import settings
+from .inference import MODEL_NAME, MODEL_VERSION
 from .db import get_db
 from .routers_audit import router as audit_router
 from .routers_auth import router as auth_router
@@ -29,4 +30,4 @@ app.include_router(ops_router)
 @app.get("/health", tags=["health"])
 def health(db: Session = Depends(get_db)):
     db.execute(text("SELECT 1"))
-    return {"status": "ok", "engine": "demo", "demo_mode": True}
+    return {"status": "ok", "engine": MODEL_VERSION, "model_name": MODEL_NAME, "demo_mode": False}

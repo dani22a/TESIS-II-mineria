@@ -25,7 +25,7 @@ def test_summary_counts_filters_and_scientific_block(client, auth):
     s = client.get("/dashboard/summary", headers=auth["operator"]).json()
     assert s["operational"]["total_cases"] == 4
     assert s["operational"]["cases_by_status"]["completed"] == 2
-    assert s["is_demo"] is True and s["demo_notice"]
+    assert s["is_demo"] is False and s["model_name"] == "DenseNet121"
     assert s["scientific"]["available"] is False and s["scientific"]["reason"]
     h = auth["auditor"]
     f = client.get("/dashboard/summary", headers=h, params={"status": "completed"}).json()
@@ -43,12 +43,12 @@ def test_exports_parse_back_with_consistent_counts(client, auth):
         r = client.get(f"/reports/{kind}.pdf", headers=h, params={"status": "completed"})
         assert r.status_code == 200 and r.content.startswith(b"%PDF")
         text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(r.content)).pages)
-        assert "DEMO MODE" in text and "Total cases" in text and "Scientific metrics" in text
+        assert "DenseNet121" in text and "Total cases" in text and "Scientific metrics" in text
         r = client.get(f"/reports/{kind}.docx", headers=h, params={"status": "completed"})
         doc = Document(io.BytesIO(r.content))
         cells = [c.text for t in doc.tables for row in t.rows for c in row.cells]
         assert cells[cells.index("Total cases") + 1] == "2"
-        assert any("DEMO MODE" in p.text for p in doc.paragraphs)
+        assert any("DenseNet121" in p.text for p in doc.paragraphs)
         r = client.get(f"/reports/{kind}.xlsx", headers=h, params={"status": "completed"})
         ws = load_workbook(io.BytesIO(r.content)).active
         vals = {row[0].value: row[1].value for row in ws.iter_rows() if len(row) > 1}

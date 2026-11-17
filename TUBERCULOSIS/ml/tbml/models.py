@@ -1,7 +1,8 @@
 """Five binary TB-screening classifiers (single logit output, 1-channel input in [-1, 1]).
 
 densenet121, efficientnet_b3 : torchvision backbones (weights=None unless pretrained=True).
-vit                          : compact ViT written here (exposes attention for rollout).
+vit                          : compact ViT written here (attention rollout); with pretrained=True the
+                               torchvision ViT-B/16 (ImageNet weights, Grad-CAM on token maps) is used.
 cnn_transformer              : conv stem + transformer encoder (hybrid).
 effnet_bilstm_attn           : EfficientNet-B3 features -> BiLSTM -> additive attention.
 """
@@ -84,6 +85,21 @@ class ViT(nn.Module):
         return self.head(self.norm(t)[:, 0]).squeeze(1)
 
 
+class TVViT(nn.Module):
+    """torchvision ViT-B/16 (ImageNet-pretrained when pretrained=True); 224x224 only, 1 logit head."""
+
+    def __init__(self, pretrained=False, dropout=0.0, img_size=224, **_):
+        super().__init__()
+        assert img_size == 224, "torchvision ViT-B/16 expects 224x224 input"
+        self.net = tv.vit_b_16(weights="DEFAULT" if pretrained else None, dropout=dropout)
+        self.net.heads.head = nn.Linear(self.net.heads.head.in_features, 1)
+        self.cam_layer = self.net.encoder.layers[-1]  # token activations (B, 1+196, 768)
+        self.grid = 14
+
+    def forward(self, x):
+        return self.net(_rgb(x)).squeeze(1)
+
+
 class CNNTransformer(nn.Module):
     def __init__(self, img_size=224, dim=128, depth=2, heads=4, dropout=0.1, **_):
         super().__init__()
@@ -128,6 +144,9 @@ def get_model(name: str, img_size: int = 224, **kw) -> nn.Module:
     if name == "efficientnet_b3":
         return EfficientNetB3(**kw)
     if name == "vit":
+        if kw.get("pretrained"):
+            return TVViT(img_size=img_size, **kw)
+        kw.pop("pretrained", None)
         patch = kw.pop("patch", 16 if img_size >= 224 else 8)
         return ViT(img_size=img_size, patch=patch, **kw)
     if name == "cnn_transformer":

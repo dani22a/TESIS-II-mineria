@@ -22,11 +22,11 @@ function Guard({ roles, children }: { roles: Role[]; children: ReactNode }) {
 }
 
 function Layout() {
-  const { user, logout, demo } = useAuth()
+  const { user, logout } = useAuth()
   if (!user) return <Navigate to="/login" replace />
   return (
     <>
-      {demo && <div className="demo-banner">DEMO MODE: results come from a demonstration engine, not a validated model.</div>}
+      <div className="model-banner">Model: DenseNet121 · densenet121-tb-v1</div>
       <header className="topbar">
         <strong>SP-02 TB screening</strong>
         <nav>

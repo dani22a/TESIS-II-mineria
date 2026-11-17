@@ -34,9 +34,13 @@ def gradcam(model, x: torch.Tensor) -> np.ndarray:
         model(x).sum().backward()
     finally:
         h.remove()
-    w = store["g"].mean(dim=(2, 3), keepdim=True)
-    cam = F.relu((w * store["a"]).sum(1, keepdim=True))
-    cam = F.interpolate(cam, size=x.shape[-2:], mode="bilinear", align_corners=False)[0, 0].detach().numpy()
+    a, g = store["a"], store["g"]
+    if a.dim() == 3:  # transformer tokens (B, 1+g*g, D): drop CLS, restore the patch grid
+        n = model.grid
+        a, g = (t[:, 1:].transpose(1, 2).reshape(t.shape[0], -1, n, n) for t in (a, g))
+    w = g.mean(dim=(2, 3), keepdim=True)
+    cam = F.relu((w * a).sum(1, keepdim=True))
+    cam = F.interpolate(cam, size=x.shape[-2:], mode="bilinear", align_corners=False)[0, 0].detach().cpu().numpy()
     return (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
 
 
@@ -85,7 +89,7 @@ def explain_run(run: Path, manifest: Path, split: str = "test", n: int = 3) -> l
         out.mkdir(parents=True, exist_ok=True)
         for i, row in enumerate(df.itertuples()):
             x = xs[i:i + 1]
-            heat = attention_rollout(model, x) if meta["model"] == "vit" else gradcam(model, x)
+            heat = attention_rollout(model, x) if hasattr(model, "blocks") else gradcam(model, x)
             p = out / f"{row.image_id}.png"
             overlay(x[0, 0].numpy(), heat, stamp).save(p)
             written.append(p)

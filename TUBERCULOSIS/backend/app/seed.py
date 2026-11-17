@@ -61,7 +61,7 @@ def main() -> None:
             if seed is None:
                 case.qc_passed, case.qc_reason, case.status = False, "blank or uniform image", "not_evaluable"
                 db.add(InferenceResult(case_id=case.id, status="not_evaluable", threshold=settings.decision_threshold,
-                                       model_version=engine.model_version, is_demo=True,
+                                       model_version=engine.model_version, is_demo=engine.is_demo,
                                        error_message=case.qc_reason, created_by=op.id))
             else:
                 case.qc_passed, case.status = True, "completed"
@@ -72,7 +72,7 @@ def main() -> None:
                     case_id=case.id, status="completed", score=pred.score, heatmap_key=hkey,
                     label="probable_tuberculosis" if pred.score >= settings.decision_threshold else "no_compatible_findings",
                     threshold=settings.decision_threshold, model_version=engine.model_version,
-                    is_demo=True, created_by=op.id))
+                    is_demo=engine.is_demo, created_by=op.id))
             db.commit()
     print(f"Seeded users ({settings.seed_password!r} password) and demo cases.")
 

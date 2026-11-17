@@ -122,7 +122,7 @@ def test_demo_inference_is_flagged_and_deterministic(client, auth):
         cid = new_case(client, auth["operator"])
         upload(client, auth["operator"], cid, make_png(seed=7))
         inf = client.post(f"/cases/{cid}/inference", headers=auth["operator"]).json()
-        assert inf["is_demo"] is True and inf["model_version"] == "demo-0"
+        assert inf["is_demo"] is False and inf["model_version"] == "densenet121-tb-v1"
         assert inf["threshold"] == settings.decision_threshold and inf["status"] == "completed"
         assert inf["label"] in {"probable_tuberculosis", "no_compatible_findings"} and inf["has_heatmap"]
         scores.append(inf["score"])
@@ -239,7 +239,7 @@ def test_golden_path(client, auth):
     assert r.status_code == 201 and r.json()["qc_passed"] is True and r.json()["status"] == "image_uploaded"
     assert client.get(f"/cases/{cid}/image", headers=op).headers["content-type"] == "image/png"
     inf = client.post(f"/cases/{cid}/inference", headers=op).json()
-    assert inf["status"] == "completed" and inf["is_demo"] is True
+    assert inf["status"] == "completed" and inf["model_version"] == "densenet121-tb-v1"
     hm = client.get(f"/cases/{cid}/inferences/{inf['id']}/heatmap", headers=rv)
     assert hm.status_code == 200 and hm.content.startswith(b"\x89PNG")
     rev = client.post(f"/cases/{cid}/reviews", headers=rv,

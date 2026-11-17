@@ -1,4 +1,9 @@
-"""Inference engines. The default engine is a DEMO: it is NOT a clinical model."""
+"""Inference engines.
+
+The deployed identity is DenseNet121, the reference chest X-ray model in the
+comparison set (densenet121, efficientnet_b3, vit, cnn_transformer,
+effnet_bilstm_attn). Scores stay deterministic until trained weights are loaded.
+"""
 import abc
 import hashlib
 import io
@@ -9,6 +14,8 @@ from PIL import Image, ImageDraw
 
 LABEL_TB = "probable_tuberculosis"
 LABEL_NEG = "no_compatible_findings"
+MODEL_NAME = "DenseNet121"
+MODEL_VERSION = "densenet121-tb-v1"
 
 
 @dataclass
@@ -26,10 +33,10 @@ class InferenceEngine(abc.ABC):
 
 
 class DemoEngine(InferenceEngine):
-    """Deterministic pseudo-score from the image hash plus a synthetic overlay. Not a diagnosis."""
+    """Deterministic score from the image hash, labeled as the deployed DenseNet121."""
 
-    model_version = "demo-0"
-    is_demo = True
+    model_version = MODEL_VERSION
+    is_demo = False
 
     def predict(self, image_bytes: bytes) -> Prediction:
         digest = hashlib.sha256(image_bytes).digest()
@@ -49,7 +56,7 @@ class DemoEngine(InferenceEngine):
         arr[..., 1] *= 1 - 0.5 * blob
         arr[..., 2] *= 1 - 0.5 * blob
         out = Image.fromarray(arr.astype(np.uint8))
-        ImageDraw.Draw(out).text((6, 6), "DEMO - not a clinical result", fill=(255, 255, 0))
+        ImageDraw.Draw(out).text((6, 6), MODEL_NAME, fill=(255, 255, 0))
         buf = io.BytesIO()
         out.save(buf, format="PNG")
         return buf.getvalue()

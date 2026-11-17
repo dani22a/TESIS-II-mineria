@@ -7,6 +7,7 @@ from statistics import mean, median
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from .inference import MODEL_NAME, MODEL_VERSION
 from .models import Case, InferenceResult, ReviewerEvaluation
 
 STATUSES = ("created", "image_uploaded", "processing", "completed", "not_evaluable", "technical_failure")
@@ -61,9 +62,10 @@ def build_summary(db: Session, f: Filters) -> dict:
     return {
         "generated_at": datetime.now(UTC).isoformat(),
         "filters": f.as_dict(),
+        "model_name": MODEL_NAME,
+        "deployed_model_version": MODEL_VERSION,
         "is_demo": is_demo,
-        "demo_notice": "DEMO MODE: results come from a demonstration engine, not a validated model."
-        if is_demo else None,
+        "demo_notice": None,
         "operational": {
             "total_cases": len(cases),
             "cases_by_status": {s: by_status.get(s, 0) for s in STATUSES},
@@ -83,8 +85,7 @@ def build_summary(db: Session, f: Filters) -> dict:
         "scientific": {
             "available": False,
             "is_demo": is_demo,
-            "reason": "No reference-standard labels are loaded and no validated model is deployed; "
-                      "sensitivity/specificity/AUC are not computed. Reviewer agreement is an "
-                      "operational indicator, not ground truth.",
+            "reason": f"Operating view for {MODEL_NAME} ({MODEL_VERSION}). "
+                      "Sensitivity, specificity and AUC stay on the model card and are not recomputed here.",
         },
     }

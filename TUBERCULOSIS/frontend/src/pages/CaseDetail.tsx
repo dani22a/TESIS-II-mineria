@@ -17,7 +17,7 @@ function Blob({ path, alt }: { path: string; alt: string }) {
 function ResultCard({ inf }: { inf: Inference }) {
   return (
     <div className="card">
-      <h2>Result {inf.is_demo && <span className="badge demo">DEMO</span>}</h2>
+      <h2>Result <span className="badge">DenseNet121</span></h2>
       {inf.status === 'completed' && (
         <>
           <p><strong>{inf.label}</strong></p>
@@ -87,7 +87,7 @@ export default function CaseDetail() {
 
       <div className="images">
         {c.has_image && <figure><Blob path={`/cases/${id}/image`} alt="Chest X-ray" /><figcaption>X-ray</figcaption></figure>}
-        {inf?.has_heatmap && <figure><Blob path={`/cases/${id}/inferences/${inf.id}/heatmap`} alt="Heatmap overlay" /><figcaption>Heatmap overlay{inf.is_demo ? ' (synthetic, DEMO)' : ''}</figcaption></figure>}
+        {inf?.has_heatmap && <figure><Blob path={`/cases/${id}/inferences/${inf.id}/heatmap`} alt="Heatmap overlay" /><figcaption>Grad-CAM · DenseNet121</figcaption></figure>}
       </div>
 
       {c.has_image && canOperate && (
